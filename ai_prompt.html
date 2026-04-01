@@ -1,1 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 文宣句與提示句生成器</title>
+  <style>
+    body {
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      background: #f4f6fb;
+      margin: 0;
+      padding: 24px;
+      color: #222;
+      line-height: 1.7;
+    }
 
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+      padding: 28px;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 28px;
+    }
+
+    h2 {
+      margin-top: 28px;
+      font-size: 22px;
+      border-left: 5px solid #3b6cff;
+      padding-left: 10px;
+    }
+
+    p.note {
+      background: #eef4ff;
+      border: 1px solid #d7e3ff;
+      padding: 14px 16px;
+      border-radius: 10px;
+      margin-bottom: 22px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin: 12px 0 6px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 11px 12px;
+      font-size: 16px;
+      border: 1px solid #ccd5e3;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .btn-group {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+      background: #3b6cff;
+      color: white;
+    }
+
+    button.secondary {
+      background: #5f6b7a;
+    }
+
+    button.copy {
+      background: #0a9b68;
+    }
+
+    .output-box {
+      margin-top: 12px;
+      background: #fafbfe;
+      border: 1px solid #d9e0ed;
+      border-radius: 10px;
+      padding: 16px;
+      white-space: pre-wrap;
+      min-height: 120px;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #666;
+    }
+
+    @media (max-width: 760px) {
+      .row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AI 文宣句與提示句生成器</h1>
+
+    <p class="note">
+      <strong>使用方式：</strong><br>
+      1. 輸入要推廣的產品或服務，例如：海產、文具、老齡健康顧問、課程。<br>
+      2. 選擇文案風格。<br>
+      3. 點擊「生成內容」。<br>
+      4. 上方可參考文宣句，下方可直接複製「AI 提示句」貼回 ChatGPT 或其他 AI 工具。<br>
+      5. 員工不需要自行想提示語，只要複製即可。
+    </p>
+
+    <div class="row">
+      <div>
+        <label for="product">產品 / 服務名稱</label>
+        <input id="product" placeholder="例如：海產、文具、老齡健康顧問" />
+      </div>
+
+      <div>
+        <label for="style">文案風格</label>
+        <select id="style">
+          <option value="general">通用自然版</option>
+          <option value="business">商務推廣版</option>
+          <option value="warm">溫和親切版</option>
+          <option value="professional">專業穩健版</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button onclick="generateContent()">生成內容</button>
+      <button class="secondary" onclick="loadExample()">載入範例</button>
+      <button class="secondary" onclick="clearAll()">清空</button>
+    </div>
+
+    <h2>① 參考文宣句</h2>
+    <div class="small">可提供員工先理解方向，也可直接修改後使用。</div>
+    <div id="marketingOutput" class="output-box"></div>
+
+    <h2>② AI 提示句</h2>
+    <div class="small">這一段可直接複製貼回 AI，讓 AI 幫你生成更完整文案。</div>
+    <div class="btn-group">
+      <button class="copy" onclick="copyPrompt()">複製 AI 提示句</button>
+    </div>
+    <div id="promptOutput" class="output-box"></div>
+  </div>
+
+  <script>
+    function getStyleText(style, product) {
+      const styles = {
+        general: {
+          tone: "語氣自然、清楚、容易理解",
+          extra: "不要過度推銷，不要空泛口號，適合一般消費者閱讀。"
+        },
+        business: {
+          tone: "語氣偏商務推廣，清楚指出價值與差異",
+          extra: "可提高需求感與行動感，但不要浮誇。"
+        },
+        warm: {
+          tone: "語氣溫和、親切、有陪伴感",
+          extra: "避免壓迫感，讓讀者感到被理解。"
+        },
+        professional: {
+          tone: "語氣專業、穩健、有可信度",
+          extra: "適合顧問、教育、健康、服務型內容。"
+        }
+      };
+      return styles[style] || styles.general;
+    }
+
+    function generateMarketingText(product, style) {
+      const s = getStyleText(style, product);
+
+      return `【緊張感】
+很多人在接觸 ${product} 時，往往只看表面，卻忽略真正影響品質、效果或選擇成敗的關鍵。
+
+【需求感】
+如果你正在考慮 ${product}，你可能也會發現，市面上的資訊很多，但真正適合自己的內容其實不容易判斷。
+
+【解決方案】
+我們希望用更清楚、更容易理解的方式，幫助你更快找到適合的 ${product}，減少摸索與選錯的成本。
+
+【信任建立】
+透過系統整理、清楚說明與實際應用經驗，可以讓使用者更安心地理解 ${product} 的價值，而不是只靠廣告文字判斷。
+
+【行動呼籲】
+如果你也正在評估 ${product}，現在就是一個適合開始了解、比較與進一步規劃的時機。`;
+    }
+
+    function generatePrompt(product, style) {
+      const s = getStyleText(style, product);
+
+      return `請根據以下條件，為「${product}」生成一組完整行銷文宣。
+
+【你的任務】
+你現在是一位有行銷企劃能力的文案助手，請協助撰寫適合一般讀者閱讀的推廣內容，目的是讓潛在客戶從：
+不了解 → 注意問題 → 產生需求 → 建立信任 → 願意採取行動
+
+【產品 / 服務】
+${product}
+
+【文案風格】
+${s.tone}
+
+【寫作要求】
+1. 使用繁體中文。
+2. 內容要具體，不要空泛。
+3. 不要只寫形容詞，要寫出讀者可能遇到的情況、問題與可被解決的方向。
+4. 不要過度誇張或強迫推銷。
+5. ${s.extra}
+6. 讓沒有行銷背景的人也能直接看懂。
+
+【請依照以下結構輸出】
+
+一、緊張感
+- 說明一般人在選擇或接觸「${product}」時，最常忽略的問題是什麼。
+- 讓讀者意識到，如果沒有留意，可能會做出不理想的選擇。
+
+二、需求感
+- 描述目標客群在使用、購買或理解「${product}」時，常見的困擾與需求。
+- 讓讀者感覺這個主題和自己有關。
+
+三、解決方案
+- 說明「${product}」可以如何協助改善問題。
+- 要具體描述它帶來的幫助，而不是只說很好、很棒。
+
+四、信任建立
+- 用合理、穩健的方式建立可信度。
+- 可以從經驗、整理、流程、專業說明、案例角度切入，但不要捏造數據。
+
+五、行動呼籲
+- 引導讀者採取下一步，例如：了解更多、詢問、體驗、比較、規劃。
+- 語氣要自然，不要有強迫感。
+
+【另外請再提供以下內容】
+
+A. 短版文宣
+- 80 到 100 字內
+- 適合快速介紹
+
+B. 完整文宣
+- 約 250 到 400 字
+- 適合官網、簡介或說明文
+
+C. 社群貼文版
+- 適合 Facebook、LINE 或社群貼文
+- 可較口語一些
+
+D. 口語版
+- 像真人會說的介紹方式
+- 適合員工對客戶簡單說明
+
+E. 標題 3 個
+- 吸引注意
+- 不要誇張聳動
+
+【輸出注意】
+- 每一段請加上小標題
+- 內容要有層次
+- 不要重複同一句話
+- 不要只寫非常籠統的句子`;
+    }
+
+    function generateContent() {
+      const product = document.getElementById("product").value.trim();
+      const style = document.getElementById("style").value;
+
+      if (!product) {
+        alert("請先輸入產品或服務名稱");
+        return;
+      }
+
+      document.getElementById("marketingOutput").textContent = generateMarketingText(product, style);
+      document.getElementById("promptOutput").textContent = generatePrompt(product, style);
+    }
+
+    function copyPrompt() {
+      const text = document.getElementById("promptOutput").textContent;
+      if (!text.trim()) {
+        alert("請先生成內容");
+        return;
+      }
+      navigator.clipboard.writeText(text)
+        .then(() => alert("AI 提示句已複製"))
+        .catch(() => alert("複製失敗，請手動複製"));
+    }
+
+    function clearAll() {
+      document.getElementById("product").value = "";
+      document.getElementById("style").value = "general";
+      document.getElementById("marketingOutput").textContent = "";
+      document.getElementById("promptOutput").textContent = "";
+    }
+
+    function loadExample() {
+      document.getElementById("product").value = "海產";
+      document.getElementById("style").value = "business";
+      generateContent();
+    }
+  </script>
+</body>
+</html>
