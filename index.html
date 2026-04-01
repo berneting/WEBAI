@@ -1,171 +1,152 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WEBAI 首頁</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WEBAI 首頁</title>
 
-    body {
-      margin: 0;
-      font-family: "Microsoft JhengHei", sans-serif;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      background: linear-gradient(-45deg, #74ebd5, #9face6, #fbc2eb, #a6c1ee);
-      background-size: 400% 400%;
-      animation: bgMove 12s ease infinite;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    @keyframes bgMove {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+body {
+  margin: 0;
+  font-family: "Microsoft JhengHei", sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 
-    .bubble {
-      position: absolute;
-      bottom: -120px;
-      background: rgba(255,255,255,0.18);
-      border-radius: 50%;
-      animation: floatUp linear infinite;
-    }
+  /* 改為沉穩科技藍色系 */
+  background: linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#1c3b57);
+  background-size: 400% 400%;
+  animation: bgMove 14s ease infinite;
+}
 
-    .bubble:nth-child(1) {
-      width: 80px;
-      height: 80px;
-      left: 10%;
-      animation-duration: 14s;
-    }
+@keyframes bgMove {
+  0% { background-position:0% 50%; }
+  50% { background-position:100% 50%; }
+  100% { background-position:0% 50%; }
+}
 
-    .bubble:nth-child(2) {
-      width: 50px;
-      height: 50px;
-      left: 30%;
-      animation-duration: 11s;
-    }
+.bubble {
+  position: absolute;
+  bottom: -120px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+  animation: floatUp linear infinite;
+}
 
-    .bubble:nth-child(3) {
-      width: 100px;
-      height: 100px;
-      left: 65%;
-      animation-duration: 16s;
-    }
+.bubble:nth-child(1){ width:80px;height:80px;left:10%;animation-duration:18s;}
+.bubble:nth-child(2){ width:50px;height:50px;left:30%;animation-duration:14s;}
+.bubble:nth-child(3){ width:100px;height:100px;left:65%;animation-duration:22s;}
+.bubble:nth-child(4){ width:60px;height:60px;left:85%;animation-duration:16s;}
 
-    .bubble:nth-child(4) {
-      width: 60px;
-      height: 60px;
-      left: 85%;
-      animation-duration: 13s;
-    }
+@keyframes floatUp{
+  from{ transform:translateY(0); opacity:0.7;}
+  to{ transform:translateY(-120vh); opacity:0;}
+}
 
-    @keyframes floatUp {
-      from {
-        transform: translateY(0);
-        opacity: 0.8;
-      }
-      to {
-        transform: translateY(-120vh);
-        opacity: 0;
-      }
-    }
+.card{
+  position:relative;
+  z-index:2;
+  width:min(90%,700px);
 
-    .card {
-      position: relative;
-      z-index: 2;
-      width: min(90%, 700px);
-      background: rgba(255, 255, 255, 0.18);
-      backdrop-filter: blur(10px);
-      border-radius: 24px;
-      padding: 50px 30px;
-      text-align: center;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-      color: #222;
-    }
+  /* 改為深色玻璃卡片 */
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
 
-    h1 {
-      margin: 0 0 16px;
-      font-size: 2.2rem;
-      color: #ffffff;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    }
+  border-radius:24px;
+  padding:50px 30px;
+  text-align:center;
 
-    p {
-      margin: 0 0 30px;
-      font-size: 1.1rem;
-      color: #ffffff;
-      line-height: 1.8;
-    }
+  box-shadow:0 20px 40px rgba(0,0,0,0.35);
+  color:white;
+}
 
-    .main-btn {
-      display: inline-block;
-      padding: 18px 34px;
-      font-size: 1.15rem;
-      font-weight: bold;
-      color: #4a2f7a;
-      background: #ffffff;
-      border: none;
-      border-radius: 999px;
-      cursor: pointer;
-      text-decoration: none;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.18);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-    }
+h1{
+  margin:0 0 16px;
+  font-size:2.3rem;
+  letter-spacing:1px;
+}
 
-    .main-btn:hover {
-      transform: translateY(-4px) scale(1.04);
-      box-shadow: 0 14px 28px rgba(0,0,0,0.22);
-    }
+p{
+  margin:0 0 30px;
+  font-size:1.1rem;
+  opacity:0.9;
+  line-height:1.8;
+}
 
-    .main-btn:active {
-      transform: scale(0.97);
-    }
+.main-btn{
+  display:inline-block;
+  padding:18px 36px;
+  font-size:1.15rem;
+  font-weight:bold;
 
-    .note {
-      margin-top: 20px;
-      font-size: 0.95rem;
-      color: #f8f8f8;
-      opacity: 0.95;
-    }
+  /* 改為科技藍按鈕 */
+  background: linear-gradient(135deg,#00c6ff,#0072ff);
+  color:white;
 
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 1.8rem;
-      }
+  border:none;
+  border-radius:999px;
+  cursor:pointer;
+  text-decoration:none;
 
-      p {
-        font-size: 1rem;
-      }
+  box-shadow:0 10px 25px rgba(0,0,0,0.3);
+  transition:0.25s;
+}
 
-      .main-btn {
-        width: 100%;
-        max-width: 320px;
-      }
-    }
-  </style>
+.main-btn:hover{
+  transform:translateY(-4px) scale(1.05);
+  box-shadow:0 15px 35px rgba(0,0,0,0.45);
+}
+
+.main-btn:active{
+  transform:scale(0.96);
+}
+
+.note{
+  margin-top:24px;
+  font-size:0.95rem;
+  line-height:1.7;
+  opacity:0.85;
+}
+
+/* 手機 */
+@media (max-width:600px){
+  h1{ font-size:1.8rem; }
+  .main-btn{
+    width:100%;
+    max-width:320px;
+  }
+}
+
+</style>
 </head>
+
 <body>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
 
-  <div class="card">
-    <h1>Prompt Engineering</h1>
-    <p>AI 提示詞工具</p>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
 
-    <a class="main-btn" href="./ai_prompt.html">
-      行銷文宣生成器
-    </a>
+<div class="card">
 
-    <div class="note">
-      提示工程（Prompt Engineering）是透過設計、優化與精煉輸入給大型語言模型（LLM）的指令（Prompt），以引導 AI 生成高質量、精確且相關輸出的藝術與科學。它能減少模型幻覺、控制輸出風格、賦能復雜任務，是目前與 AI 溝通的核心技術。
-    </div>
-  </div>
+<h1>Prompt Engineering</h1>
+<p>AI 提示詞工具</p>
+
+<a class="main-btn" href="./ai_prompt.html">
+行銷文宣生成器
+</a>
+
+<div class="note">
+提示工程（Prompt Engineering）是透過設計、優化與精煉輸入給大型語言模型（LLM）的指令（Prompt），以引導 AI 生成高質量、精確且相關輸出的藝術與科學。它能減少模型幻覺、控制輸出風格、賦能複雜任務，是目前與 AI 溝通的核心技術。
+</div>
+
+</div>
+
 </body>
 </html>
