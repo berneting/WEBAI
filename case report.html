@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>研究摘要轉社媒推廣提示句生成器</title>
+  <title>研究摘要轉社媒推廣提示句生成器 升級版</title>
   <style>
     :root {
-      --bg-main: linear-gradient(135deg, #0f2238 0%, #16385d 45%, #24527a 100%);
+      --bg-main: linear-gradient(135deg, #0b1f34 0%, #163a5f 45%, #2f5f87 100%);
       --hero-bg: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08));
-      --card-bg: rgba(255,255,255,0.94);
-      --card-border: rgba(255,255,255,0.22);
-      --line: #d8e3f4;
-      --text: #1e2b38;
-      --sub: #5d6d81;
-      --primary: #2c6fb3;
-      --primary-dark: #1f568d;
-      --accent: #e8f1fb;
-      --accent-2: #f7fbff;
-      --success: #1e7b57;
-      --shadow: 0 18px 45px rgba(8, 25, 45, 0.16);
+      --card-bg: rgba(255,255,255,0.95);
+      --card-border: rgba(255,255,255,0.18);
+      --line: #d8e4f2;
+      --text: #1d2a36;
+      --sub: #5d6e81;
+      --primary: #2f70b7;
+      --primary-dark: #1e568d;
+      --soft-blue: #eef5fc;
+      --soft-gold: #fff8e8;
+      --soft-pink: #fff3f4;
+      --shadow: 0 18px 48px rgba(8, 24, 43, 0.16);
       --radius-xl: 24px;
       --radius-lg: 18px;
       --radius-md: 12px;
@@ -37,19 +37,19 @@
     }
 
     .page {
-      max-width: 1180px;
+      max-width: 1220px;
       margin: 0 auto;
-      padding: 34px 20px 50px;
+      padding: 34px 20px 52px;
     }
 
     .hero {
       background: var(--hero-bg);
       border: 1px solid var(--card-border);
       border-radius: 28px;
-      padding: 28px 30px;
+      padding: 30px 32px;
       color: #fff;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.12);
-      backdrop-filter: blur(6px);
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.14);
+      backdrop-filter: blur(8px);
       margin-bottom: 24px;
     }
 
@@ -63,9 +63,9 @@
 
     .hero p {
       margin: 0;
-      color: rgba(255,255,255,0.9);
+      color: rgba(255,255,255,0.92);
       font-size: 16px;
-      max-width: 920px;
+      max-width: 980px;
     }
 
     .panel {
@@ -149,11 +149,11 @@
     select:focus,
     input:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 4px rgba(44, 111, 179, 0.12);
+      box-shadow: 0 0 0 4px rgba(47, 112, 183, 0.12);
     }
 
     textarea {
-      min-height: 280px;
+      min-height: 300px;
       resize: vertical;
     }
 
@@ -163,10 +163,25 @@
       gap: 16px;
     }
 
-    .hint {
-      margin-top: 8px;
-      font-size: 13px;
-      color: var(--sub);
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .tip-box {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: var(--soft-blue);
+      border: 1px solid #d7e7f8;
+      color: #4b6176;
+      font-size: 14px;
+    }
+
+    .tip-box strong {
+      color: var(--primary-dark);
     }
 
     .actions {
@@ -189,7 +204,7 @@
     .btn-primary {
       background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       color: #fff;
-      box-shadow: 0 10px 22px rgba(44, 111, 179, 0.22);
+      box-shadow: 0 10px 22px rgba(47, 112, 183, 0.24);
     }
 
     .btn-primary:hover {
@@ -203,12 +218,12 @@
     }
 
     .btn-secondary:hover {
-      background: #e2edf9;
+      background: #e4eef9;
     }
 
     .output-wrap {
       display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
+      grid-template-columns: 1.2fr 0.8fr;
       gap: 18px;
     }
 
@@ -228,24 +243,18 @@
     }
 
     .output-box textarea {
-      min-height: 360px;
+      min-height: 420px;
       background: #fcfeff;
     }
 
     .preview-card {
       background: #fff;
-      border: 1px dashed #b9cce3;
+      border: 1px dashed #bdd0e5;
       border-radius: 16px;
       padding: 16px;
-      min-height: 360px;
+      min-height: 420px;
       white-space: pre-wrap;
-      color: #324252;
-    }
-
-    .small-note {
-      margin-top: 10px;
-      font-size: 13px;
-      color: var(--sub);
+      color: #344657;
     }
 
     .badge {
@@ -259,19 +268,36 @@
       margin-bottom: 10px;
     }
 
-    .footer-note {
-      margin-top: 18px;
+    .small-note {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--sub);
+    }
+
+    .soft-note {
+      margin-top: 16px;
       padding: 14px 16px;
       border-radius: 14px;
-      background: var(--accent-2);
-      border: 1px solid var(--line);
-      color: var(--sub);
+      background: var(--soft-gold);
+      border: 1px solid #f1deb0;
+      color: #6f5a2f;
+      font-size: 14px;
+    }
+
+    .pink-note {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: var(--soft-pink);
+      border: 1px solid #f3d7dd;
+      color: #7b5460;
       font-size: 14px;
     }
 
     @media (max-width: 980px) {
       .two-col,
       .grid-4,
+      .grid-2,
       .output-wrap {
         grid-template-columns: 1fr;
       }
@@ -286,7 +312,7 @@
 
       .output-box textarea,
       .preview-card {
-        min-height: 280px;
+        min-height: 320px;
       }
     }
   </style>
@@ -294,10 +320,10 @@
 <body>
   <div class="page">
     <section class="hero">
-      <h1>研究摘要轉社媒推廣提示句生成器</h1>
+      <h1>研究摘要轉社媒推廣提示句生成器 升級版</h1>
       <p>
-        將研究摘要與研究後討論分開輸入，讓生成內容更客觀、更有層次。
-        適合用於社群貼文、研究推廣、學術內容轉譯，以及需要兼顧可信度與可讀性的應用情境。
+        把研究摘要與研究後討論分開輸入，讓 AI 不只是「安全改寫」，而是能抓出真正值得被看見的核心觀點，
+        寫出更有主軸、更有溫度、也更能讓一般讀者讀下去的研究推廣文字。
       </p>
     </section>
 
@@ -305,30 +331,36 @@
       <section class="section">
         <h2 class="section-title">一、貼入研究內容</h2>
         <p class="section-desc">
-          建議將原始研究摘要放在左欄，右欄則可補充你對研究結果的討論、延伸觀點或實務意義。右欄可留白。
+          左欄放研究摘要，右欄可補充你的延伸討論、限制思考、實務意義或觀點。這樣能幫 AI 分清楚「資料」與「解讀」。
         </p>
 
         <div class="two-col">
           <div class="field-card">
             <h3>研究摘要（必填）</h3>
-            <p>請貼入論文摘要、研究重點或你希望轉寫的核心內容。</p>
+            <p>請貼入研究摘要、重點發現、研究背景或核心內容。</p>
             <label for="abstractInput">摘要內容</label>
             <textarea id="abstractInput" placeholder="例如：本研究探討某介入方式對特定族群的影響，結果顯示......"></textarea>
           </div>
 
           <div class="field-card">
             <h3>研究後討論（選填）</h3>
-            <p>可加入你的分析、觀點、臨床意義、社會延伸或研究限制，讓內容更客觀平衡。</p>
+            <p>可加入你的觀點、限制、應用情境、制度思考或研究後的延伸判讀。</p>
             <label for="discussionInput">討論內容</label>
-            <textarea id="discussionInput" placeholder="例如：這項研究雖然結果正向，但樣本數仍有限，實務應用時仍需注意......"></textarea>
+            <textarea id="discussionInput" placeholder="例如：雖然結果呈現正向方向，但樣本數仍有限，若放到臨床現場仍需考量......"></textarea>
           </div>
+        </div>
+
+        <div class="tip-box">
+          <strong>建議：</strong>
+          如果你希望結果不要太空泛，可以在右欄補一句「這項研究真正回應了什麼現實問題」，
+          AI 會更容易抓到主軸，不會只是平鋪直敘改寫摘要。
         </div>
       </section>
 
       <section class="section">
-        <h2 class="section-title">二、設定生成條件</h2>
+        <h2 class="section-title">二、設定寫作方向</h2>
         <p class="section-desc">
-          透過風格與用途設定，讓 AI 更容易理解你希望生成的是哪一類社媒推廣文字。
+          這一區不是單純選語氣，而是決定文章究竟要從哪個角度「用力」，讓內容不再平均、沒重點。
         </p>
 
         <div class="grid-4">
@@ -344,24 +376,24 @@
           </div>
 
           <div>
-            <label for="toneSelect">語氣風格</label>
-            <select id="toneSelect">
-              <option>專業理性</option>
-              <option>溫和清楚</option>
-              <option>雜誌評論感</option>
-              <option>學術轉譯感</option>
-              <option>簡潔推廣型</option>
+            <label for="focusSelect">文章重心</label>
+            <select id="focusSelect">
+              <option>問題意識型</option>
+              <option>人物感受型</option>
+              <option>趨勢評論型</option>
+              <option>研究轉譯型</option>
+              <option>實務應用型</option>
             </select>
           </div>
 
           <div>
-            <label for="goalSelect">推廣目標</label>
-            <select id="goalSelect">
-              <option>提升研究可讀性</option>
-              <option>吸引一般讀者理解</option>
-              <option>強調實務應用</option>
-              <option>建立專業可信度</option>
-              <option>促進轉發與討論</option>
+            <label for="styleSelect">風格模式</label>
+            <select id="styleSelect">
+              <option>大眾學術短評</option>
+              <option>溫暖共感敘述</option>
+              <option>雜誌評論風</option>
+              <option>專業推廣型</option>
+              <option>清楚有力型</option>
             </select>
           </div>
 
@@ -375,15 +407,38 @@
           </div>
         </div>
 
-        <div class="footer-note">
-          建議原則：若希望更「客觀」，可將右欄討論寫成研究限制、應用情境、實務思考，而不是直接下結論。
+        <div class="grid-2">
+          <div>
+            <label for="goalSelect">推廣目的</label>
+            <select id="goalSelect">
+              <option>吸引讀者停下來閱讀</option>
+              <option>讓研究變得更容易理解</option>
+              <option>凸顯研究的重要性</option>
+              <option>強調臨床或實務意義</option>
+              <option>提升專業可信度</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="emotionSelect">情感力度</label>
+            <select id="emotionSelect">
+              <option>克制理性</option>
+              <option>溫和有感</option>
+              <option>有溫度但不煽情</option>
+              <option>較有感染力</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="soft-note">
+          這版的核心不是叫 AI 「更會煽情」，而是讓它更知道：<strong>哪一句要先說、哪個問題最值得被看見、哪裡要有人的感覺。</strong>
         </div>
       </section>
 
       <section class="section">
         <h2 class="section-title">三、生成 AI 提示句</h2>
         <p class="section-desc">
-          這裡產出的內容不是最終貼文，而是可直接貼回 ChatGPT 或其他 AI 工具的高可讀提示句。
+          這裡會產出一段可直接貼給 ChatGPT、Gemini 或其他 AI 工具的完整提示句。重點是讓生成結果更有主軸，不再像生硬摘要改寫。
         </p>
 
         <div class="actions">
@@ -392,6 +447,12 @@
           <button class="btn-secondary" onclick="clearAllFields()">清空內容</button>
           <button class="btn-secondary" onclick="fillDemo()">帶入範例</button>
         </div>
+
+        <div class="pink-note">
+          若你希望內容更有力，可以在右欄多補一句：
+          「這項研究最值得被更多人看見的是……」
+          這會比單純貼摘要更容易讓 AI 寫出真正有重點的貼文。
+        </div>
       </section>
 
       <section class="section">
@@ -399,15 +460,15 @@
           <div class="output-box">
             <span class="badge">AI 提示句</span>
             <h3>可直接複製使用</h3>
-            <textarea id="outputPrompt" placeholder="點選上方「生成提示句」後，這裡會出現可直接貼給 AI 的完整提示句。"></textarea>
+            <textarea id="outputPrompt" placeholder="點選上方「生成提示句」後，這裡會出現新的完整提示句。"></textarea>
             <div class="small-note">
-              可將這段提示句貼回 ChatGPT、Gemini 或其他生成式工具，作為社群推廣文字的生成指令。
+              這段提示句的邏輯，已從「安全改寫」改為「抓核心觀點、建立張力、保留可信度、增加可讀性」。
             </div>
           </div>
 
           <div class="preview-box">
-            <span class="badge">內容預覽</span>
-            <h3>本次設定摘要</h3>
+            <span class="badge">本次設定摘要</span>
+            <h3>生成方向預覽</h3>
             <div class="preview-card" id="previewCard">尚未生成內容。</div>
           </div>
         </div>
@@ -416,12 +477,56 @@
   </div>
 
   <script>
+    function getLengthGuide(length) {
+      if (length === "短版") {
+        return "字數約 80–150 字，適合精簡貼文、短說明或社群開場文字。";
+      }
+      if (length === "中版") {
+        return "字數約 150–260 字，適合一般社群平台的研究推廣內容。";
+      }
+      return "字數約 260–420 字，適合較完整、有觀點層次的社群研究貼文。";
+    }
+
+    function getFocusGuide(focus) {
+      const map = {
+        "問題意識型": "請聚焦這項研究正在回應的現實問題、社會困境或常被忽略的處境，讓讀者感受到『這件事為什麼重要』。",
+        "人物感受型": "請從人的感受、生活經驗、照護現場或真實處境切入，讓研究內容與人的經驗連結起來，但不可流於煽情。",
+        "趨勢評論型": "請把研究放到更大的時代脈絡、社會變化、產業或教育趨勢中理解，讓文字有觀點與時代感。",
+        "研究轉譯型": "請把抽象研究內容轉成一般讀者也能理解的語言，強調研究真正帶來的新理解與可閱讀性。",
+        "實務應用型": "請強調此研究對臨床、照護、教育、管理或實際應用的啟發，不只是結果，而是『能怎麼用』。"
+      };
+      return map[focus] || "";
+    }
+
+    function getStyleGuide(style) {
+      const map = {
+        "大眾學術短評": "風格請像一篇高品質的大眾學術短評，觀點清楚、概念準確、層次分明，讓非專業讀者也讀得懂，但不要像教科書。",
+        "溫暖共感敘述": "風格請保留研究可信度，同時讓讀者感受到這個議題與人的處境有關，文字可溫柔，但不可煽情、空泛或失去重點。",
+        "雜誌評論風": "風格請像雜誌短評或公共評論，開頭要有吸引力，中段有觀點，結尾能帶出更大的社會意義。",
+        "專業推廣型": "風格請專業、清楚、有說服力，讓內容既能代表研究品質，也能被一般讀者理解與轉發。",
+        "清楚有力型": "風格請簡潔俐落、有重點，避免拖沓與平均鋪陳，保留一到兩句有記憶點的句子。"
+      };
+      return map[style] || "";
+    }
+
+    function getEmotionGuide(emotion) {
+      const map = {
+        "克制理性": "整體情感表達請克制、穩定、理性，不過度渲染，但仍需避免冷硬與毫無人味。",
+        "溫和有感": "整體語氣請溫和、清楚、有感受，但不要太平，不要只是客觀改寫摘要。",
+        "有溫度但不煽情": "整體語氣請有溫度與人感，但避免濫情、勵志口號、說教或廣告感。",
+        "較有感染力": "可讓開頭與關鍵句更有感染力，但仍必須建立在研究內容與現實意義之上，不可誇大。"
+      };
+      return map[emotion] || "";
+    }
+
     function generatePrompt() {
       const abstractText = document.getElementById("abstractInput").value.trim();
       const discussionText = document.getElementById("discussionInput").value.trim();
       const platform = document.getElementById("platformSelect").value;
-      const tone = document.getElementById("toneSelect").value;
+      const focus = document.getElementById("focusSelect").value;
+      const style = document.getElementById("styleSelect").value;
       const goal = document.getElementById("goalSelect").value;
+      const emotion = document.getElementById("emotionSelect").value;
       const length = document.getElementById("lengthSelect").value;
       const output = document.getElementById("outputPrompt");
       const preview = document.getElementById("previewCard");
@@ -431,52 +536,72 @@
         return;
       }
 
-      let lengthGuide = "";
-      if (length === "短版") {
-        lengthGuide = "字數約 80–150 字，適合精簡社群貼文。";
-      } else if (length === "中版") {
-        lengthGuide = "字數約 150–250 字，適合一般社群平台推廣。";
-      } else {
-        lengthGuide = "字數約 250–400 字，適合較完整的研究推廣貼文。";
-      }
+      const lengthGuide = getLengthGuide(length);
+      const focusGuide = getFocusGuide(focus);
+      const styleGuide = getStyleGuide(style);
+      const emotionGuide = getEmotionGuide(emotion);
 
-      let discussionPart = discussionText
+      const discussionBlock = discussionText
         ? `【研究後討論／延伸觀點】\n${discussionText}\n\n`
-        : `【研究後討論／延伸觀點】\n本次未提供額外討論內容，請以摘要為主，避免過度延伸或主觀推論。\n\n`;
+        : `【研究後討論／延伸觀點】\n本次未提供額外討論內容，請以研究摘要為主，不要自行過度延伸或虛構未被支持的意義。\n\n`;
 
-      const prompt = `請根據以下內容，生成一則適合用於 ${platform} 的社群媒體推廣文字。
+      const prompt = `請根據以下內容，生成一則適合用於 ${platform} 的社群媒體研究推廣文字。
 
 【研究摘要】
 ${abstractText}
 
-${discussionPart}【生成要求】
-1. 內容需兼顧研究客觀性與一般讀者可讀性。
-2. 優先根據「研究摘要」進行整理，不可誇大研究結果。
-3. 若有提供「研究後討論」，可適度納入實務意義、社會價值或延伸思考，但語氣仍須克制。
-4. 寫作風格請採用「${tone}」。
-5. 本則內容的主要目的為「${goal}」。
-6. ${lengthGuide}
-7. 請避免使用過度聳動、斷言式、誇張式行銷語句。
-8. 若研究仍有侷限，請用自然方式保留適度保守語氣。
-9. 可加入一個簡潔有力的開頭句，但不要太像廣告文案。
-10. 請直接輸出最終社群貼文，不要再解釋寫作步驟。
+${discussionBlock}【整體寫作任務】
+請不要把內容寫成冷硬的摘要改寫，也不要平均鋪陳所有資訊。請先找出本研究最值得被看見的一個核心觀點，作為全文主軸，讓讀者在短時間內知道：這項研究到底回應了什麼現實問題、帶來什麼新的理解、為什麼值得被更多人看見。
 
-請輸出繁體中文內容。`;
+【寫作要求】
+1. 開頭不要直接重述研究摘要，請從一個具體現象、生活場景、照護處境、社會問題，或引人思考的提問切入，讓讀者願意停下來閱讀。
+2. 不要平均分配篇幅給每個資訊點，請有意識地凸顯最重要的一個觀點或轉折。
+3. 內容需兼顧研究可信度與一般讀者可讀性，不可誇大結果，也不要寫得像僵硬的學術摘要。
+4. 若有提供研究後討論，請適度納入其延伸出的實務意義、社會價值、應用場景或限制思考，但語氣仍需克制。
+5. 學術感應來自觀點清楚、邏輯完整與概念準確，而不是堆疊術語、統計口吻或制式句型。
+6. 可保留一到兩句較有力量、較有記憶點的句子，但必須建立在研究內容之上，不可浮誇。
+7. 句型請有節奏與層次，避免每句都像摘要改寫或說明書。
+8. 若研究有侷限，可自然保留適度保守語氣，但不要讓全文失去焦點。
+9. 請直接輸出最終社群貼文，不要解釋步驟、不要列點說明、不要再分析你怎麼寫。
+
+【本次設定方向】
+文章重心：${focus}
+${focusGuide}
+
+風格模式：${style}
+${styleGuide}
+
+推廣目的：${goal}
+請讓整體內容朝這個目的聚焦，不要只是平鋪直敘地重寫。
+
+情感力度：${emotion}
+${emotionGuide}
+
+輸出長度：${length}
+${lengthGuide}
+
+請輸出繁體中文。`;
 
       output.value = prompt;
 
       preview.textContent =
 `平台類型：${platform}
-語氣風格：${tone}
-推廣目標：${goal}
+文章重心：${focus}
+風格模式：${style}
+推廣目的：${goal}
+情感力度：${emotion}
 輸出長度：${length}
 
 摘要狀態：已填寫
 研究後討論：${discussionText ? "已填寫" : "未填寫"}
 
-這份提示句會優先根據研究摘要生成內容，
-若有討論欄內容，則會補入較平衡的分析角度，
-整體風格會比單欄輸入更客觀。`;
+這次的生成邏輯會優先要求 AI：
+1. 先抓一個最值得被看見的主軸
+2. 開頭從問題、場景或處境切入
+3. 不再平均鋪陳所有資訊
+4. 保留研究可信度，但增加人的感覺與記憶點
+
+這樣生成出來的內容，通常會比單純的客觀改寫更有重點，也更像真正可讀的社媒研究文字。`;
     }
 
     function copyPrompt() {
@@ -485,8 +610,10 @@ ${discussionPart}【生成要求】
         alert("目前沒有可複製的提示句。");
         return;
       }
+
       output.select();
       output.setSelectionRange(0, 99999);
+
       navigator.clipboard.writeText(output.value)
         .then(() => alert("提示句已複製。"))
         .catch(() => alert("複製失敗，請手動複製。"));
@@ -501,10 +628,10 @@ ${discussionPart}【生成要求】
 
     function fillDemo() {
       document.getElementById("abstractInput").value =
-`本研究探討音樂介入對高齡者情緒與社交參與的影響。研究結果顯示，規律性的音樂活動可能有助於提升參與意願、改善情緒表現，並增加團體互動。`;
+`本研究探討音樂介入對高齡者情緒與社交參與的影響。結果顯示，規律性的音樂活動可能有助於提升參與意願、改善情緒表現，並增加團體互動。然而，不同介入形式、活動頻率與研究場域仍可能影響整體效果。`;
 
       document.getElementById("discussionInput").value =
-`雖然結果呈現正向方向，但仍應注意樣本數、介入形式差異與場域條件可能影響實際效果。若應用於社區或高齡照護場域，重點可能不只是療效大小，也包括可接受性與參與持續性。`;
+`這項研究真正值得被看見的，不只是音樂可能帶來正向結果，而是它提醒我們，高齡照護不應只剩下功能管理。若能把熟悉、參與感與人際互動重新放回照護設計中，研究的價值就不只是證明有效，而是讓照護重新更像在面對一個人。`;
     }
   </script>
 </body>
