@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -209,12 +210,6 @@
       margin-top: 7px;
     }
 
-    .mini-hint {
-      color: #aab9d4;
-      font-size: 12px;
-      margin-top: 5px;
-    }
-
     select, textarea, input[type="text"] {
       width: 100%;
       border: 1px solid rgba(255,255,255,0.14);
@@ -252,6 +247,11 @@
     textarea {
       min-height: 190px;
       resize: vertical;
+    }
+
+    .summary-area {
+      min-height: 220px;
+      background: rgba(255,255,255,0.07);
     }
 
     .small-area {
@@ -377,6 +377,40 @@
       border-radius: 999px;
     }
 
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .section-title .num {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      color: #eef4ff;
+      background: linear-gradient(135deg, rgba(91,124,255,0.95), rgba(127,86,217,0.9));
+      box-shadow: 0 8px 18px rgba(91,124,255,0.22);
+      flex-shrink: 0;
+    }
+
+    .section-title .txt {
+      font-size: 15px;
+      font-weight: 800;
+      color: #eef4ff;
+    }
+
+    .section-note {
+      margin-top: 6px;
+      color: #9fb3d4;
+      font-size: 12px;
+    }
+
     @media (max-width: 1024px) {
       .grid { grid-template-columns: 1fr; }
     }
@@ -418,61 +452,85 @@
     <section class="grid">
       <div class="card">
         <h2>輸入區</h2>
-        <div class="subhead">先選結構與語氣，再貼上摘要內容，最後一鍵生成。</div>
+        <div class="subhead">先貼上摘要，再依序選擇結構與語氣。</div>
 
         <div class="row">
+          <div class="section-title">
+            <span class="num">1</span>
+            <span class="txt">請貼上文章摘要或研究摘要</span>
+          </div>
+          <label for="summary">素材內容</label>
+          <textarea id="summary" class="summary-area" placeholder="請先在此貼上摘要內容"></textarea>
+          <div class="hint">可貼研究摘要、新聞導言、論文摘要、報導摘要、政策摘要、課堂文章摘要等。</div>
+        </div>
+
+        <div class="row">
+          <div class="section-title">
+            <span class="num">2</span>
+            <span class="txt">選擇文章結構</span>
+          </div>
           <label for="structure">文章結構</label>
           <select id="structure"></select>
           <div class="structure-box" id="structurePreview"></div>
         </div>
 
-        <div class="row three-col">
-          <div>
-            <label for="tone">文章語氣 / 媒體風格</label>
-            <select id="tone">
-              <option value="天下風：清楚、帶時代感、重視社會與教育意義" selected>《天下》風</option>
-              <option value="商業週刊風：俐落、聚焦趨勢與競爭力、帶商業洞察">商業週刊風</option>
-              <option value="學術評論風：理性、深度較高、概念清楚但仍可讀">學術評論風</option>
-              <option value="公共書寫風：平衡、易讀、適合大眾媒體刊載">公共書寫風</option>
-              <option value="社論專欄風：有觀點、結構完整、帶議題推進感">社論專欄風</option>
-              <option value="教育現場風：貼近教學與校園情境、適合教師閱讀">教育現場風</option>
-              <option value="趨勢解析風：著重變化脈絡、制度與未來方向">趨勢解析風</option>
-            </select>
-          </div>
-          <div>
-            <label for="mode">寫作模式</label>
-            <select id="mode">
-              <option value="independent" selected>獨立社論模式</option>
-              <option value="summary">摘要轉寫模式</option>
-            </select>
-          </div>
-          <div>
-            <label for="length">字數設定</label>
-            <select id="length">
-              <option value="約600–800字">約600–800字</option>
-              <option value="約800–1200字" selected>約800–1200字</option>
-              <option value="約1200–1600字">約1200–1600字</option>
-              <option value="約1600–2200字">約1600–2200字</option>
-            </select>
-          </div>
-        </div>
-
         <div class="row">
+          <div class="section-title">
+            <span class="num">3</span>
+            <span class="txt">設定語氣與寫作模式</span>
+          </div>
+          <div class="three-col">
+            <div>
+              <label for="tone">文章語氣 / 媒體風格</label>
+              <select id="tone">
+                <option value="天下風：清楚、帶時代感、重視社會與教育意義" selected>《天下》風</option>
+                <option value="商業週刊風：俐落、聚焦趨勢與競爭力、帶商業洞察">商業週刊風</option>
+                <option value="學術評論風：理性、深度較高、概念清楚但仍可讀">學術評論風</option>
+                <option value="公共書寫風：平衡、易讀、適合大眾媒體刊載">公共書寫風</option>
+                <option value="社論專欄風：有觀點、結構完整、帶議題推進感">社論專欄風</option>
+                <option value="教育現場風：貼近教學與校園情境、適合教師閱讀">教育現場風</option>
+                <option value="趨勢解析風：著重變化脈絡、制度與未來方向">趨勢解析風</option>
+              </select>
+            </div>
+            <div>
+              <label for="mode">寫作模式</label>
+              <select id="mode">
+                <option value="independent" selected>獨立社論模式</option>
+                <option value="summary">摘要轉寫模式</option>
+              </select>
+            </div>
+            <div>
+              <label for="length">字數設定</label>
+              <select id="length">
+                <option value="約600–800字">約600–800字</option>
+                <option value="約800–1200字" selected>約800–1200字</option>
+                <option value="約1200–1600字">約1200–1600字</option>
+                <option value="約1600–2200字">約1600–2200字</option>
+              </select>
+            </div>
+          </div>
           <div class="mode-box" id="modePreview"></div>
         </div>
 
-        <div class="row two-col">
-          <div>
-            <label for="reader">目標讀者</label>
-            <input id="reader" type="text" value="一般大眾與具有基本閱讀能力的非專業讀者" />
+        <div class="row">
+          <div class="section-title">
+            <span class="num">4</span>
+            <span class="txt">補充細節設定</span>
           </div>
-          <div>
-            <label for="titleMode">標題呈現方式</label>
-            <select id="titleMode">
-              <option value="可自行擬定一個具吸引力、但不誇張的評論標題" selected>AI 自行擬標題</option>
-              <option value="不必加標題，直接輸出正文">不加標題</option>
-              <option value="擬定一個偏雜誌封面式、凝練有力的標題">封面式標題</option>
-            </select>
+
+          <div class="two-col">
+            <div>
+              <label for="reader">目標讀者</label>
+              <input id="reader" type="text" value="一般大眾與具有基本閱讀能力的非專業讀者" />
+            </div>
+            <div>
+              <label for="titleMode">標題呈現方式</label>
+              <select id="titleMode">
+                <option value="可自行擬定一個具吸引力、但不誇張的評論標題" selected>AI 自行擬標題</option>
+                <option value="不必加標題，直接輸出正文">不加標題</option>
+                <option value="擬定一個偏雜誌封面式、凝練有力的標題">封面式標題</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -490,16 +548,11 @@
         <div class="row">
           <label for="extra">額外要求（可空白）</label>
           <textarea id="extra" class="small-area" placeholder="例如：不要太口語、保留批判性、適合報告引用、結尾不要說教、避免誇大研究意義"></textarea>
-        </div>
-
-        <div class="row">
-          <label for="summary">貼上文章摘要或研究摘要</label>
-          <textarea id="summary" placeholder="請在此貼上摘要內容"></textarea>
-          <div class="hint">可貼研究摘要、新聞導言、論文摘要、報導摘要、政策摘要、課堂文章摘要等。</div>
+          <div class="section-note">這一欄可補充你自己的細部偏好。</div>
         </div>
 
         <div class="pill-list">
-          <div class="pill">更像社論</div>
+          <div class="pill">先貼摘要更順手</div>
           <div class="pill">避免「只看摘要」語氣</div>
           <div class="pill">支援多種文章骨架</div>
           <div class="pill">可直接複製回貼 AI</div>
@@ -529,7 +582,7 @@
         <div class="divider"></div>
 
         <div class="footer-note">
-          建議流程：貼上摘要 → 選結構 → 選語氣 → 確認是否禁止摘要口吻 → 生成提示句 → 貼回 AI。<br>
+          建議流程：先貼摘要 → 選結構 → 選語氣 → 確認是否禁止摘要口吻 → 生成提示句 → 貼回 AI。<br>
           若你想讓生成文章更像真正的媒體專欄，建議保留「獨立社論模式」與「避免摘要口吻」為預設。
         </div>
       </div>
@@ -759,7 +812,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "摘要轉AI提示句生成器_pro.txt";
+      a.download = "摘要轉AI提示句生成器_pro_順手版.txt";
       a.click();
       URL.revokeObjectURL(url);
     }
