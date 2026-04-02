@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>創作動機轉名家風格文章提示詞生成器</title>
+  <style>
+    :root {
+      --bg-main: radial-gradient(circle at top left, #163153 0%, #0b1726 45%, #07111d 100%);
+      --hero-bg: linear-gradient(135deg, rgba(20, 40, 70, 0.78), rgba(9, 18, 33, 0.9));
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-bg-strong: rgba(255, 255, 255, 0.12);
+      --card-border: rgba(255, 255, 255, 0.14);
+      --line: rgba(255, 255, 255, 0.14);
+      --text-main: #eef4ff;
+      --text-soft: #c9d7ee;
+      --text-muted: #9fb3d1;
+      --accent: #8ec5ff;
+      --accent-2: #caa6ff;
+      --accent-3: #7ee0c6;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+      background: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.75;
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 40px;
+    }
+
+    .hero {
+      background: var(--hero-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      padding: 30px 28px 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: clamp(30px, 4vw, 42px);
+      line-height: 1.2;
+      letter-spacing: 0.5px;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 16px;
+      max-width: 920px;
+    }
+
+    .hero .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .badge {
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 22px;
+    }
+
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 20px 22px 8px;
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.3;
+    }
+
+    .panel-header p {
+      margin: 8px 0 0;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .panel-body {
+      padding: 18px 22px 24px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-soft);
+    }
+
+    .field small {
+      display: block;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-size: 12px;
+    }
+
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+      color: var(--text-main);
+      border-radius: 14px;
+      padding: 14px 15px;
+      font-size: 15px;
+      outline: none;
+      transition: 0.2s ease;
+    }
+
+    input[type="text"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(142, 197, 255, 0.7);
+      box-shadow: 0 0 0 3px rgba(142, 197, 255, 0.14);
+      background: rgba(255,255,255,0.1);
+    }
+
+    textarea {
+      min-height: 132px;
+      resize: vertical;
+    }
+
+    select option {
+      color: #111;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--line);
+      margin: 18px 0 20px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      border-radius: 14px;
+      padding: 12px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      transition: transform 0.15s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #08111c;
+      box-shadow: 0 10px 24px rgba(142, 197, 255, 0.2);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: var(--text-main);
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-soft);
+      border: 1px dashed rgba(255,255,255,0.18);
+    }
+
+    .style-card {
+      background: var(--card-bg-strong);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 16px 16px 14px;
+      margin-bottom: 18px;
+    }
+
+    .style-card h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .style-card .sub {
+      color: var(--accent);
+      font-size: 13px;
+      margin-bottom: 8px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+    }
+
+    .style-card p {
+      margin: 0 0 8px;
+      color: var(--text-soft);
+      font-size: 14px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      font-size: 12px;
+      color: #d8e7ff;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+
+    .output-wrap {
+      display: grid;
+      gap: 16px;
+    }
+
+    .output-box {
+      background: rgba(5, 12, 24, 0.35);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .output-box h3 {
+      margin: 0 0 10px;
+      font-size: 17px;
+      color: var(--accent);
+    }
+
+    .output-box textarea {
+      min-height: 240px;
+      background: rgba(255,255,255,0.04);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.8;
+    }
+
+    .tip-box {
+      border-radius: 18px;
+      border: 1px solid rgba(126, 224, 198, 0.18);
+      background: rgba(126, 224, 198, 0.08);
+      padding: 14px 16px;
+      color: #dcfff5;
+      font-size: 14px;
+      margin-top: 18px;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      color: var(--text-muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>創作動機轉名家風格文章提示詞生成器</h1>
+      <p>
+        將你的創作動機、事件描述、人物或情緒線索貼入輸入區，再選擇一位作家的寫作風格，
+        系統會自動整理成可直接貼回 ChatGPT 或其他 AI 工具的完整提示詞，協助你用不同文學筆法生成文章。
+      </p>
+      <div class="badge-row">
+        <span class="badge">適用：散文、小說片段、回憶書寫、文學練習</span>
+        <span class="badge">支援：中文作家＋世界名著作家風格</span>
+        <span class="badge">輸出：完整 AI 提示句</span>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="panel">
+        <div class="panel-header">
+          <h2>輸入創作素材</h2>
+          <p>先提供你的創作核心，再選擇想套用的筆法與文章條件。</p>
+        </div>
+        <div class="panel-body">
+          <div class="field">
+            <label for="motivation">創作動機</label>
+            <textarea id="motivation" placeholder="例如：我想寫一篇關於失去之後仍想保留某種溫度的文章。不是要直接寫悲傷，而是想寫那種表面平靜、內裡還在隱隱作痛的感覺。"></textarea>
+            <small>可寫下你為什麼想寫這篇文章、想處理什麼情緒、記憶、關係或問題。</small>
+          </div>
+
+          <div class="field">
+            <label for="eventDesc">事件描述</label>
+            <textarea id="eventDesc" placeholder="例如：某年冬天，我在整理舊物時，翻到一件多年未穿的大衣，口袋裡還放著一張已經模糊的車票。那是我和某人最後一次一起出遠門時留下的。"></textarea>
+            <small>可描述具體事件、場景、人物關係、衝突、轉折、細節線索等。</small>
+          </div>
+
+          <div class="grid">
+            <div class="field">
+              <label for="authorStyle">選擇名家風格</label>
+              <select id="authorStyle"></select>
+            </div>
+
+            <div class="field">
+              <label for="genre">文章類型</label>
+              <select id="genre">
+                <option value="散文">散文</option>
+                <option value="短篇小說片段">短篇小說片段</option>
+                <option value="敘事散文">敘事散文</option>
+                <option value="抒情散文">抒情散文</option>
+                <option value="回憶書寫">回憶書寫</option>
+                <option value="評論式文學書寫">評論式文學書寫</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="tone">文章語氣</label>
+              <select id="tone">
+                <option value="沉靜內斂">沉靜內斂</option>
+                <option value="細膩哀傷">細膩哀傷</option>
+                <option value="冷靜克制">冷靜克制</option>
+                <option value="溫柔含蓄">溫柔含蓄</option>
+                <option value="諷刺批判">諷刺批判</option>
+                <option value="詩性流動">詩性流動</option>
+                <option value="懸疑壓迫">懸疑壓迫</option>
+                <option value="明亮溫暖">明亮溫暖</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="length">文章長度</label>
+              <select id="length">
+                <option value="約 500 字">約 500 字</option>
+                <option value="約 800 字">約 800 字</option>
+                <option value="約 1200 字">約 1200 字</option>
+                <option value="約 1500 字">約 1500 字</option>
+                <option value="約 2000 字">約 2000 字</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="perspective">敘事視角</label>
+              <select id="perspective">
+                <option value="第一人稱">第一人稱</option>
+                <option value="第三人稱有限視角">第三人稱有限視角</option>
+                <option value="第三人稱全知視角">第三人稱全知視角</option>
+                <option value="自由切換但保持自然">自由切換但保持自然</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="tension">句子張力</label>
+              <select id="tension">
+                <option value="低，偏平穩敘述">低，偏平穩敘述</option>
+                <option value="中，偶有起伏">中，偶有起伏</option>
+                <option value="高，層層推進">高，層層推進</option>
+                <option value="高，帶壓抑與爆發感">高，帶壓抑與爆發感</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="extraReq">額外要求（可選）</label>
+            <textarea id="extraReq" placeholder="例如：不要寫得太像網路抒情文。希望有文學感，但不要過度華麗。結尾要留白，不要直接下結論。"></textarea>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="button-row">
+            <button class="btn-primary" onclick="generatePrompt()">生成提示句</button>
+            <button class="btn-secondary" onclick="copyPrompt()">複製提示句</button>
+            <button class="btn-secondary" onclick="copyArticlePrompt()">複製文章生成指令</button>
+            <button class="btn-ghost" onclick="clearAllFields()">清空內容</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>風格摘要與輸出結果</h2>
+          <p>會依照你所選的名家風格，自動整理出一段更容易被 AI 理解的完整指令。</p>
+        </div>
+        <div class="panel-body">
+          <div class="style-card" id="styleCard">
+            <h3>請先選擇名家風格</h3>
+            <div class="sub">STYLE PROFILE</div>
+            <p>選擇後，這裡會顯示該作家的核心手法、敘事邏輯與語感方向。</p>
+            <div class="chips">
+              <span class="chip">風格特徵</span>
+              <span class="chip">敘事結構</span>
+              <span class="chip">句型節奏</span>
+              <span class="chip">適合主題</span>
+            </div>
+          </div>
+
+          <div class="output-wrap">
+            <div class="output-box">
+              <h3>AI 提示句</h3>
+              <textarea id="promptOutput" placeholder="按下「生成提示句」後，這裡會出現可直接貼回 AI 工具的完整提示句。"></textarea>
+            </div>
+
+            <div class="output-box">
+              <h3>可直接生成文章的完整指令</h3>
+              <textarea id="articleOutput" placeholder="這裡會產出偏向直接要求 AI 寫成成品文章的版本。"></textarea>
+            </div>
+          </div>
+
+          <div class="tip-box">
+            使用建議：若你希望 AI 生成結果更貼近文學寫作，可在外部 AI 工具中再追加一句：
+            「請避免口號式抒情、過度說理與網路感句型，讓文字保有節制、層次與內在張力。」
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer-note">
+      建議檔名：writing_05.html
+    </div>
+  </div>
+
+  <script>
+    const styleData = {
+      "海明威｜冰山理論": {
+        category: "世界文學",
+        subtitle: "少寫情緒，多寫動作與事實，讓深層情感藏在水面下",
+        features: ["簡潔節制", "對話與動作推進", "不直接解釋情緒", "留白強"],
+        structure: "具體場景 → 行動與對話 → 隱藏情感 → 留白收束",
+        rhythm: "短句偏多，節奏乾淨，避免過度修飾",
+        suitable: "壓抑情緒、失落、關係裂痕、戰後感、孤獨",
+        instruction: "請以海明威式冰山理論書寫，外顯文字保持節制，只呈現具體動作、場景、對話與事實，不直接解釋情緒或背景，讓真正的情感與張力隱含在字句之下。"
+      },
+      "張愛玲｜情緒微觀書寫": {
+        category: "華文文學",
+        subtitle: "以細節、物件與心理層次展開情感的幽微變化",
+        features: ["細節密度高", "心理描寫細膩", "物件帶象徵", "情感含蓄複雜"],
+        structure: "場景鋪陳 → 人物微表情 → 情緒流動 → 物件映照 → 餘韻收尾",
+        rhythm: "句子細密流動，冷暖交錯，帶華麗但不浮誇的質感",
+        suitable: "愛情、距離、時代感、女性心理、微妙人際",
+        instruction: "請以張愛玲式的細膩筆法書寫，重視人物心理的微妙波動、場景質地與物件的情緒映照，讓文字帶有冷靜、婉轉與隱隱的感傷。"
+      },
+      "魯迅｜冷刀式批判": {
+        category: "華文文學",
+        subtitle: "從日常切入，最後刺向人性或社會結構",
+        features: ["冷靜敘述", "反諷明顯", "短句有力", "批判性強"],
+        structure: "日常場景 → 人物行為 → 荒謬累積 → 冷峻點破",
+        rhythm: "語句凝練，收尾常帶反諷或刺點",
+        suitable: "社會觀察、群體心理、人性盲點、制度荒謬",
+        instruction: "請以魯迅式的冷峻與反諷書寫，從具體小事件切入，逐步顯露更深層的人性或社會荒謬，語言不誇張，但要有刺穿力。"
+      },
+      "三毛｜生活即故事": {
+        category: "華文文學",
+        subtitle: "用真實感與親近語氣，把生活寫成可感的故事",
+        features: ["真實自然", "情感直接但不造作", "有生活溫度", "結尾常帶哲思"],
+        structure: "生活片段 → 見聞與感受 → 人情流動 → 自然哲思",
+        rhythm: "語言親切流暢，有溫度，適度保留感性",
+        suitable: "旅行、記憶、生活感悟、人物相遇、自我整理",
+        instruction: "請以三毛式的自然與真摯書寫，讓事件像生活本身慢慢展開，保留人情味與流動感，不刻意堆砌哲理，而是在敘述中自然浮現。"
+      },
+      "余光中｜意象堆疊": {
+        category: "華文文學",
+        subtitle: "以意象、節奏與語感構成詩性密度",
+        features: ["意象豐富", "節奏鮮明", "畫面感強", "語言有音樂性"],
+        structure: "意象鋪陳 → 情緒累進 → 主題凝聚 → 詩性收束",
+        rhythm: "句型帶音律感，適合有波動與層層推進的語氣",
+        suitable: "鄉愁、城市、時間、季節、記憶與文化感",
+        instruction: "請以余光中式的詩性散文筆法書寫，透過連續意象、節奏與修辭，讓畫面與情感彼此牽引，形成富有韻律的文學感。"
+      },
+      "老舍｜生活切片": {
+        category: "華文文學",
+        subtitle: "以平實語言與人物互動，帶出社會氣味與人情層次",
+        features: ["語言平實", "人物群像", "對話自然", "生活感濃"],
+        structure: "生活場景 → 人物出場 → 對話互動 → 社會縮影",
+        rhythm: "順暢穩定，帶口語真實感，敘事不矯飾",
+        suitable: "庶民生活、城市觀察、人情百態、群像故事",
+        instruction: "請以老舍式的生活場景書寫，重視人物互動與現場感，用平實而有味道的語言呈現社會與人情的層次。"
+      },
+      "托爾斯泰｜全景式敘事": {
+        category: "世界文學",
+        subtitle: "讓個人命運、家庭關係與大時代背景相互交錯",
+        features: ["格局大", "人物多層次", "兼具個人與時代", "敘事縱深強"],
+        structure: "人物命運 → 家庭關係 → 社會背景 → 歷史回響 → 回到人物",
+        rhythm: "敘事穩健厚實，適合中長篇幅",
+        suitable: "家族、戰爭、倫理、社會變遷、人生選擇",
+        instruction: "請以托爾斯泰式的全景敘事書寫，使個人經驗不只停留在私密情感，而能與家庭、社會、時代背景形成互文與對照。"
+      },
+      "陀思妥耶夫斯基｜心理衝突": {
+        category: "世界文學",
+        subtitle: "從內在矛盾與道德辯證中推進情節",
+        features: ["心理張力強", "道德矛盾", "自我辯論", "壓迫感濃"],
+        structure: "內在矛盾 → 自我辯論 → 外在刺激 → 心理爆發",
+        rhythm: "密度較高，帶壓力與逼迫感，適合深層心理書寫",
+        suitable: "罪惡感、信念衝突、精神壓力、存在焦慮",
+        instruction: "請以陀思妥耶夫斯基式的心理衝突筆法書寫，讓人物在道德、思想與情感的拉扯中逐步逼近內心核心。"
+      },
+      "簡・奧斯汀｜社交場景推進": {
+        category: "世界文學",
+        subtitle: "透過社交互動、誤解與觀點轉折推進關係",
+        features: ["對話重要", "人際張力", "細膩觀察", "關係變化鮮明"],
+        structure: "社交場景 → 對話 → 誤解 → 觀點修正 → 關係轉折",
+        rhythm: "語氣從容，帶優雅與細微機智",
+        suitable: "人際關係、禮貌與誤解、情感張力、社會互動",
+        instruction: "請以簡・奧斯汀式的敘事方式書寫，重視人物在社交場合中的互動、誤解與觀念轉變，使關係在對話與觀察中自然推進。"
+      },
+      "卡夫卡｜荒謬現實": {
+        category: "世界文學",
+        subtitle: "讓不合理事件進入日常，形成異樣而深沉的壓力",
+        features: ["荒謬感", "日常化異常", "壓迫感", "象徵性強"],
+        structure: "異常事件 → 平靜接受 → 日常反應 → 荒謬深化",
+        rhythm: "冷感平直，但氛圍持續下沉",
+        suitable: "異化、壓迫、孤立、制度性恐懼、存在困境",
+        instruction: "請以卡夫卡式的荒謬現實筆法書寫，讓不合理事件被日常化處理，在冷靜敘述中逐步擴大異樣感與壓迫感。"
+      },
+      "馬奎斯｜魔幻現實": {
+        category: "世界文學",
+        subtitle: "現實與超現實共存，魔幻事件被自然接受",
+        features: ["魔幻元素", "現實底色", "象徵濃厚", "時代與家族感"],
+        structure: "日常世界 → 魔幻事件 → 平靜接受 → 象徵擴展",
+        rhythm: "敘事綿密而流動，現實與幻象不刻意切開",
+        suitable: "家族、記憶、命運、傳說感、歷史與情感交纏",
+        instruction: "請以馬奎斯式的魔幻現實主義書寫，讓不尋常事件自然地存在於現實場景中，不刻意解釋，使象徵與情感共同生長。"
+      },
+      "普魯斯特｜感官與回憶": {
+        category: "世界文學",
+        subtitle: "由感官觸發記憶，再進入時間與心靈深處",
+        features: ["感官細膩", "回憶流動", "時間層疊", "意識延展"],
+        structure: "感官觸發 → 回憶展開 → 現在與過去交錯 → 心理深化",
+        rhythm: "句子可較長，但需保持層次與節奏",
+        suitable: "記憶、時間、失去、童年、味道與感官經驗",
+        instruction: "請以普魯斯特式的回憶書寫方式，從一個感官刺激出發，展開細膩而層層深入的記憶與時間感。"
+      }
+    };
+
+    const authorStyleSelect = document.getElementById("authorStyle");
+    const styleCard = document.getElementById("styleCard");
+
+    function initStyles() {
+      const grouped = {};
+      Object.keys(styleData).forEach(name => {
+        const cat = styleData[name].category;
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push(name);
+      });
+
+      authorStyleSelect.innerHTML = "";
+
+      Object.keys(grouped).forEach(category => {
+        const group = document.createElement("optgroup");
+        group.label = category;
+        grouped[category].forEach(name => {
+          const option = document.createElement("option");
+          option.value = name;
+          option.textContent = name;
+          group.appendChild(option);
+        });
+        authorStyleSelect.appendChild(group);
+      });
+
+      updateStyleCard();
+    }
+
+    function updateStyleCard() {
+      const selected = authorStyleSelect.value;
+      const data = styleData[selected];
+      if (!data) return;
+
+      styleCard.innerHTML = `
+        <h3>${selected}</h3>
+        <div class="sub">${data.subtitle}</div>
+        <p><strong>核心手法：</strong>${data.features.join("、")}</p>
+        <p><strong>敘事邏輯：</strong>${data.structure}</p>
+        <p><strong>句型語感：</strong>${data.rhythm}</p>
+        <p><strong>適合主題：</strong>${data.suitable}</p>
+        <div class="chips">
+          ${data.features.map(item => `<span class="chip">${item}</span>`).join("")}
+        </div>
+      `;
+    }
+
+    authorStyleSelect.addEventListener("change", updateStyleCard);
+
+    function generatePrompt() {
+      const motivation = document.getElementById("motivation").value.trim();
+      const eventDesc = document.getElementById("eventDesc").value.trim();
+      const authorStyle = document.getElementById("authorStyle").value;
+      const genre = document.getElementById("genre").value;
+      const tone = document.getElementById("tone").value;
+      const length = document.getElementById("length").value;
+      const perspective = document.getElementById("perspective").value;
+      const tension = document.getElementById("tension").value;
+      const extraReq = document.getElementById("extraReq").value.trim();
+
+      const style = styleData[authorStyle];
+
+      const prompt = `請根據以下創作素材，寫成一篇具有文學性的${genre}。
+
+【創作動機】
+${motivation || "請根據事件本身合理推導創作動機。"}
+
+【事件描述】
+${eventDesc || "請根據創作動機自行補足一個合理、具畫面感的事件場景。"}
+
+【指定作家風格】
+請參考「${authorStyle}」的寫作特徵，但不要直接模仿原句，也不要變成拼貼式仿作。
+風格重點如下：
+- ${style.instruction}
+- 核心手法：${style.features.join("、")}
+- 敘事結構：${style.structure}
+- 語感節奏：${style.rhythm}
+- 適合主題：${style.suitable}
+
+【文章要求】
+1. 文章類型：${genre}
+2. 文章語氣：${tone}
+3. 敘事視角：${perspective}
+4. 句子張力：${tension}
+5. 文章長度：${length}
+6. 文字需具有文學感、層次感與畫面感，不要寫成一般社群貼文或口號式抒情。
+7. 情緒要透過場景、細節、動作、物件、對話或心理流動自然呈現，不要只用抽象詞直接說明。
+8. 請讓文章具備完整起伏，即使篇幅不長，也要有清楚的情緒推進或意義轉折。
+9. 可視需要補入合理細節，使文章更完整，但不得偏離原本的創作核心。
+10. 請避免過度說教、過度雞湯、過度網路感句型。
+
+${extraReq ? `【額外要求】\n${extraReq}\n` : ""}請直接輸出完整文章，不要解說寫作方法，不要列點，不要分析。`;
+
+      const articlePrompt = `你現在是一位擅長文學書寫的寫作者。請將以下素材寫成成品文章。
+
+創作動機：
+${motivation || "請依事件脈絡自行推定。"}
+
+事件描述：
+${eventDesc || "請依創作動機延伸出合理事件。"}
+
+請採用「${authorStyle}」的筆法方向，重點是：${style.subtitle}。
+寫作時請呈現以下特徵：${style.features.join("、")}。
+敘事可依此邏輯展開：${style.structure}。
+語言節奏請保持：${style.rhythm}。
+
+文章條件如下：
+- 類型：${genre}
+- 語氣：${tone}
+- 視角：${perspective}
+- 張力：${tension}
+- 長度：${length}
+
+其他要求：
+- 要有文學感，但不要過度堆砌辭藻
+- 要有具體畫面，不要只有抽象情緒
+- 要有內在推進，不要平鋪直述
+- 不要分析，不要解釋創作手法，直接寫成文章
+${extraReq ? `- 補充要求：${extraReq}` : ""}
+
+請直接輸出完整文章。`;
+
+      document.getElementById("promptOutput").value = prompt;
+      document.getElementById("articleOutput").value = articlePrompt;
+    }
+
+    function copyPrompt() {
+      const target = document.getElementById("promptOutput");
+      target.select();
+      target.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      alert("AI 提示句已複製");
+    }
+
+    function copyArticlePrompt() {
+      const target = document.getElementById("articleOutput");
+      target.select();
+      target.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      alert("文章生成指令已複製");
+    }
+
+    function clearAllFields() {
+      document.getElementById("motivation").value = "";
+      document.getElementById("eventDesc").value = "";
+      document.getElementById("extraReq").value = "";
+      document.getElementById("promptOutput").value = "";
+      document.getElementById("articleOutput").value = "";
+      document.getElementById("genre").selectedIndex = 0;
+      document.getElementById("tone").selectedIndex = 0;
+      document.getElementById("length").selectedIndex = 1;
+      document.getElementById("perspective").selectedIndex = 0;
+      document.getElementById("tension").selectedIndex = 1;
+      authorStyleSelect.selectedIndex = 0;
+      updateStyleCard();
+    }
+
+    initStyles();
+  </script>
+</body>
+</html>
