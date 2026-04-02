@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>文學寫作提示詞生成器</title>
+  <style>
+    :root {
+      --bg-main: linear-gradient(135deg, #0f1c2e 0%, #162842 45%, #1f3a5f 100%);
+      --panel-bg: rgba(255, 255, 255, 0.12);
+      --panel-border: rgba(255, 255, 255, 0.18);
+      --card-bg: rgba(255, 255, 255, 0.94);
+      --text: #1f2937;
+      --sub: #5b6475;
+      --primary: #2f5f9e;
+      --primary-dark: #244b7d;
+      --line: #d8e2f0;
+      --soft: #eef4fb;
+      --white: #ffffff;
+      --shadow: 0 18px 45px rgba(8, 20, 40, 0.18);
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background: var(--bg-main);
+      color: var(--text);
+      line-height: 1.75;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 36px 20px 56px;
+    }
+
+    .hero {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 26px;
+      padding: 28px 28px 24px;
+      box-shadow: var(--shadow);
+      color: var(--white);
+      backdrop-filter: blur(10px);
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      line-height: 1.25;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .main-card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    .section-title {
+      font-size: 22px;
+      margin: 0 0 14px;
+      color: var(--primary-dark);
+      font-weight: 800;
+    }
+
+    .section-desc {
+      margin: 0 0 18px;
+      color: var(--sub);
+      font-size: 15px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #243247;
+    }
+
+    textarea,
+    select,
+    input[type="text"] {
+      width: 100%;
+      border: 1px solid #cfd9e6;
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--text);
+      background: #fff;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    textarea:focus,
+    select:focus,
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(47, 95, 158, 0.12);
+    }
+
+    textarea {
+      min-height: 240px;
+      resize: vertical;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px 18px;
+      margin-top: 18px;
+    }
+
+    .field {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 14px;
+      margin-top: 8px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 14px;
+      color: #334155;
+    }
+
+    .check-item input {
+      margin-top: 4px;
+      transform: scale(1.05);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 22px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 10px 22px rgba(47, 95, 158, 0.25);
+    }
+
+    .btn-secondary {
+      background: #e8eef7;
+      color: #26415f;
+    }
+
+    .output-wrap {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px dashed #cdd8e5;
+    }
+
+    .output-box {
+      width: 100%;
+      min-height: 320px;
+      background: #fbfdff;
+      border: 1px solid #d7e2ef;
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 15px;
+      line-height: 1.8;
+      white-space: pre-wrap;
+    }
+
+    .tip-box {
+      margin-top: 22px;
+      background: #f7f9fc;
+      border: 1px solid #dde7f2;
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .tip-box h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+      color: var(--primary-dark);
+    }
+
+    .tip-box ul {
+      margin: 0;
+      padding-left: 20px;
+      color: #445166;
+    }
+
+    .tip-box li + li {
+      margin-top: 6px;
+    }
+
+    @media (max-width: 900px) {
+      .grid,
+      .checkbox-group {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 28px;
+      }
+
+      .main-card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>文學寫作提示詞生成器</h1>
+      <p>
+        將原始文章、摘要、段落或主題貼入上方，透過文體、情緒、敘事視角、意象密度與句子張力等設定，
+        自動生成更具文學層次與改寫方向的 AI 提示詞。
+      </p>
+    </section>
+
+    <section class="main-card">
+      <h2 class="section-title">原始文本 / 主題輸入</h2>
+      <p class="section-desc">
+        可貼入原始文章、段落、摘要、短文主題，讓 AI 依你選擇的文學設定進行改寫。
+      </p>
+
+      <div class="field full">
+        <label for="sourceText">請貼上文章、段落或主題</label>
+        <textarea id="sourceText" placeholder="例如：請將以下內容改寫為具有懷舊感、冷靜觀察與高意象的散文風格……"></textarea>
+      </div>
+
+      <div class="grid">
+        <div class="field">
+          <label for="rewriteLevel">改寫程度</label>
+          <select id="rewriteLevel">
+            <option>輕微潤飾</option>
+            <option selected>中度改寫</option>
+            <option>深度文學化</option>
+            <option>風格重塑</option>
+            <option>完全重寫</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="expressionType">表達類型</label>
+          <select id="expressionType">
+            <option>描寫</option>
+            <option selected>敘述</option>
+            <option>抒情</option>
+            <option>說明</option>
+            <option>議論</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="genreType">文體形式</label>
+          <select id="genreType">
+            <option selected>散文</option>
+            <option>小說</option>
+            <option>微小說</option>
+            <option>現代詩</option>
+            <option>書信體</option>
+            <option>日記體</option>
+            <option>評論式散文</option>
+            <option>寓言故事</option>
+            <option>童話風</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="styleType">文學風格</label>
+          <select id="styleType">
+            <option>極簡主義</option>
+            <option>魔幻寫實</option>
+            <option>意識流</option>
+            <option selected>冷靜觀察</option>
+            <option>溫柔療癒</option>
+            <option>寫實主義</option>
+            <option>浪漫主義</option>
+            <option>幽默諷刺</option>
+            <option>黑暗風格</option>
+            <option>哲學思辨</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="moodType">情緒氛圍</label>
+          <select id="moodType">
+            <option>溫暖</option>
+            <option>憂傷</option>
+            <option selected>懷舊</option>
+            <option>孤獨</option>
+            <option>希望</option>
+            <option>神秘</option>
+            <option>緊張</option>
+            <option>浪漫</option>
+            <option>荒誕</option>
+            <option>靜謐</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="rhetoricLevel">修辭強度</label>
+          <select id="rhetoricLevel">
+            <option>樸素自然</option>
+            <option selected>適度修辭</option>
+            <option>文學濃厚</option>
+            <option>詩意強烈</option>
+            <option>高度象徵</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="narrativeView">敘事視角</label>
+          <select id="narrativeView">
+            <option>第一人稱</option>
+            <option>第二人稱</option>
+            <option selected>第三人稱</option>
+            <option>全知觀點</option>
+            <option>限制視角</option>
+            <option>旁觀敘事</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="timeStructure">時間結構</label>
+          <select id="timeStructure">
+            <option selected>線性敘事</option>
+            <option>倒敘</option>
+            <option>插敘</option>
+            <option>片段式</option>
+            <option>意識流時間</option>
+            <option>一瞬間凝結</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="rhythmType">語言節奏</label>
+          <select id="rhythmType">
+            <option>短句俐落</option>
+            <option selected>平衡句式</option>
+            <option>長句流動</option>
+            <option>詩性斷句</option>
+            <option>口語自然</option>
+            <option>文學濃厚</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="imageryDensity">意象密度</label>
+          <select id="imageryDensity">
+            <option>幾乎無意象</option>
+            <option>少量意象</option>
+            <option selected>適度意象</option>
+            <option>高意象</option>
+            <option>象徵主導</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="tensionLevel">句子張力與層次</label>
+          <select id="tensionLevel">
+            <option>平穩自然</option>
+            <option>微有起伏</option>
+            <option selected>層層推進</option>
+            <option>強烈張力</option>
+            <option>壓抑後爆發</option>
+            <option>冷靜中帶暗流</option>
+            <option>柔和中見鋒利</option>
+          </select>
+        </div>
+
+        <div class="field full">
+          <label>進一步調整方向（可複選）</label>
+          <div class="checkbox-group">
+            <label class="check-item"><input type="checkbox" value="保留原文核心語意" checked> 保留原文核心語意</label>
+            <label class="check-item"><input type="checkbox" value="保留關鍵詞與重要概念"> 保留關鍵詞與重要概念</label>
+            <label class="check-item"><input type="checkbox" value="增加畫面感與場景感" checked> 增加畫面感與場景感</label>
+            <label class="check-item"><input type="checkbox" value="增加情感層次與細微心理變化" checked> 增加情感層次與細微心理變化</label>
+            <label class="check-item"><input type="checkbox" value="增加象徵與隱喻"> 增加象徵與隱喻</label>
+            <label class="check-item"><input type="checkbox" value="加強句子前後的推進感與節奏變化" checked> 加強句子前後的推進感與節奏變化</label>
+            <label class="check-item"><input type="checkbox" value="讓文字更有呼吸感與停頓"> 讓文字更有呼吸感與停頓</label>
+            <label class="check-item"><input type="checkbox" value="避免過度浮誇，維持可讀性"> 避免過度浮誇，維持可讀性</label>
+          </div>
+        </div>
+
+        <div class="field full">
+          <label for="extraRequest">補充要求（可選）</label>
+          <input type="text" id="extraRequest" placeholder="例如：結尾希望留下餘韻、不要寫得太像勵志文、避免過度華麗、保留人物現實感">
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-primary" onclick="generatePrompt()">生成文學改寫提示詞</button>
+        <button class="btn-secondary" onclick="copyPrompt()">複製提示詞</button>
+        <button class="btn-secondary" onclick="clearAllFields()">清空內容</button>
+      </div>
+
+      <div class="output-wrap">
+        <h2 class="section-title">生成結果</h2>
+        <p class="section-desc">這裡會自動輸出可直接貼回 AI 使用的文學改寫提示詞。</p>
+        <div class="output-box" id="outputBox"></div>
+      </div>
+
+      <div class="tip-box">
+        <h3>使用建議</h3>
+        <ul>
+          <li>若原文偏理性，可選「散文＋冷靜觀察＋適度意象＋層層推進」，會比較自然。</li>
+          <li>若想更像文學作品，可提高「修辭強度」「意象密度」「句子張力與層次」。</li>
+          <li>若怕 AI 改太多，可將「改寫程度」選為輕微潤飾或中度改寫。</li>
+          <li>若要更有內在情緒流動，可選擇「抒情＋第一人稱＋片段式或倒敘」。</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function generatePrompt() {
+      const sourceText = document.getElementById("sourceText").value.trim();
+      const rewriteLevel = document.getElementById("rewriteLevel").value;
+      const expressionType = document.getElementById("expressionType").value;
+      const genreType = document.getElementById("genreType").value;
+      const styleType = document.getElementById("styleType").value;
+      const moodType = document.getElementById("moodType").value;
+      const rhetoricLevel = document.getElementById("rhetoricLevel").value;
+      const narrativeView = document.getElementById("narrativeView").value;
+      const timeStructure = document.getElementById("timeStructure").value;
+      const rhythmType = document.getElementById("rhythmType").value;
+      const imageryDensity = document.getElementById("imageryDensity").value;
+      const tensionLevel = document.getElementById("tensionLevel").value;
+      const extraRequest = document.getElementById("extraRequest").value.trim();
+
+      const checkedOptions = Array.from(
+        document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked')
+      ).map(item => "• " + item.value);
+
+      if (!sourceText) {
+        document.getElementById("outputBox").textContent = "請先貼上原始文章、段落或主題內容。";
+        return;
+      }
+
+      let prompt = `請根據以下原始文本進行文學風格改寫。\n\n`;
+      prompt += `【原始文本】\n${sourceText}\n\n`;
+      prompt += `【改寫設定】\n`;
+      prompt += `- 改寫程度：${rewriteLevel}\n`;
+      prompt += `- 表達類型：${expressionType}\n`;
+      prompt += `- 文體形式：${genreType}\n`;
+      prompt += `- 文學風格：${styleType}\n`;
+      prompt += `- 情緒氛圍：${moodType}\n`;
+      prompt += `- 修辭強度：${rhetoricLevel}\n`;
+      prompt += `- 敘事視角：${narrativeView}\n`;
+      prompt += `- 時間結構：${timeStructure}\n`;
+      prompt += `- 語言節奏：${rhythmType}\n`;
+      prompt += `- 意象密度：${imageryDensity}\n`;
+      prompt += `- 句子張力與層次：${tensionLevel}\n\n`;
+
+      if (checkedOptions.length > 0) {
+        prompt += `【額外要求】\n${checkedOptions.join("\n")}\n\n`;
+      }
+
+      if (extraRequest) {
+        prompt += `【補充說明】\n${extraRequest}\n\n`;
+      }
+
+      prompt += `【輸出要求】\n`;
+      prompt += `請保留原文核心語意，但依照上述設定進行改寫。\n`;
+      prompt += `文字需具有較鮮明的文學感、句子層次與情緒推進，不只是單純換句話說。\n`;
+      prompt += `請讓文章在段落之間、句子之間具有自然的呼吸感、轉折與張力。\n`;
+      prompt += `必要時可調整句長、節奏與細節安排，使整體更生動、更有畫面感。\n`;
+      prompt += `避免空泛堆砌形容詞，也避免過度浮華而削弱真實感。\n`;
+      prompt += `請直接輸出改寫後的完整文本，不要加分析說明。`;
+
+      document.getElementById("outputBox").textContent = prompt;
+    }
+
+    function copyPrompt() {
+      const outputText = document.getElementById("outputBox").textContent.trim();
+      if (!outputText) {
+        alert("目前沒有可複製的提示詞，請先生成內容。");
+        return;
+      }
+      navigator.clipboard.writeText(outputText)
+        .then(() => alert("提示詞已複製。"))
+        .catch(() => alert("複製失敗，請手動複製。"));
+    }
+
+    function clearAllFields() {
+      document.getElementById("sourceText").value = "";
+      document.getElementById("extraRequest").value = "";
+      document.getElementById("outputBox").textContent = "";
+    }
+  </script>
+</body>
+</html>
