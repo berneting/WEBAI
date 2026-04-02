@@ -12,14 +12,11 @@
 
 body {
   margin: 0;
-  font-family: "Microsoft JhengHei", sans-serif;
+  font-family: "Microsoft JhengHei", "Noto Sans TC", sans-serif;
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
+  overflow-x: hidden;
+  color: #eef4ff;
 
-  /* 改為沉穩科技藍色系 */
   background: linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#1c3b57);
   background-size: 400% 400%;
   animation: bgMove 14s ease infinite;
@@ -31,12 +28,21 @@ body {
   100% { background-position:0% 50%; }
 }
 
+.page-wrap {
+  position: relative;
+  z-index: 2;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 56px 20px 80px;
+}
+
 .bubble {
-  position: absolute;
+  position: fixed;
   bottom: -120px;
   background: rgba(255,255,255,0.08);
   border-radius: 50%;
   animation: floatUp linear infinite;
+  z-index: 0;
 }
 
 .bubble:nth-child(1){ width:80px;height:80px;left:10%;animation-duration:18s;}
@@ -49,80 +55,173 @@ body {
   to{ transform:translateY(-120vh); opacity:0;}
 }
 
-.card{
-  position:relative;
-  z-index:2;
-  width:min(90%,700px);
+.hero-card{
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 28px;
+  padding: 46px 32px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: white;
+}
 
-  /* 改為深色玻璃卡片 */
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(12px);
-
-  border-radius:24px;
-  padding:50px 30px;
-  text-align:center;
-
-  box-shadow:0 20px 40px rgba(0,0,0,0.35);
-  color:white;
+.hero-badge{
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.14);
+  font-size: 13px;
+  letter-spacing: 0.5px;
 }
 
 h1{
-  margin:0 0 16px;
-  font-size:2.3rem;
+  margin:0 0 12px;
+  font-size:2.5rem;
   letter-spacing:1px;
 }
 
-p{
-  margin:0 0 30px;
-  font-size:1.1rem;
-  opacity:0.9;
-  line-height:1.8;
-}
-
-.main-btn{
-  display:inline-block;
-  padding:18px 36px;
-  font-size:1.15rem;
-  font-weight:bold;
-
-  /* 改為科技藍按鈕 */
-  background: linear-gradient(135deg,#00c6ff,#0072ff);
-  color:white;
-
-  border:none;
-  border-radius:999px;
-  cursor:pointer;
-  text-decoration:none;
-
-  box-shadow:0 10px 25px rgba(0,0,0,0.3);
-  transition:0.25s;
-}
-
-.main-btn:hover{
-  transform:translateY(-4px) scale(1.05);
-  box-shadow:0 15px 35px rgba(0,0,0,0.45);
-}
-
-.main-btn:active{
-  transform:scale(0.96);
+.hero-subtitle{
+  margin: 0;
+  font-size: 1.12rem;
+  opacity: 0.92;
+  line-height: 1.9;
 }
 
 .note{
-  margin-top:24px;
-  font-size:0.95rem;
-  line-height:1.7;
-  opacity:0.85;
+  margin: 22px auto 0;
+  max-width: 860px;
+  font-size: 0.98rem;
+  line-height: 1.9;
+  opacity: 0.85;
+  color: #d7e6ff;
 }
 
-/* 手機 */
-@media (max-width:600px){
-  h1{ font-size:1.8rem; }
-  .main-btn{
-    width:100%;
-    max-width:320px;
+.tool-grid{
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.tool-card{
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 22px;
+  padding: 24px 22px;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.26);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.tool-card:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 18px 36px rgba(0,0,0,0.34);
+  border-color: rgba(120, 180, 255, 0.35);
+}
+
+.tool-top{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.tool-title{
+  margin: 0;
+  font-size: 1.18rem;
+  line-height: 1.45;
+  color: #f4f8ff;
+}
+
+.tool-tag{
+  flex-shrink: 0;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(91,124,255,0.18);
+  border: 1px solid rgba(143,173,255,0.22);
+  color: #dce8ff;
+}
+
+.tool-desc{
+  margin: 0 0 18px;
+  color: #d3e0f7;
+  font-size: 0.96rem;
+  line-height: 1.85;
+  min-height: 118px;
+}
+
+.tool-link{
+  display: inline-block;
+  padding: 12px 20px;
+  font-size: 0.98rem;
+  font-weight: bold;
+  background: linear-gradient(135deg,#00c6ff,#0072ff);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+  transition: 0.25s;
+}
+
+.tool-link:hover{
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.36);
+}
+
+.footer-tip{
+  margin-top: 28px;
+  text-align: center;
+  color: #c8d9f4;
+  font-size: 0.94rem;
+  line-height: 1.8;
+  opacity: 0.9;
+}
+
+@media (max-width: 900px){
+  .tool-grid{
+    grid-template-columns: 1fr;
+  }
+
+  .tool-desc{
+    min-height: auto;
   }
 }
 
+@media (max-width: 600px){
+  .page-wrap{
+    padding: 34px 16px 64px;
+  }
+
+  h1{
+    font-size: 1.9rem;
+  }
+
+  .hero-card{
+    padding: 32px 20px;
+  }
+
+  .tool-top{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tool-link{
+    width: 100%;
+    text-align: center;
+  }
+}
 </style>
 </head>
 
@@ -133,18 +232,69 @@ p{
 <div class="bubble"></div>
 <div class="bubble"></div>
 
-<div class="card">
+<div class="page-wrap">
 
-<h1>Prompt Engineering</h1>
-<p>AI 提示詞工具</p>
+  <div class="hero-card">
+    <div class="hero-badge">WEBAI Prompt Tools</div>
+    <h1>Prompt Engineering</h1>
+    <p class="hero-subtitle">AI 提示詞工具首頁</p>
 
-<a class="main-btn" href="./ai_prompt.html">
-行銷文宣生成器
-</a>
+    <div class="note">
+      提示工程（Prompt Engineering）是透過設計、優化與精煉輸入給大型語言模型（LLM）的指令，以引導 AI 生成更精確、更穩定、也更符合目的的輸出。你可以依照不同用途，直接進入下列工具頁使用。
+    </div>
+  </div>
 
-<div class="note">
-提示工程（Prompt Engineering）是透過設計、優化與精煉輸入給大型語言模型（LLM）的指令（Prompt），以引導 AI 生成高質量、精確且相關輸出的藝術與科學。它能減少模型幻覺、控制輸出風格、賦能複雜任務，是目前與 AI 溝通的核心技術。
-</div>
+  <div class="tool-grid">
+
+    <div class="tool-card">
+      <div class="tool-top">
+        <h2 class="tool-title">writing_01 文學寫作提示詞生成器（文學風格）</h2>
+        <span class="tool-tag">文學</span>
+      </div>
+      <p class="tool-desc">
+        將原始文章、摘要、段落或主題貼入上方，透過文體、情緒、敘事視角、意象密度與句子張力等設定，自動生成更具文學層次與改寫方向的 AI 提示詞，支援多種文學風格選配。
+      </p>
+      <a class="tool-link" href="./writing_01.html">進入工具</a>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-top">
+        <h2 class="tool-title">writing_02 行銷用文宣生成器（商用術語）</h2>
+        <span class="tool-tag">商用</span>
+      </div>
+      <p class="tool-desc">
+        輸入要推廣的產品或服務，例如海產、文具、老齡健康顧問或課程，選擇文案風格後即可生成內容。上方可參考文宣句，下方可直接複製 AI 提示句貼回 ChatGPT 或其他 AI 工具，員工不需要自行思考提示語。
+      </p>
+      <a class="tool-link" href="./writing_02.html">進入工具</a>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-top">
+        <h2 class="tool-title">writing_03 研究摘要轉社媒推廣提示句生成器（短文）</h2>
+        <span class="tool-tag">短文</span>
+      </div>
+      <p class="tool-desc">
+        把研究摘要與研究後討論分開輸入，讓 AI 不只是安全改寫，而是能抓出真正值得被看見的核心觀點，寫出更有主軸、更有溫度，也更能讓一般讀者願意讀下去的研究推廣文字。
+      </p>
+      <a class="tool-link" href="./writing_03.html">進入工具</a>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-top">
+        <h2 class="tool-title">writing_04 摘要轉 AI 提示句生成器（中長文）</h2>
+        <span class="tool-tag">中長文</span>
+      </div>
+      <p class="tool-desc">
+        把文章摘要、研究摘要、新聞導言或課堂整理貼進來，選擇結構、語氣與寫作模式，就能生成一段可直接貼回 AI 的高精度提示句。這個版本已加入避免只像在評論摘要的限制設計，讓產出的文章更接近獨立社論、雜誌專欄或公共評論文章。
+      </p>
+      <a class="tool-link" href="./writing_04.html">進入工具</a>
+    </div>
+
+  </div>
+
+  <div class="footer-tip">
+    建議將所有工具頁檔名與首頁連結保持一致。若你的實際檔名不是 writing_01.html 到 writing_04.html，請把上面的 href 一併改成你的實際檔名。
+  </div>
 
 </div>
 
