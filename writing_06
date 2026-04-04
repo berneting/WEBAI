@@ -1,0 +1,517 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>作詩提示詞工具</title>
+  <style>
+    :root {
+      --bg: #f6f1e8;
+      --paper: #fffdf8;
+      --ink: #2f2a24;
+      --sub: #6e655b;
+      --line: #d8cec0;
+      --accent: #8c6f52;
+      --accent-soft: #efe4d5;
+      --shadow: 0 10px 30px rgba(60, 40, 20, 0.08);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Serif TC", "PMingLiU", "MingLiU", "Songti TC", serif;
+      background: linear-gradient(to bottom, #f8f3ea 0%, #f3ede3 100%);
+      color: var(--ink);
+      line-height: 1.8;
+      padding: 28px 16px 50px;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--paper);
+      border: 1px solid rgba(140, 111, 82, 0.16);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: 34px 30px 24px;
+      background:
+        linear-gradient(to bottom, rgba(255,255,255,0.92), rgba(250,246,239,0.96)),
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent 33px,
+          rgba(140,111,82,0.05) 34px
+        );
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero h1 {
+      margin: 0 0 12px;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--sub);
+      font-size: 1rem;
+    }
+
+    .section {
+      padding: 28px 30px;
+      border-bottom: 1px solid rgba(216, 206, 192, 0.7);
+    }
+
+    .section:last-child {
+      border-bottom: none;
+    }
+
+    .section-title {
+      margin: 0 0 18px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .hint {
+      margin-top: -6px;
+      margin-bottom: 16px;
+      color: var(--sub);
+      font-size: 0.95rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px 20px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 0.98rem;
+      font-family: inherit;
+      color: var(--ink);
+      background: #fffefb;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(140, 111, 82, 0.08);
+      background: #fffdfa;
+    }
+
+    textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .checks {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 16px;
+      padding-top: 4px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--ink);
+      font-size: 0.96rem;
+    }
+
+    .check-item input {
+      margin-top: 4px;
+      accent-color: var(--accent);
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    button {
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      padding: 12px 20px;
+      font-size: 0.98rem;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(140, 111, 82, 0.18);
+    }
+
+    button.secondary {
+      background: var(--accent-soft);
+      color: var(--ink);
+    }
+
+    .output {
+      background: #fffefb;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+      min-height: 260px;
+      white-space: pre-wrap;
+      font-size: 1rem;
+      line-height: 1.95;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      color: var(--sub);
+      font-size: 0.92rem;
+    }
+
+    .mini {
+      font-size: 0.9rem;
+      color: var(--sub);
+    }
+
+    @media (max-width: 760px) {
+      .hero,
+      .section {
+        padding: 22px 18px;
+      }
+
+      .grid,
+      .checks {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 1.6rem;
+      }
+
+      .output {
+        min-height: 240px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="hero">
+        <h1>作詩提示詞工具</h1>
+        <p>
+          將主題、情緒、詩體、風格與修辭條件組合成一段可直接貼回 AI 使用的提示句。
+          這個工具的目的是幫你更精準地「引導生成」，而不是直接代替創作。
+        </p>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">一、創作素材</h2>
+        <p class="hint">可貼入題目、意象、事件、情感線索、人物關係，或你想寫成詩的文字素材。</p>
+        <div class="grid">
+          <div class="field full">
+            <label for="sourceText">主題或創作素材</label>
+            <textarea id="sourceText" placeholder="例如：清明返鄉祭祖時，看見女性在家族記憶中總被輕描淡寫，想寫出她們沉默卻深重的一生。"></textarea>
+          </div>
+          <div class="field">
+            <label for="themeKeyword">主題關鍵詞</label>
+            <input id="themeKeyword" type="text" placeholder="例如：思鄉、母親、命運、城市、老樹" />
+          </div>
+          <div class="field">
+            <label for="imageryKeyword">意象關鍵詞</label>
+            <input id="imageryKeyword" type="text" placeholder="例如：細雨、花香、舊屋、月光、長風" />
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">二、形式與風格</h2>
+        <div class="grid">
+          <div class="field">
+            <label for="poemType">詩體類型</label>
+            <select id="poemType">
+              <option>古體詩（自由古風）</option>
+              <option>五言絕句</option>
+              <option>七言絕句</option>
+              <option>五言律詩</option>
+              <option>七言律詩</option>
+              <option>樂府風</option>
+              <option>現代古風</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="styleType">詩風流派</label>
+            <select id="styleType">
+              <option>李白式（浪漫豪放）</option>
+              <option>杜甫式（沉鬱寫實）</option>
+              <option>王維式（山水空靈）</option>
+              <option>邊塞詩風（壯闊蒼茫）</option>
+              <option>婉約抒情</option>
+              <option>田園隱逸</option>
+              <option>哲理沉思</option>
+              <option>懷舊回憶</option>
+              <option>社會寫實</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="emotionTone">情緒基調</label>
+            <select id="emotionTone">
+              <option>蒼涼</option>
+              <option>溫柔</option>
+              <option>豪放</option>
+              <option>孤寂</option>
+              <option>沉思</option>
+              <option>悲憫</option>
+              <option>恬淡</option>
+              <option>激昂</option>
+              <option>淡淡哀傷</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="imageryDensity">意象密度</label>
+            <select id="imageryDensity">
+              <option>極簡</option>
+              <option>適中</option>
+              <option>偏高</option>
+              <option>連續堆疊</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="rhetoricType">修辭特色</label>
+            <select id="rhetoricType">
+              <option>意象堆疊</option>
+              <option>留白含蓄</option>
+              <option>比喻象徵</option>
+              <option>對仗工整</option>
+              <option>口語自然</option>
+              <option>典故隱含</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="prosodyRule">格律要求</label>
+            <select id="prosodyRule">
+              <option>不限制</option>
+              <option>押韻即可</option>
+              <option>一韻到底</option>
+              <option>重視平仄</option>
+              <option>嚴格格律</option>
+              <option>對仗要求明確</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="structureMode">結構節奏</label>
+            <select id="structureMode">
+              <option>起承轉合</option>
+              <option>由景入情</option>
+              <option>由事入理</option>
+              <option>先抒情後轉折</option>
+              <option>尾句留白</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="tensionMode">詩句張力</label>
+            <select id="tensionMode">
+              <option>平緩敘述</option>
+              <option>逐步增強</option>
+              <option>尾句爆發</option>
+              <option>對比強烈</option>
+              <option>含蓄收束</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">三、附加要求</h2>
+        <div class="grid">
+          <div class="field full">
+            <label>生成時納入的要求</label>
+            <div class="checks">
+              <label class="check-item"><input type="checkbox" class="extra" value="畫面感強烈" checked /> 畫面感強烈</label>
+              <label class="check-item"><input type="checkbox" class="extra" value="語言含蓄而不直白" checked /> 語言含蓄而不直白</label>
+              <label class="check-item"><input type="checkbox" class="extra" value="避免過度現代詞彙" checked /> 避免過度現代詞彙</label>
+              <label class="check-item"><input type="checkbox" class="extra" value="結尾具有餘韻" checked /> 結尾具有餘韻</label>
+              <label class="check-item"><input type="checkbox" class="extra" value="保留古典漢語氣息" /> 保留古典漢語氣息</label>
+              <label class="check-item"><input type="checkbox" class="extra" value="人物情感不宜說破" /> 人物情感不宜說破</label>
+              <label class="check-item"><input type="checkbox" class="extra" value="適度融入社會或生命感" /> 適度融入社會或生命感</label>
+              <label class="check-item"><input type="checkbox" class="extra" value="景與情相互映照" /> 景與情相互映照</label>
+            </div>
+          </div>
+
+          <div class="field full">
+            <label for="customRequire">自訂補充要求</label>
+            <textarea id="customRequire" placeholder="例如：想讓詩中有女性被忽視的歷史感，但不要直接控訴；希望最後一句像低低收住的嘆息。"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">四、生成結果</h2>
+        <div class="buttons">
+          <button class="primary" onclick="generatePrompt()">生成提示句</button>
+          <button class="secondary" onclick="copyPrompt()">複製結果</button>
+          <button class="secondary" onclick="clearAllFields()">清空內容</button>
+        </div>
+
+        <div id="output" class="output" style="margin-top: 18px;">按下「生成提示句」後，這裡會出現可直接貼回 AI 使用的作詩提示句。</div>
+        <div class="footer-note">
+          生成的是「提示句」，不是直接成詩。你可以把結果貼回 ChatGPT、Claude 或其他 AI 工具，再依需要微調。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getValue(id) {
+      return document.getElementById(id).value.trim();
+    }
+
+    function generatePrompt() {
+      const sourceText = getValue("sourceText");
+      const themeKeyword = getValue("themeKeyword");
+      const imageryKeyword = getValue("imageryKeyword");
+      const poemType = getValue("poemType");
+      const styleType = getValue("styleType");
+      const emotionTone = getValue("emotionTone");
+      const imageryDensity = getValue("imageryDensity");
+      const rhetoricType = getValue("rhetoricType");
+      const prosodyRule = getValue("prosodyRule");
+      const structureMode = getValue("structureMode");
+      const tensionMode = getValue("tensionMode");
+      const customRequire = getValue("customRequire");
+
+      const checkedExtras = Array.from(document.querySelectorAll(".extra:checked"))
+        .map(item => item.value);
+
+      let prompt = `請依以下條件，創作一首具有中國古典詩意的詩。\n\n`;
+
+      prompt += `【創作素材】\n`;
+      prompt += `${sourceText || "請根據主題自行展開內容。"}\n\n`;
+
+      prompt += `【創作條件】\n`;
+      prompt += `詩體類型：${poemType}\n`;
+      prompt += `詩風流派：${styleType}\n`;
+      prompt += `主題關鍵詞：${themeKeyword || "未指定"}\n`;
+      prompt += `意象關鍵詞：${imageryKeyword || "未指定"}\n`;
+      prompt += `情緒基調：${emotionTone}\n`;
+      prompt += `意象密度：${imageryDensity}\n`;
+      prompt += `修辭特色：${rhetoricType}\n`;
+      prompt += `格律要求：${prosodyRule}\n`;
+      prompt += `結構節奏：${structureMode}\n`;
+      prompt += `詩句張力：${tensionMode}\n\n`;
+
+      prompt += `【寫作要求】\n`;
+      if (checkedExtras.length > 0) {
+        checkedExtras.forEach((item, index) => {
+          prompt += `${index + 1}. ${item}\n`;
+        });
+      } else {
+        prompt += `1. 請保持語言凝鍊，富有詩意。\n`;
+      }
+
+      if (customRequire) {
+        prompt += `${checkedExtras.length + 1 || 2}. ${customRequire}\n`;
+      }
+
+      prompt += `\n【輸出要求】\n`;
+      prompt += `1. 直接輸出詩作，不需額外解說。\n`;
+      prompt += `2. 保持整體語氣一致，不要出現散文化說理過多的情形。\n`;
+      prompt += `3. 詩中應有清楚的意象層次與情感推進。\n`;
+      prompt += `4. 若為近體詩，請盡量符合該詩體的基本形式要求。\n`;
+      prompt += `5. 不要使用過於口語、現代、破壞古典氛圍的詞語。\n`;
+
+      document.getElementById("output").textContent = prompt;
+    }
+
+    function copyPrompt() {
+      const text = document.getElementById("output").textContent.trim();
+      if (!text || text.includes("按下「生成提示句」")) {
+        alert("目前還沒有可複製的內容。");
+        return;
+      }
+
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          alert("提示句已複製。");
+        })
+        .catch(() => {
+          alert("複製失敗，請手動選取內容。");
+        });
+    }
+
+    function clearAllFields() {
+      document.getElementById("sourceText").value = "";
+      document.getElementById("themeKeyword").value = "";
+      document.getElementById("imageryKeyword").value = "";
+      document.getElementById("customRequire").value = "";
+
+      document.getElementById("poemType").selectedIndex = 0;
+      document.getElementById("styleType").selectedIndex = 0;
+      document.getElementById("emotionTone").selectedIndex = 0;
+      document.getElementById("imageryDensity").selectedIndex = 0;
+      document.getElementById("rhetoricType").selectedIndex = 0;
+      document.getElementById("prosodyRule").selectedIndex = 0;
+      document.getElementById("structureMode").selectedIndex = 0;
+      document.getElementById("tensionMode").selectedIndex = 0;
+
+      document.querySelectorAll(".extra").forEach((item, index) => {
+        item.checked = index < 4;
+      });
+
+      document.getElementById("output").textContent = "按下「生成提示句」後，這裡會出現可直接貼回 AI 使用的作詩提示句。";
+    }
+  </script>
+</body>
+</html>
