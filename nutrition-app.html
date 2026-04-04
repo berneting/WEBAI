@@ -1,0 +1,501 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>健康飲食 AI 提示句工具</title>
+  <style>
+    :root{
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --line:#d8dee8;
+      --text:#223;
+      --muted:#667085;
+      --accent:#2f6fed;
+      --accent2:#eaf1ff;
+      --danger:#b42318;
+      --ok:#067647;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+      line-height:1.65;
+    }
+    .wrap{
+      max-width:1100px;
+      margin:32px auto;
+      padding:0 18px 40px;
+    }
+    .hero{
+      background:linear-gradient(135deg,#214b97,#3b82f6);
+      color:#fff;
+      padding:28px 24px;
+      border-radius:20px;
+      box-shadow:0 14px 36px rgba(32,72,145,.18);
+      margin-bottom:22px;
+    }
+    .hero h1{
+      margin:0 0 10px;
+      font-size:30px;
+    }
+    .hero p{margin:0; opacity:.95}
+    .grid{
+      display:grid;
+      grid-template-columns:1.15fr .95fr;
+      gap:18px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:20px;
+      box-shadow:0 8px 24px rgba(16,24,40,.05);
+    }
+    h2{
+      font-size:20px;
+      margin:0 0 14px;
+    }
+    h3{
+      font-size:15px;
+      margin:18px 0 10px;
+      color:#344054;
+    }
+    .sub{
+      color:var(--muted);
+      font-size:14px;
+      margin-top:-4px;
+      margin-bottom:14px;
+    }
+    .row{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+    }
+    .row-3{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+    }
+    label{
+      display:block;
+      font-size:14px;
+      font-weight:600;
+      margin:0 0 6px;
+    }
+    input, select, textarea{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:11px 12px;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+    input:focus, select:focus, textarea:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 4px rgba(47,111,237,.12);
+    }
+    textarea{
+      min-height:90px;
+      resize:vertical;
+    }
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:6px;
+    }
+    .pill{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      background:var(--accent2);
+      color:#1d4ed8;
+      font-size:12px;
+      font-weight:700;
+      margin-bottom:10px;
+    }
+    .hidden{display:none}
+    .btns{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+    button{
+      border:none;
+      border-radius:12px;
+      padding:12px 16px;
+      font-size:14px;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .primary{background:var(--accent); color:#fff}
+    .secondary{background:#eef2f7; color:#344054}
+    .ghost{background:#fff; border:1px solid var(--line); color:#344054}
+    .note{
+      background:#fff7ed;
+      border:1px solid #fed7aa;
+      color:#9a3412;
+      padding:12px 14px;
+      border-radius:12px;
+      font-size:13px;
+      margin-top:14px;
+    }
+    .ok{
+      color:var(--ok);
+      font-size:13px;
+      margin-top:8px;
+      min-height:20px;
+    }
+    .output{
+      width:100%;
+      min-height:700px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      line-height:1.55;
+      white-space:pre-wrap;
+    }
+    ul{margin:8px 0 0 18px; padding:0}
+    @media (max-width: 900px){
+      .grid{grid-template-columns:1fr}
+      .row, .row-3{grid-template-columns:1fr}
+      .hero h1{font-size:25px}
+      .output{min-height:460px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <h1>健康飲食 AI 提示句工具</h1>
+      <p>用下拉選單與條件欄位，生成能請 AI 排出 <strong>精準一週飲食建議表</strong> 的提示句。支援健康成人、糖尿病、慢性腎臟病、高血壓、高血脂與長者飲食。</p>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <h2>輸入條件</h2>
+        <div class="sub">先填個案資訊，再按「生成 AI 提示句」。疾病類型不同，下面會自動出現額外欄位。</div>
+
+        <span class="pill">基本資料</span>
+        <div class="row-3">
+          <div>
+            <label for="age">年齡</label>
+            <input id="age" type="text" placeholder="例如：65 歲">
+          </div>
+          <div>
+            <label for="sex">性別</label>
+            <select id="sex">
+              <option value="">請選擇</option>
+              <option>男性</option>
+              <option>女性</option>
+              <option>其他 / 不指定</option>
+            </select>
+          </div>
+          <div>
+            <label for="activity">活動量</label>
+            <select id="activity">
+              <option value="">請選擇</option>
+              <option>低</option>
+              <option>中</option>
+              <option>高</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row-3">
+          <div>
+            <label for="height">身高</label>
+            <input id="height" type="text" placeholder="例如：160 cm">
+          </div>
+          <div>
+            <label for="weight">體重</label>
+            <input id="weight" type="text" placeholder="例如：58 kg">
+          </div>
+          <div>
+            <label for="budget">預算</label>
+            <select id="budget">
+              <option value="">請選擇</option>
+              <option>低</option>
+              <option>中</option>
+              <option>高</option>
+            </select>
+          </div>
+        </div>
+
+        <span class="pill">核心分流</span>
+        <div class="row">
+          <div>
+            <label for="group">族群類別</label>
+            <select id="group">
+              <option>健康成人</option>
+              <option>糖尿病</option>
+              <option>慢性腎臟病</option>
+              <option>高血壓</option>
+              <option>高血脂</option>
+              <option>長者飲食</option>
+            </select>
+          </div>
+          <div>
+            <label for="goal">飲食目標</label>
+            <select id="goal">
+              <option>維持健康</option>
+              <option>體重控制</option>
+              <option>穩定血糖</option>
+              <option>保護腎功能</option>
+              <option>降低鈉攝取</option>
+              <option>降低油脂攝取</option>
+              <option>改善食慾與進食量</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="dietType">飲食型態</label>
+            <select id="dietType">
+              <option>葷食</option>
+              <option>蛋奶素</option>
+              <option>全素</option>
+            </select>
+          </div>
+          <div>
+            <label for="mealPattern">每日餐次</label>
+            <select id="mealPattern">
+              <option>三餐</option>
+              <option>三餐兩點</option>
+              <option>少量多餐</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="cookStyle">飲食情境</label>
+            <select id="cookStyle">
+              <option>可自煮</option>
+              <option>常外食</option>
+              <option>便利商店為主</option>
+              <option>家人共餐</option>
+            </select>
+          </div>
+          <div>
+            <label for="tone">輸出風格</label>
+            <select id="tone">
+              <option>專業版</option>
+              <option>家常版</option>
+              <option>長者易懂版</option>
+              <option>外食版</option>
+            </select>
+          </div>
+        </div>
+
+        <h3>飲食偏好與限制</h3>
+        <div class="row">
+          <div>
+            <label for="allergy">過敏或忌口</label>
+            <input id="allergy" type="text" placeholder="例如：蝦、花生、奶製品，無則填無">
+          </div>
+          <div>
+            <label for="preference">偏好食物或風格</label>
+            <input id="preference" type="text" placeholder="例如：台式家常、清淡、軟質飲食">
+          </div>
+        </div>
+        <div>
+          <label for="problem">目前困擾</label>
+          <textarea id="problem" placeholder="例如：血糖波動大、便秘、食慾差、牙口不好、外食難控制、喝水少、容易水腫"></textarea>
+        </div>
+
+        <div id="diabetesBox" class="hidden">
+          <h3>糖尿病補充欄位</h3>
+          <div class="row">
+            <div>
+              <label for="dmType">糖尿病類型</label>
+              <select id="dmType">
+                <option>前期糖尿病</option>
+                <option>第 2 型糖尿病</option>
+                <option>第 1 型糖尿病</option>
+                <option>其他 / 不清楚</option>
+              </select>
+            </div>
+            <div>
+              <label for="dmMed">是否使用胰島素或易低血糖藥物</label>
+              <select id="dmMed">
+                <option>否</option>
+                <option>是</option>
+                <option>不清楚</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="dmControl">是否需要控制每餐醣量</label>
+              <select id="dmControl">
+                <option>是</option>
+                <option>否</option>
+                <option>不清楚</option>
+              </select>
+            </div>
+            <div>
+              <label for="dmExtra">是否合併高血壓 / 高血脂 / 體重控制</label>
+              <input id="dmExtra" type="text" placeholder="例如：合併高血壓與高血脂，無則填無">
+            </div>
+          </div>
+        </div>
+
+        <div id="kidneyBox" class="hidden">
+          <h3>腎臟病補充欄位</h3>
+          <div class="row">
+            <div>
+              <label for="ckdStage">腎臟病期別</label>
+              <select id="ckdStage">
+                <option>CKD 第 1 期</option>
+                <option>CKD 第 2 期</option>
+                <option>CKD 第 3 期</option>
+                <option>CKD 第 4 期</option>
+                <option>CKD 第 5 期</option>
+                <option>洗腎中</option>
+                <option>不清楚</option>
+              </select>
+            </div>
+            <div>
+              <label for="edema">是否有水腫</label>
+              <select id="edema">
+                <option>無</option>
+                <option>有</option>
+                <option>偶爾</option>
+                <option>不清楚</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="restriction">需限制項目</label>
+              <input id="restriction" type="text" placeholder="例如：限鈉、限鉀、限磷、限蛋白、限水分">
+            </div>
+            <div>
+              <label for="labs">已知檢驗或狀況</label>
+              <input id="labs" type="text" placeholder="例如：eGFR 28、鉀偏高、磷偏高，不清楚可留白">
+            </div>
+          </div>
+        </div>
+
+        <div class="btns">
+          <button class="primary" id="generateBtn">生成 AI 提示句</button>
+          <button class="secondary" id="sampleBtn">載入示範資料</button>
+          <button class="ghost" id="clearBtn">清空欄位</button>
+        </div>
+
+        <div class="note">
+          建議做法：<strong>健康成人</strong>可用較簡潔欄位；<strong>糖尿病與慢性腎臟病</strong>務必補充病況與限制，不然 AI 只能給很保守、很籠統的菜單。
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>AI 提示句輸出</h2>
+        <div class="sub">按下生成後，這裡會出現可直接貼到 ChatGPT 或其他 AI 工具的完整提示句。</div>
+        <textarea id="output" class="output" placeholder="生成後會顯示在這裡..."></textarea>
+        <div class="btns">
+          <button class="primary" id="copyBtn">複製提示句</button>
+        </div>
+        <div id="copyStatus" class="ok"></div>
+
+        <h3>建議輸出內容</h3>
+        <ul>
+          <li>7 天表格：早餐、午餐、晚餐、點心</li>
+          <li>每餐設計原因</li>
+          <li>當日營養原則</li>
+          <li>可替換食材</li>
+          <li>外食替代選項</li>
+          <li>避免事項</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const group = document.getElementById('group');
+    const diabetesBox = document.getElementById('diabetesBox');
+    const kidneyBox = document.getElementById('kidneyBox');
+    const output = document.getElementById('output');
+    const copyStatus = document.getElementById('copyStatus');
+
+    function toggleBoxes() {
+      diabetesBox.classList.toggle('hidden', group.value !== '糖尿病');
+      kidneyBox.classList.toggle('hidden', group.value !== '慢性腎臟病');
+    }
+    group.addEventListener('change', toggleBoxes);
+    toggleBoxes();
+
+    function val(id){ return document.getElementById(id).value.trim(); }
+
+    function buildPrompt(){
+      const base = {
+        age: val('age'), sex: val('sex'), activity: val('activity'), height: val('height'), weight: val('weight'),
+        budget: val('budget'), group: val('group'), goal: val('goal'), dietType: val('dietType'),
+        mealPattern: val('mealPattern'), cookStyle: val('cookStyle'), tone: val('tone'), allergy: val('allergy'),
+        preference: val('preference'), problem: val('problem')
+      };
+
+      let diseaseExtra = '';
+      if (base.group === '糖尿病') {
+        diseaseExtra = `\n糖尿病補充資料：\n- 類型：${val('dmType') || '未提供'}\n- 是否使用胰島素或易低血糖藥物：${val('dmMed') || '未提供'}\n- 是否需要控制每餐醣量：${val('dmControl') || '未提供'}\n- 是否合併高血壓 / 高血脂 / 體重控制：${val('dmExtra') || '未提供'}`;
+      }
+      if (base.group === '慢性腎臟病') {
+        diseaseExtra = `\n腎臟病補充資料：\n- 病期：${val('ckdStage') || '未提供'}\n- 是否有水腫：${val('edema') || '未提供'}\n- 需限制項目：${val('restriction') || '未提供'}\n- 已知檢驗或狀況：${val('labs') || '未提供'}`;
+      }
+
+      return `你是一位專業臨床營養規劃助理。請根據以下個案條件，產出一份「7 天飲食建議表」，內容需具體、可執行、符合個案狀況，並以繁體中文呈現。\n\n【個案基本資料】\n- 年齡：${base.age || '未提供'}\n- 性別：${base.sex || '未提供'}\n- 身高：${base.height || '未提供'}\n- 體重：${base.weight || '未提供'}\n- 活動量：${base.activity || '未提供'}\n- 預算：${base.budget || '未提供'}\n\n【飲食規劃方向】\n- 族群類別：${base.group}\n- 飲食目標：${base.goal}\n- 飲食型態：${base.dietType}\n- 每日餐次：${base.mealPattern}\n- 飲食情境：${base.cookStyle}\n- 輸出風格：${base.tone}\n- 過敏或忌口：${base.allergy || '無'}\n- 偏好食物或風格：${base.preference || '未提供'}\n- 目前困擾：${base.problem || '未提供'}${diseaseExtra}\n\n【請完成的任務】\n請輸出 7 天的飲食建議表，每天都要包含：\n1. 早餐\n2. 午餐\n3. 晚餐\n4. 點心\n5. 每餐設計原因\n6. 當日營養原則\n7. 可替換食材\n8. 外食替代選項\n9. 應避免的食物或吃法\n\n【格式要求】\n- 用清楚表格呈現\n- 每餐要具體到食物名稱與簡單份量描述\n- 優先使用台灣常見食材與日常外食情境\n- 不要只寫空泛詞，例如「均衡飲食」「少油少鹽」\n- 要讓一般人看得懂，也要可以直接照做\n\n【疾病調整原則】\n- 若為健康成人：以均衡、可長期執行、少加工為主\n- 若為糖尿病：請特別注意每餐醣類分配、規律進食、避免血糖大幅波動，並考慮是否有低血糖風險\n- 若為慢性腎臟病：請依提供資訊調整蛋白質、鈉、鉀、磷與液體相關建議；若資訊不足，請先指出缺少哪些關鍵資料，再提供保守版建議\n- 若為高血壓：請強調低鈉、減少加工食品與湯汁攝取\n- 若為高血脂：請強調脂肪品質、纖維與精製糖控制\n- 若為長者飲食：請考慮牙口、食慾、消化與實際進食能力\n\n【安全規則】\n- 不要提供極端節食或不合理斷食方案\n- 不要給與疾病條件衝突的飲食建議\n- 若屬慢性病、多重疾病或檢驗數值不足，請在結尾加註：此建議僅供初步飲食規劃，仍需由醫師或營養師依個人病況調整`;
+    }
+
+    document.getElementById('generateBtn').addEventListener('click', ()=>{
+      output.value = buildPrompt();
+      copyStatus.textContent = '已生成完成。';
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', async ()=>{
+      try{
+        await navigator.clipboard.writeText(output.value);
+        copyStatus.textContent = '已複製到剪貼簿。';
+      }catch(e){
+        copyStatus.textContent = '複製失敗，請手動選取文字複製。';
+      }
+    });
+
+    document.getElementById('clearBtn').addEventListener('click', ()=>{
+      document.querySelectorAll('input, textarea').forEach(el => el.value = '');
+      document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+      output.value = '';
+      copyStatus.textContent = '';
+      toggleBoxes();
+    });
+
+    document.getElementById('sampleBtn').addEventListener('click', ()=>{
+      document.getElementById('age').value = '67 歲';
+      document.getElementById('sex').value = '女性';
+      document.getElementById('activity').value = '低';
+      document.getElementById('height').value = '158 cm';
+      document.getElementById('weight').value = '60 kg';
+      document.getElementById('budget').value = '中';
+      document.getElementById('group').value = '糖尿病';
+      document.getElementById('goal').value = '穩定血糖';
+      document.getElementById('dietType').value = '葷食';
+      document.getElementById('mealPattern').value = '三餐兩點';
+      document.getElementById('cookStyle').value = '家人共餐';
+      document.getElementById('tone').value = '長者易懂版';
+      document.getElementById('allergy').value = '無';
+      document.getElementById('preference').value = '台式家常、清淡';
+      document.getElementById('problem').value = '血糖波動偏大，常外食，下午容易餓。';
+      toggleBoxes();
+      document.getElementById('dmType').value = '第 2 型糖尿病';
+      document.getElementById('dmMed').value = '是';
+      document.getElementById('dmControl').value = '是';
+      document.getElementById('dmExtra').value = '合併高血壓';
+      output.value = buildPrompt();
+      copyStatus.textContent = '已載入示範資料。';
+    });
+  </script>
+</body>
+</html>
