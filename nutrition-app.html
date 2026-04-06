@@ -384,7 +384,6 @@
 
         <div class="btns">
           <button class="primary" id="generateBtn">生成 AI 提示句</button>
-          <button class="secondary" id="sampleBtn">載入示範資料</button>
           <button class="ghost" id="clearBtn">清空欄位</button>
         </div>
 
@@ -472,30 +471,6 @@
       toggleBoxes();
     });
 
-    document.getElementById('sampleBtn').addEventListener('click', ()=>{
-      document.getElementById('age').value = '67 歲';
-      document.getElementById('sex').value = '女性';
-      document.getElementById('activity').value = '低';
-      document.getElementById('height').value = '158 cm';
-      document.getElementById('weight').value = '60 kg';
-      document.getElementById('budget').value = '中';
-      document.getElementById('group').value = '糖尿病';
-      document.getElementById('goal').value = '穩定血糖';
-      document.getElementById('dietType').value = '葷食';
-      document.getElementById('mealPattern').value = '三餐兩點';
-      document.getElementById('cookStyle').value = '家人共餐';
-      document.getElementById('tone').value = '長者易懂版';
-      document.getElementById('allergy').value = '無';
-      document.getElementById('preference').value = '台式家常、清淡';
-      document.getElementById('problem').value = '血糖波動偏大，常外食，下午容易餓。';
-      toggleBoxes();
-      document.getElementById('dmType').value = '第 2 型糖尿病';
-      document.getElementById('dmMed').value = '是';
-      document.getElementById('dmControl').value = '是';
-      document.getElementById('dmExtra').value = '合併高血壓';
-      output.value = buildPrompt();
-      copyStatus.textContent = '已載入示範資料。';
-    });
   </script>
 </body>
 </html>
