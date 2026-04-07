@@ -1,0 +1,491 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>家醫科初步診斷資料收集表 v2</title>
+  <style>
+    :root{
+      --bg:#f6f3ee;
+      --card:#fffdf9;
+      --ink:#2e2a26;
+      --sub:#6f665d;
+      --line:#ddd3c7;
+      --accent:#8a6f52;
+      --accent-soft:#f1e7da;
+      --warn:#8b3a3a;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Microsoft JhengHei",sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+      line-height:1.6;
+    }
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:24px 16px 56px;
+    }
+    .hero,.card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:20px;
+      margin-bottom:16px;
+    }
+    .hero{
+      background:linear-gradient(180deg,#faf7f2 0%,#efe6da 100%);
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:1.9rem;
+    }
+    h2{
+      margin:0 0 14px;
+      font-size:1.15rem;
+      border-left:5px solid var(--accent);
+      padding-left:10px;
+    }
+    p{margin:0}
+    .lead{color:var(--sub)}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:14px;
+    }
+    .field{grid-column:span 12}
+    .col-6{grid-column:span 6}
+    .col-4{grid-column:span 4}
+    .col-3{grid-column:span 3}
+    label{
+      display:block;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+    input[type="text"],input[type="number"],input[type="date"],select,textarea{
+      width:100%;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      background:#fff;
+      color:var(--ink);
+      font-size:.96rem;
+    }
+    textarea{
+      resize:vertical;
+      min-height:100px;
+    }
+    .lg-textarea{min-height:220px}
+    .hint{
+      margin-top:4px;
+      color:var(--sub);
+      font-size:.88rem;
+    }
+    .toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:14px 0 20px;
+    }
+    button{
+      border:1px solid var(--accent);
+      background:#fff;
+      color:var(--accent);
+      padding:10px 14px;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:.95rem;
+    }
+    button.primary{
+      background:var(--accent);
+      color:#fff;
+    }
+    .choice-group{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px 16px;
+      padding-top:4px;
+    }
+    .choice-group label{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-weight:500;
+      margin:0;
+    }
+    .mini{
+      font-size:.88rem;
+      color:var(--sub);
+    }
+    .output{
+      white-space:pre-wrap;
+      background:#fcfaf7;
+      border:1px dashed var(--line);
+      border-radius:14px;
+      padding:16px;
+      min-height:220px;
+      font-size:.95rem;
+    }
+    .warn{
+      color:var(--warn);
+      font-weight:700;
+    }
+    @media (max-width:800px){
+      .col-6,.col-4,.col-3{grid-column:span 12}
+      h1{font-size:1.55rem}
+      .wrap{padding:16px 12px 44px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>v2-3 患者自述版｜家醫科初步判讀工具</h1>
+      <p class="lead">這一版以「患者自述」為入口。先收集少量核心資料，再由 AI 進行第一輪結構化整理，輸出主訴、現病史、系統線索、紅旗訊號與待追問重點。</p>
+    </section>
+
+    <div class="toolbar">
+      <button class="primary" onclick="generatePrompt()">生成 AI 分析提示句</button>
+      <button onclick="generateDraft()">生成結構化草稿</button>
+      <button onclick="copyOutput('promptOutput')">複製提示句</button>
+      <button onclick="copyOutput('draftOutput')">複製草稿</button>
+      <button onclick="resetForm()">清空表單</button>
+    </div>
+
+    <form id="patientForm">
+      <section class="card">
+        <h2>一、最小核心資料</h2>
+        <div class="grid">
+          <div class="field col-3">
+            <label for="name">姓名 / 代稱</label>
+            <input id="name" type="text" placeholder="例如：王小明 / 個案A">
+          </div>
+          <div class="field col-3">
+            <label for="age">年齡</label>
+            <input id="age" type="number" placeholder="例如：45">
+          </div>
+          <div class="field col-3">
+            <label for="sex">性別</label>
+            <select id="sex">
+              <option value="">請選擇</option>
+              <option>男性</option>
+              <option>女性</option>
+              <option>其他 / 未提供</option>
+            </select>
+          </div>
+          <div class="field col-3">
+            <label for="visitDate">日期</label>
+            <input id="visitDate" type="date">
+          </div>
+
+          <div class="field col-6">
+            <label for="mainProblem">主要困擾</label>
+            <input id="mainProblem" type="text" placeholder="例如：胃脹、胸悶、頭暈、長期疲倦">
+          </div>
+          <div class="field col-3">
+            <label for="duration">症狀持續時間</label>
+            <input id="duration" type="text" placeholder="例如：3天、2週、半年">
+          </div>
+          <div class="field col-3">
+            <label for="speaker">敘述來源</label>
+            <select id="speaker">
+              <option value="">請選擇</option>
+              <option>患者本人</option>
+              <option>家屬代述</option>
+              <option>患者與家屬共同敘述</option>
+              <option>未提供</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>二、患者自述全文</h2>
+        <div class="field">
+          <label for="narrative">請直接貼入患者自述</label>
+          <textarea id="narrative" class="lg-textarea" placeholder="例如：這兩週一直覺得胃脹，傍晚比較明顯，有時會覺得左胸悶悶的，但轉移注意力後比較好。最近睡不好，壓力比較大。沒有發燒，但食慾好像差一點……"></textarea>
+          <div class="hint">建議直接保留患者原話與時間線，不必先整理成醫療語言。</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>三、快速危險訊號勾選</h2>
+        <div class="choice-group" id="redFlags">
+          <label><input type="checkbox" value="胸痛">胸痛</label>
+          <label><input type="checkbox" value="呼吸困難">呼吸困難</label>
+          <label><input type="checkbox" value="黑便 / 血便">黑便 / 血便</label>
+          <label><input type="checkbox" value="持續嘔吐">持續嘔吐</label>
+          <label><input type="checkbox" value="發燒">發燒</label>
+          <label><input type="checkbox" value="體重下降">體重下降</label>
+          <label><input type="checkbox" value="意識改變">意識改變</label>
+          <label><input type="checkbox" value="肢體無力 / 麻木">肢體無力 / 麻木</label>
+          <label><input type="checkbox" value="夜間痛醒">夜間痛醒</label>
+        </div>
+        <div class="hint"><span class="warn">注意：</span>此區只作快速標示，不等於確診或完整風險分層。</div>
+      </section>
+
+      <section class="card">
+        <h2>四、可選補充欄位</h2>
+        <div class="grid">
+          <div class="field col-6">
+            <label for="pmh">已知過去病史</label>
+            <textarea id="pmh" placeholder="例如：高血壓、糖尿病、胃食道逆流、焦慮症"></textarea>
+          </div>
+          <div class="field col-6">
+            <label for="meds">已知用藥 / 保健品 / 中草藥</label>
+            <textarea id="meds" placeholder="例如：降血壓藥、止痛藥、胃藥、保健食品"></textarea>
+          </div>
+          <div class="field col-6">
+            <label for="familyHistory">已知家族史</label>
+            <textarea id="familyHistory" placeholder="例如：父親糖尿病、母親心臟病、家族有癌症"></textarea>
+          </div>
+          <div class="field col-6">
+            <label for="lifePsy">生活 / 心理社會補充</label>
+            <textarea id="lifePsy" placeholder="例如：工作壓力大、最近失眠、照顧家人、抽菸、咖啡多"></textarea>
+          </div>
+          <div class="field">
+            <label for="doctorNote">醫師或助理補註</label>
+            <textarea id="doctorNote" placeholder="例如：患者敘述時間軸略混亂、家屬提及近一個月食慾變差"></textarea>
+          </div>
+        </div>
+      </section>
+    </form>
+
+    <section class="card">
+      <h2>五、輸出模式設定</h2>
+      <div class="grid">
+        <div class="field col-6">
+          <label for="includeStructure">後續臨床結構分析</label>
+          <select id="includeStructure">
+            <option value="yes">開啟</option>
+            <option value="no">關閉（只做 ICD mapping 與家醫科短版報告）</option>
+          </select>
+          <div class="hint">若關閉，AI 將優先只輸出 ICD mapping、標準診斷名詞化與家醫科短版報告。</div>
+        </div>
+        <div class="field col-6">
+          <label for="reportStyle">報告格式</label>
+          <select id="reportStyle">
+            <option value="short">家醫科短版報告</option>
+            <option value="full">完整報告</option>
+          </select>
+          <div class="hint">預設為家醫科短版報告，讓第一時間先看到可對應 ICD 的重點。</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>六、AI 分析提示句</h2>
+      <div id="promptOutput" class="output">按下上方「生成 AI 分析提示句」後，這裡會輸出可直接貼給 AI 的分析提示句，內容已強制將 ICD mapping 放在最前面。</div>
+    </section>
+
+    <section class="card">
+      <h2>七、結構化草稿（表單直出）</h2>
+      <div id="draftOutput" class="output">按下上方「生成結構化草稿」後，這裡會先依目前欄位整理出一版初步草稿。</div>
+      <div class="mini">這裡是根據你目前已填資料整理出的草稿，不是正式診斷結果。</div>
+    </section>
+  </div>
+
+  <script>
+    function v(id){ return document.getElementById(id).value.trim(); }
+    function checked(groupId){
+      return [...document.querySelectorAll(`#${groupId} input[type="checkbox"]:checked`)].map(x => x.value);
+    }
+    function safeText(t, fallback="未提供"){
+      return t ? t : fallback;
+    }
+    function copyOutput(id){
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text).then(()=>alert("已複製。")).catch(()=>alert("複製失敗，請手動複製。"));
+    }
+    function resetForm(){
+      if(!confirm("確定要清空表單內容嗎？")) return;
+      document.getElementById("patientForm").reset();
+      document.getElementById("promptOutput").textContent = "按下上方「生成 AI 分析提示句」後，這裡會輸出可直接貼給 AI 的分析提示句，內容已強制將 ICD mapping 放在最前面。";
+      document.getElementById("draftOutput").textContent = "按下上方「生成結構化草稿」後，這裡會先依目前欄位整理出一版初步草稿。";
+    }
+
+    function generatePrompt(){
+      const name = v("name");
+      const age = v("age");
+      const sex = v("sex");
+      const visitDate = v("visitDate");
+      const mainProblem = v("mainProblem");
+      const duration = v("duration");
+      const speaker = v("speaker");
+      const narrative = v("narrative");
+      const redFlags = checked("redFlags");
+      const pmh = v("pmh");
+      const meds = v("meds");
+      const familyHistory = v("familyHistory");
+      const lifePsy = v("lifePsy");
+      const doctorNote = v("doctorNote");
+      const includeStructure = v("includeStructure");
+      const reportStyle = v("reportStyle");
+
+      const structureInstruction = includeStructure === "yes"
+        ? `【第二階段：後續臨床結構分析】
+在完成 ICD mapping 與家醫科短版報告後，請再補做：
+8. 主訴整理
+9. 現病史重建
+10. 系統線索掃描
+11. 過去病史 / 用藥 / 家族史（若可辨識）
+12. 生活心理因素
+13. 紅旗訊號
+14. 症狀模式（Pattern）
+15. 病程時間軸（Timeline）
+16. 風險訊號（Red Flags）
+17. 尚需追問問題`
+        : `【第二階段：後續臨床結構分析】
+本次先不展開臨床結構分析，除非資料已非常明確且有助於說明 ICD mapping 依據。`;
+
+      const reportInstruction = reportStyle === "short"
+        ? `【報告格式要求】
+請優先使用「家醫科短版報告格式」，內容精簡、可快速閱讀，先呈現 ICD mapping 與標準診斷名詞化結果，再補必要說明。`
+        : `【報告格式要求】
+請使用完整報告格式，但仍須先呈現 ICD mapping 與標準診斷名詞化結果。`;
+
+      const prompt = `你是一位家醫科初步判讀輔助 AI。請根據以下資料進行分析。
+
+【重要原則】
+- 不直接下最終診斷
+- 必須先進行 ICD mapping
+- 必須先輸出標準診斷名詞化結果，不可只用描述性語句
+- 請使用國際通用臨床診斷名稱，英文優先，必要時可附中文
+- 若可對應 ICD，請標示 ICD-10 或 ICD-11
+- 可列多個方向，但請控制在最具代表性的 1–3 項
+- 若資料不足以進入疾病診斷，請停留在症狀層級或暫列方向，不可過度推論
+- 支持證據需採低結論式表達
+- 先完成快速臨床可用輸出，再決定是否展開後續結構分析
+
+${reportInstruction}
+
+【本次輸出順序】
+1. 標準診斷名詞化（英文優先）
+2. 可能對應 ICD-10 或 ICD-11
+3. 每一項對應的支持依據（低結論式）
+4. 目前較適合暫列於哪一層
+   - 症狀層級
+   - 疾病層級
+   - 尚不足分類
+5. 家醫科短版報告
+   - 個案基本輪廓
+   - 主訴
+   - 目前最重要問題
+   - 可對應 ICD 方向
+   - 紅旗訊號
+   - 尚需追問重點
+6. 初步鑑別方向的判讀依據
+   - 症狀模式（Pattern）
+   - 病程時間軸（Timeline）
+   - 風險訊號（Red Flags）
+7. 在上述最後加上一句：
+   「以下將以『目前資料 → 支持哪些方向』的形式，進行低結論式證據對照。」
+
+${structureInstruction}
+
+【輸入資料】
+- 姓名/代稱：${safeText(name)}
+- 年齡：${safeText(age)}
+- 性別：${safeText(sex)}
+- 日期：${safeText(visitDate)}
+- 主要困擾：${safeText(mainProblem)}
+- 症狀持續時間：${safeText(duration)}
+- 敘述來源：${safeText(speaker)}
+- 快速危險訊號勾選：${redFlags.length ? redFlags.join("、") : "未勾選"}
+- 已知過去病史：${safeText(pmh)}
+- 已知用藥 / 保健品 / 中草藥：${safeText(meds)}
+- 已知家族史：${safeText(familyHistory)}
+- 生活 / 心理社會補充：${safeText(lifePsy)}
+- 醫師或助理補註：${safeText(doctorNote)}
+
+【患者自述全文】
+${safeText(narrative, "未提供")}`;
+
+      document.getElementById("promptOutput").textContent = prompt;
+    }
+
+    function generateDraft(){
+      const name = v("name");
+      const age = v("age");
+      const sex = v("sex");
+      const visitDate = v("visitDate");
+      const mainProblem = v("mainProblem");
+      const duration = v("duration");
+      const speaker = v("speaker");
+      const narrative = v("narrative");
+      const redFlags = checked("redFlags");
+      const pmh = v("pmh");
+      const meds = v("meds");
+      const familyHistory = v("familyHistory");
+      const lifePsy = v("lifePsy");
+      const doctorNote = v("doctorNote");
+      const includeStructure = v("includeStructure");
+      const reportStyle = v("reportStyle");
+
+      const draft = `【v2-3 患者自述版｜初步結構化草稿】
+
+1. 個案基本輪廓
+姓名/代稱：${safeText(name)}
+年齡：${safeText(age)}
+性別：${safeText(sex)}
+日期：${safeText(visitDate)}
+敘述來源：${safeText(speaker)}
+
+2. 主訴
+${mainProblem ? `${mainProblem}${duration ? `，持續${duration}` : ""}` : "未明確提供"}
+
+3. 現病史重建
+${narrative ? narrative : "尚未提供患者自述全文。"}
+
+4. 系統線索掃描
+目前需由 AI 依患者自述再分流整理為全身、心血管、呼吸、腸胃、神經與心理相關線索。
+
+5. 已知過去病史
+${safeText(pmh)}
+
+6. 已知用藥史
+${safeText(meds)}
+
+7. 已知家族史
+${safeText(familyHistory)}
+
+8. 生活 / 心理社會因素
+${safeText(lifePsy)}
+
+9. 紅旗訊號
+${redFlags.length ? redFlags.join("、") : "目前未勾選明確紅旗訊號"}
+
+10. 初步問題列表（待 AI 重整）
+- ${mainProblem || "主要困擾待明確"}
+${duration ? `- 症狀持續時間：${duration}` : "- 症狀持續時間待補"}
+${redFlags.length ? `- 已有快速危險訊號標示：${redFlags.join("、")}` : "- 尚未標示危險訊號"}
+${pmh ? "- 已知過去病史需與現症狀關聯判讀" : "- 過去病史待補"}
+${meds ? "- 用藥可能影響症狀，需進一步確認" : "- 用藥史待補"}
+
+11. 尚需追問或資料缺口
+- 症狀起始方式是否突然或漸進
+- 部位、性質、嚴重度與時間節律是否清楚
+- 是否有伴隨症狀，如發燒、體重變化、噁心、嘔吐、排便改變、呼吸困難等
+- 是否有藥物新增、停藥、止痛藥使用或保健品介入
+- 是否有重要家族史、生活習慣與心理社會壓力
+- 若有紅旗訊號，需再確認時序、頻率與客觀程度
+
+12. 輸出設定
+後續臨床結構分析：${includeStructure === "yes" ? "開啟" : "關閉"}
+報告格式：${reportStyle === "short" ? "家醫科短版報告" : "完整報告"}
+
+13. 補註
+${safeText(doctorNote)}
+
+【提醒】
+- 本草稿僅為患者自述入口整理，不等於正式診斷。
+- 建議下一步以 AI 結構化抽取後，再進入精準補問。`;
+
+      document.getElementById("draftOutput").textContent = draft;
+    }
+  </script>
+</body>
+</html>
