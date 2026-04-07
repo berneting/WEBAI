@@ -1,0 +1,767 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>家醫科初步診斷資料收集表 v1</title>
+  <style>
+    :root {
+      --bg: #f6f4ef;
+      --card: #ffffff;
+      --ink: #2f2a24;
+      --sub: #6a6258;
+      --line: #d9d1c7;
+      --accent: #8a6f52;
+      --accent-2: #ede4d8;
+      --danger: #8b3a3a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC",
+        "Microsoft JhengHei", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    .wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 24px 16px 72px;
+    }
+
+    .hero {
+      background: linear-gradient(180deg, #f8f5ef 0%, #efe7db 100%);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 1.9rem;
+    }
+
+    .lead {
+      color: var(--sub);
+      margin: 0;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 16px 0 22px;
+    }
+
+    button {
+      border: 1px solid var(--accent);
+      background: var(--card);
+      color: var(--accent);
+      border-radius: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-size: 0.96rem;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    button:hover {
+      filter: brightness(0.98);
+    }
+
+    .section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .section h2 {
+      margin: 0 0 14px;
+      font-size: 1.18rem;
+      border-left: 5px solid var(--accent);
+      padding-left: 10px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+    }
+
+    .field {
+      grid-column: span 12;
+    }
+
+    .col-6 { grid-column: span 6; }
+    .col-4 { grid-column: span 4; }
+    .col-3 { grid-column: span 3; }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .hint {
+      color: var(--sub);
+      font-size: 0.88rem;
+      margin-top: 4px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.96rem;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    .choice-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      padding-top: 4px;
+    }
+
+    .choice-group label {
+      font-weight: 500;
+      margin: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mini-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      margin: 8px 0 4px;
+      color: var(--accent);
+    }
+
+    .output {
+      white-space: pre-wrap;
+      background: #fcfaf7;
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      min-height: 220px;
+      font-size: 0.95rem;
+    }
+
+    .danger {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    .footer-note {
+      color: var(--sub);
+      font-size: 0.88rem;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 800px) {
+      .col-6, .col-4, .col-3 { grid-column: span 12; }
+      .wrap { padding: 16px 12px 48px; }
+      h1 { font-size: 1.55rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <h1>家醫科初步診斷資料收集表 v1</h1>
+      <p class="lead">
+        以家醫科初步評估邏輯設計。重點在於完整蒐集基本資料、主訴、病程、危險訊號與心理社會脈絡，方便後續整理為初步診斷摘要。
+      </p>
+    </div>
+
+    <div class="toolbar">
+      <button class="primary" onclick="generateSummary()">生成結構化摘要</button>
+      <button onclick="copySummary()">複製摘要</button>
+      <button onclick="resetForm()">清空表單</button>
+    </div>
+
+    <form id="fmForm">
+      <section class="section">
+        <h2>一、基本資料</h2>
+        <div class="grid">
+          <div class="field col-3">
+            <label for="name">姓名 / 代稱</label>
+            <input id="name" type="text" placeholder="例如：王小明 / 個案A" />
+          </div>
+          <div class="field col-3">
+            <label for="age">年齡</label>
+            <input id="age" type="number" placeholder="例如：45" />
+          </div>
+          <div class="field col-3">
+            <label for="sex">性別</label>
+            <select id="sex">
+              <option value="">請選擇</option>
+              <option>男性</option>
+              <option>女性</option>
+              <option>其他 / 未提供</option>
+            </select>
+          </div>
+          <div class="field col-3">
+            <label for="visitDate">就診日期</label>
+            <input id="visitDate" type="date" />
+          </div>
+
+          <div class="field col-4">
+            <label for="job">職業</label>
+            <input id="job" type="text" placeholder="例如：上班族、退休、家管" />
+          </div>
+          <div class="field col-4">
+            <label for="living">居住狀況</label>
+            <select id="living">
+              <option value="">請選擇</option>
+              <option>獨居</option>
+              <option>與家人同住</option>
+              <option>機構</option>
+              <option>未提供</option>
+            </select>
+          </div>
+          <div class="field col-4">
+            <label for="companionship">就診方式</label>
+            <select id="companionship">
+              <option value="">請選擇</option>
+              <option>自行就診</option>
+              <option>家人陪同</option>
+              <option>照顧者陪同</option>
+              <option>未提供</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>二、主訴</h2>
+        <div class="grid">
+          <div class="field col-6">
+            <label for="chiefComplaint">主要困擾症狀</label>
+            <input id="chiefComplaint" type="text" placeholder="例如：胃脹、胸悶、頭暈" />
+          </div>
+          <div class="field col-3">
+            <label for="duration">持續時間</label>
+            <input id="duration" type="text" placeholder="例如：3天、2週、半年" />
+          </div>
+          <div class="field col-3">
+            <label for="mainConcern">最困擾的原因</label>
+            <select id="mainConcern">
+              <option value="">請選擇</option>
+              <option>疼痛</option>
+              <option>不舒服</option>
+              <option>功能受影響</option>
+              <option>擔心疾病</option>
+              <option>其他</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>三、現病史</h2>
+        <div class="grid">
+          <div class="field col-4">
+            <label for="onset">起始方式</label>
+            <select id="onset">
+              <option value="">請選擇</option>
+              <option>突然</option>
+              <option>漸進</option>
+              <option>反覆發作</option>
+              <option>不確定</option>
+            </select>
+          </div>
+          <div class="field col-4">
+            <label for="location">部位</label>
+            <input id="location" type="text" placeholder="例如：上腹、左胸、全身" />
+          </div>
+          <div class="field col-4">
+            <label for="radiation">是否放射 / 延伸</label>
+            <input id="radiation" type="text" placeholder="例如：延至背部、無" />
+          </div>
+
+          <div class="field col-6">
+            <label for="character">症狀性質</label>
+            <input id="character" type="text" placeholder="例如：悶、刺、脹、灼熱、壓迫感" />
+          </div>
+          <div class="field col-3">
+            <label for="severity">嚴重度（0-10）</label>
+            <input id="severity" type="number" min="0" max="10" placeholder="0-10" />
+          </div>
+          <div class="field col-3">
+            <label for="timing">時間變化 / 節律</label>
+            <input id="timing" type="text" placeholder="例如：傍晚較明顯、飯後加重" />
+          </div>
+
+          <div class="field col-6">
+            <label for="aggravating">惡化因素</label>
+            <textarea id="aggravating" placeholder="例如：進食後、活動後、情緒緊張時"></textarea>
+          </div>
+          <div class="field col-6">
+            <label for="relieving">緩解因素</label>
+            <textarea id="relieving" placeholder="例如：休息、排便後、轉移注意力"></textarea>
+          </div>
+
+          <div class="field">
+            <label>伴隨症狀（可多選）</label>
+            <div class="choice-group" id="associatedSymptoms">
+              <label><input type="checkbox" value="發燒">發燒</label>
+              <label><input type="checkbox" value="體重下降">體重下降</label>
+              <label><input type="checkbox" value="疲倦">疲倦</label>
+              <label><input type="checkbox" value="心悸">心悸</label>
+              <label><input type="checkbox" value="呼吸困難">呼吸困難</label>
+              <label><input type="checkbox" value="噁心">噁心</label>
+              <label><input type="checkbox" value="嘔吐">嘔吐</label>
+              <label><input type="checkbox" value="腹瀉">腹瀉</label>
+              <label><input type="checkbox" value="便秘">便秘</label>
+              <label><input type="checkbox" value="頭暈">頭暈</label>
+              <label><input type="checkbox" value="焦慮">焦慮</label>
+              <label><input type="checkbox" value="失眠">失眠</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>四、系統線索快速掃描（ROS 簡化版）</h2>
+        <div class="grid">
+          <div class="field col-3">
+            <div class="mini-title">全身</div>
+            <div class="choice-group" id="rosGeneral">
+              <label><input type="checkbox" value="發燒">發燒</label>
+              <label><input type="checkbox" value="夜間盜汗">夜間盜汗</label>
+              <label><input type="checkbox" value="體重變化">體重變化</label>
+            </div>
+          </div>
+          <div class="field col-3">
+            <div class="mini-title">心血管</div>
+            <div class="choice-group" id="rosCardio">
+              <label><input type="checkbox" value="胸痛">胸痛</label>
+              <label><input type="checkbox" value="心悸">心悸</label>
+              <label><input type="checkbox" value="下肢水腫">下肢水腫</label>
+            </div>
+          </div>
+          <div class="field col-3">
+            <div class="mini-title">呼吸</div>
+            <div class="choice-group" id="rosResp">
+              <label><input type="checkbox" value="咳嗽">咳嗽</label>
+              <label><input type="checkbox" value="喘">喘</label>
+            </div>
+          </div>
+          <div class="field col-3">
+            <div class="mini-title">腸胃</div>
+            <div class="choice-group" id="rosGI">
+              <label><input type="checkbox" value="食慾改變">食慾改變</label>
+              <label><input type="checkbox" value="腹脹">腹脹</label>
+              <label><input type="checkbox" value="排便改變">排便改變</label>
+            </div>
+          </div>
+          <div class="field">
+            <div class="mini-title">神經</div>
+            <div class="choice-group" id="rosNeuro">
+              <label><input type="checkbox" value="頭暈">頭暈</label>
+              <label><input type="checkbox" value="麻木">麻木</label>
+              <label><input type="checkbox" value="無力">無力</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>五、過去病史</h2>
+        <div class="choice-group" id="pmh">
+          <label><input type="checkbox" value="高血壓">高血壓</label>
+          <label><input type="checkbox" value="糖尿病">糖尿病</label>
+          <label><input type="checkbox" value="心臟病">心臟病</label>
+          <label><input type="checkbox" value="腸胃疾病">腸胃疾病</label>
+          <label><input type="checkbox" value="精神疾病">精神疾病</label>
+          <label><input type="checkbox" value="腎臟病">腎臟病</label>
+          <label><input type="checkbox" value="肝臟病">肝臟病</label>
+        </div>
+        <div class="field" style="margin-top: 12px;">
+          <label for="pmhOther">其他過去病史 / 手術 / 住院史</label>
+          <textarea id="pmhOther"></textarea>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>六、用藥史</h2>
+        <div class="grid">
+          <div class="field col-6">
+            <label for="chronicMeds">慢性藥物</label>
+            <textarea id="chronicMeds"></textarea>
+          </div>
+          <div class="field col-6">
+            <label for="newMeds">最近新增藥物 / 停藥</label>
+            <textarea id="newMeds"></textarea>
+          </div>
+          <div class="field col-6">
+            <label for="supplements">保健食品 / 中草藥</label>
+            <textarea id="supplements"></textarea>
+          </div>
+          <div class="field col-6">
+            <label for="allergy">藥物過敏</label>
+            <input id="allergy" type="text" placeholder="例如：NSAIDs、Penicillin、無" />
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>七、家族史</h2>
+        <div class="choice-group" id="familyHistory">
+          <label><input type="checkbox" value="心血管疾病">心血管疾病</label>
+          <label><input type="checkbox" value="糖尿病">糖尿病</label>
+          <label><input type="checkbox" value="癌症">癌症</label>
+          <label><input type="checkbox" value="精神疾病">精神疾病</label>
+          <label><input type="checkbox" value="中風">中風</label>
+        </div>
+        <div class="field" style="margin-top: 12px;">
+          <label for="familyOther">其他家族史補充</label>
+          <textarea id="familyOther"></textarea>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>八、生活與心理社會因素</h2>
+        <div class="grid">
+          <div class="field col-6">
+            <label for="habits">抽菸 / 飲酒 / 咖啡因 / 運動量</label>
+            <textarea id="habits" placeholder="例如：抽菸1包/日、少量飲酒、咖啡2杯/日、少運動"></textarea>
+          </div>
+          <div class="field col-3">
+            <label for="sleep">睡眠</label>
+            <select id="sleep">
+              <option value="">請選擇</option>
+              <option>良好</option>
+              <option>易醒</option>
+              <option>失眠</option>
+              <option>嗜睡</option>
+              <option>未提供</option>
+            </select>
+          </div>
+          <div class="field col-3">
+            <label for="stress">主要壓力來源</label>
+            <select id="stress">
+              <option value="">請選擇</option>
+              <option>工作</option>
+              <option>家庭</option>
+              <option>經濟</option>
+              <option>照顧負擔</option>
+              <option>無明顯</option>
+              <option>未提供</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="psychosocial">心理社會補充</label>
+            <textarea id="psychosocial" placeholder="例如：近期重大事件、人際衝突、照顧壓力、情緒變化"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>九、紅旗症狀</h2>
+        <div class="choice-group" id="redFlags">
+          <label><input type="checkbox" value="不明原因體重下降">不明原因體重下降</label>
+          <label><input type="checkbox" value="持續發燒">持續發燒</label>
+          <label><input type="checkbox" value="黑便 / 血便">黑便 / 血便</label>
+          <label><input type="checkbox" value="持續嘔吐">持續嘔吐</label>
+          <label><input type="checkbox" value="夜間痛醒">夜間痛醒</label>
+          <label><input type="checkbox" value="神經缺損">神經缺損</label>
+          <label><input type="checkbox" value="嚴重呼吸困難">嚴重呼吸困難</label>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>十、醫師觀察與生命徵象</h2>
+        <div class="grid">
+          <div class="field col-6">
+            <label for="observation">一般外觀 / 精神狀態 / 痛苦表情 / 活動能力</label>
+            <textarea id="observation"></textarea>
+          </div>
+          <div class="field col-6">
+            <div class="grid">
+              <div class="field col-6">
+                <label for="bp">血壓</label>
+                <input id="bp" type="text" placeholder="例如：130/80 mmHg" />
+              </div>
+              <div class="field col-6">
+                <label for="hr">心跳</label>
+                <input id="hr" type="text" placeholder="例如：78 /min" />
+              </div>
+              <div class="field col-6">
+                <label for="rr">呼吸</label>
+                <input id="rr" type="text" placeholder="例如：18 /min" />
+              </div>
+              <div class="field col-6">
+                <label for="temp">體溫</label>
+                <input id="temp" type="text" placeholder="例如：36.8°C" />
+              </div>
+              <div class="field col-12">
+                <label for="bmi">BMI</label>
+                <input id="bmi" type="text" placeholder="例如：23.1" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>十一、初步整理</h2>
+        <div class="grid">
+          <div class="field col-6">
+            <label for="problemList">初步問題整理（Problem List）</label>
+            <textarea id="problemList" placeholder="每行一項，例如：&#10;1. 上腹脹痛&#10;2. 便秘&#10;3. 睡眠差"></textarea>
+          </div>
+          <div class="field col-6">
+            <label for="ddx">初步鑑別方向（Differential）</label>
+            <textarea id="ddx" placeholder="每行一項，例如：&#10;1. 功能性消化不良&#10;2. GERD&#10;3. 焦慮相關身體症狀"></textarea>
+          </div>
+          <div class="field col-6">
+            <label for="dangerToRuleOut">需排除危險疾病</label>
+            <textarea id="dangerToRuleOut"></textarea>
+          </div>
+          <div class="field col-6">
+            <label for="dataGaps">資料不足處 / 尚需追問</label>
+            <textarea id="dataGaps"></textarea>
+          </div>
+        </div>
+      </section>
+    </form>
+
+    <section class="section">
+      <h2>結構化摘要輸出</h2>
+      <div id="summaryOutput" class="output">按下「生成結構化摘要」後，這裡會自動整理成可供複製的門診摘要格式。</div>
+      <div class="footer-note">
+        註：本工具為資料整理用途，不直接下診斷，也不提供治療建議。
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function getValue(id) {
+      return document.getElementById(id)?.value?.trim() || "";
+    }
+
+    function getCheckedValues(groupId) {
+      return [...document.querySelectorAll(`#${groupId} input[type="checkbox"]:checked`)]
+        .map(el => el.value);
+    }
+
+    function formatLine(label, value) {
+      return value ? `${label}：${value}` : "";
+    }
+
+    function joinOrNA(arr) {
+      return arr.length ? arr.join("、") : "未明確提供";
+    }
+
+    function generateSummary() {
+      const name = getValue("name");
+      const age = getValue("age");
+      const sex = getValue("sex");
+      const visitDate = getValue("visitDate");
+      const job = getValue("job");
+      const living = getValue("living");
+      const companionship = getValue("companionship");
+
+      const chiefComplaint = getValue("chiefComplaint");
+      const duration = getValue("duration");
+      const mainConcern = getValue("mainConcern");
+
+      const onset = getValue("onset");
+      const location = getValue("location");
+      const radiation = getValue("radiation");
+      const character = getValue("character");
+      const severity = getValue("severity");
+      const timing = getValue("timing");
+      const aggravating = getValue("aggravating");
+      const relieving = getValue("relieving");
+      const associatedSymptoms = getCheckedValues("associatedSymptoms");
+
+      const rosGeneral = getCheckedValues("rosGeneral");
+      const rosCardio = getCheckedValues("rosCardio");
+      const rosResp = getCheckedValues("rosResp");
+      const rosGI = getCheckedValues("rosGI");
+      const rosNeuro = getCheckedValues("rosNeuro");
+
+      const pmh = getCheckedValues("pmh");
+      const pmhOther = getValue("pmhOther");
+
+      const chronicMeds = getValue("chronicMeds");
+      const newMeds = getValue("newMeds");
+      const supplements = getValue("supplements");
+      const allergy = getValue("allergy");
+
+      const familyHistory = getCheckedValues("familyHistory");
+      const familyOther = getValue("familyOther");
+
+      const habits = getValue("habits");
+      const sleep = getValue("sleep");
+      const stress = getValue("stress");
+      const psychosocial = getValue("psychosocial");
+
+      const redFlags = getCheckedValues("redFlags");
+
+      const observation = getValue("observation");
+      const bp = getValue("bp");
+      const hr = getValue("hr");
+      const rr = getValue("rr");
+      const temp = getValue("temp");
+      const bmi = getValue("bmi");
+
+      const problemList = getValue("problemList");
+      const ddx = getValue("ddx");
+      const dangerToRuleOut = getValue("dangerToRuleOut");
+      const dataGaps = getValue("dataGaps");
+
+      const basicProfile = [
+        name ? `姓名/代稱：${name}` : "",
+        age ? `年齡：${age}` : "",
+        sex ? `性別：${sex}` : "",
+        visitDate ? `就診日期：${visitDate}` : "",
+        job ? `職業：${job}` : "",
+        living ? `居住狀況：${living}` : "",
+        companionship ? `就診方式：${companionship}` : ""
+      ].filter(Boolean).join("；");
+
+      const hpi = [
+        chiefComplaint ? `主訴為${chiefComplaint}` : "",
+        duration ? `持續${duration}` : "",
+        mainConcern ? `最困擾原因偏向${mainConcern}` : "",
+        onset ? `起始方式為${onset}` : "",
+        location ? `部位在${location}` : "",
+        radiation ? `放射/延伸：${radiation}` : "",
+        character ? `症狀性質為${character}` : "",
+        severity ? `嚴重度約${severity}/10` : "",
+        timing ? `時間變化：${timing}` : "",
+        aggravating ? `惡化因素：${aggravating}` : "",
+        relieving ? `緩解因素：${relieving}` : "",
+        associatedSymptoms.length ? `伴隨症狀包括${associatedSymptoms.join("、")}` : ""
+      ].filter(Boolean).join("；");
+
+      const ros = [
+        `全身：${joinOrNA(rosGeneral)}`,
+        `心血管：${joinOrNA(rosCardio)}`,
+        `呼吸：${joinOrNA(rosResp)}`,
+        `腸胃：${joinOrNA(rosGI)}`,
+        `神經：${joinOrNA(rosNeuro)}`
+      ].join("\n");
+
+      const pmhText = [
+        pmh.length ? `已知過去病史：${pmh.join("、")}` : "已知過去病史：未明確提供",
+        pmhOther ? `補充：${pmhOther}` : ""
+      ].filter(Boolean).join("；");
+
+      const medsText = [
+        chronicMeds ? `慢性藥物：${chronicMeds}` : "慢性藥物：未明確提供",
+        newMeds ? `最近新增/停藥：${newMeds}` : "",
+        supplements ? `保健食品/中草藥：${supplements}` : "",
+        allergy ? `藥物過敏：${allergy}` : ""
+      ].filter(Boolean).join("；");
+
+      const familyText = [
+        familyHistory.length ? `家族史：${familyHistory.join("、")}` : "家族史：未明確提供",
+        familyOther ? `補充：${familyOther}` : ""
+      ].filter(Boolean).join("；");
+
+      const psychosocialText = [
+        habits ? `生活習慣：${habits}` : "",
+        sleep ? `睡眠：${sleep}` : "",
+        stress ? `壓力來源：${stress}` : "",
+        psychosocial ? `心理社會補充：${psychosocial}` : ""
+      ].filter(Boolean).join("；");
+
+      const vitalsText = [
+        bp ? `BP ${bp}` : "",
+        hr ? `HR ${hr}` : "",
+        rr ? `RR ${rr}` : "",
+        temp ? `Temp ${temp}` : "",
+        bmi ? `BMI ${bmi}` : ""
+      ].filter(Boolean).join("；");
+
+      const summary = `【家醫科初步評估摘要】
+
+1. 個案基本輪廓
+${basicProfile || "資料未完整提供。"}
+
+2. 主訴與目前問題
+${hpi || "主訴與現病史資料不足。"}
+
+3. 系統線索快速掃描
+${ros}
+
+4. 過去病史 / 用藥重點
+${pmhText}
+${medsText}
+
+5. 家族史與心理社會因素
+${familyText}
+${psychosocialText || "心理社會資料未完整提供。"}
+
+6. 紅旗症狀
+${redFlags.length ? redFlags.join("、") : "目前未勾選明確紅旗症狀。"}
+
+7. 醫師觀察與生命徵象
+${observation || "醫師觀察未填。"}
+${vitalsText || "生命徵象未填。"}
+
+8. 初步問題整理
+${problemList || "未填。"}
+
+9. 初步鑑別方向
+${ddx || "未填。"}
+
+10. 需優先排除之危險疾病
+${dangerToRuleOut || "未填。"}
+
+11. 資料缺口 / 尚需追問
+${dataGaps || "未填。"}
+
+【提醒】
+- 本摘要僅作初步資料整理，不直接下診斷。
+- 若存在紅旗症狀，應優先確認其時序、嚴重度與相關客觀檢查資料。`;
+
+      document.getElementById("summaryOutput").textContent = summary;
+    }
+
+    function copySummary() {
+      const text = document.getElementById("summaryOutput").textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("摘要已複製。");
+      }).catch(() => {
+        alert("複製失敗，請手動選取內容。");
+      });
+    }
+
+    function resetForm() {
+      if (!confirm("確定要清空目前表單內容嗎？")) return;
+      document.getElementById("fmForm").reset();
+      document.getElementById("summaryOutput").textContent =
+        "按下「生成結構化摘要」後，這裡會自動整理成可供複製的門診摘要格式。";
+    }
+  </script>
+</body>
+</html>
