@@ -1,0 +1,589 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>文言文提示句工具</title>
+  <style>
+    :root{
+      --bg:#f6f2ea;
+      --panel:#fffdf8;
+      --ink:#2d2a26;
+      --soft:#6b6258;
+      --line:#d8cfc2;
+      --accent:#8b6f47;
+      --accent-2:#b7986b;
+      --shadow:0 12px 28px rgba(66, 49, 25, .08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Noto Serif TC","PingFang TC","Microsoft JhengHei",serif;
+      background:
+        radial-gradient(circle at top left, rgba(183,152,107,.16), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(139,111,71,.11), transparent 24%),
+        var(--bg);
+      color:var(--ink);
+      line-height:1.7;
+    }
+    .wrap{
+      max-width:1240px;
+      margin:0 auto;
+      padding:28px 20px 56px;
+    }
+    .hero{
+      background:linear-gradient(135deg, rgba(139,111,71,.12), rgba(255,255,255,.75));
+      border:1px solid rgba(139,111,71,.18);
+      border-radius:24px;
+      padding:28px 28px 22px;
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(1.8rem,3vw,2.7rem);
+      line-height:1.2;
+      letter-spacing:.03em;
+    }
+    .sub{
+      margin:0;
+      color:var(--soft);
+      font-size:1rem;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:20px;
+      align-items:start;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+    }
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
+    }
+    .section-title{
+      margin:0 0 14px;
+      font-size:1.08rem;
+      letter-spacing:.04em;
+      color:#4c3c27;
+    }
+    .field{
+      margin-bottom:14px;
+    }
+    .field label{
+      display:block;
+      font-weight:700;
+      margin-bottom:7px;
+      font-size:.96rem;
+    }
+    .hint{
+      color:var(--soft);
+      font-size:.88rem;
+      margin-top:5px;
+    }
+    textarea, select, input[type="text"], input[type="number"]{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px 13px;
+      font-size:0.98rem;
+      background:#fff;
+      color:var(--ink);
+      outline:none;
+      transition:.18s ease;
+      font-family:inherit;
+    }
+    textarea:focus, select:focus, input:focus{
+      border-color:var(--accent-2);
+      box-shadow:0 0 0 4px rgba(183,152,107,.15);
+    }
+    textarea{
+      min-height:180px;
+      resize:vertical;
+    }
+    .two{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+    .three{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width: 760px){
+      .two,.three{grid-template-columns:1fr}
+    }
+    .check-row{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:10px 14px;
+      margin-top:6px;
+    }
+    @media (max-width:700px){
+      .check-row{grid-template-columns:1fr}
+    }
+    .check{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#fff;
+    }
+    .check input{
+      margin-top:4px;
+      transform:scale(1.05);
+      accent-color:var(--accent);
+    }
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+    button{
+      border:none;
+      border-radius:12px;
+      padding:12px 16px;
+      font-size:0.96rem;
+      font-weight:700;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+    .primary{
+      background:linear-gradient(135deg, var(--accent), #6f5638);
+      color:#fff;
+    }
+    .primary:hover{transform:translateY(-1px)}
+    .secondary{
+      background:#efe7d9;
+      color:#4f402d;
+    }
+    .secondary:hover{background:#e7dcc9}
+    .ghost{
+      background:#fff;
+      color:#5d5348;
+      border:1px solid var(--line);
+    }
+    .output{
+      min-height:340px;
+      white-space:pre-wrap;
+      background:#fff;
+      border:1px dashed var(--accent-2);
+      border-radius:16px;
+      padding:16px;
+      font-size:0.98rem;
+      line-height:1.78;
+    }
+    .mini{
+      font-size:.86rem;
+      color:var(--soft);
+    }
+    .footer-note{
+      margin-top:14px;
+      color:var(--soft);
+      font-size:.9rem;
+    }
+    .badge{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      background:#efe7d9;
+      color:#5c4727;
+      font-size:.83rem;
+      margin-bottom:10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="badge">Classical Chinese Prompt Builder</div>
+      <h1>文言文提示句工具</h1>
+      <p class="sub">可將白話、半文半白、混合文體，轉為可控的文言文生成提示句。重點控制文體、濃度、語氣、視角、長度、節奏與修辭密度，並可加入保留原意象、忠實轉寫或文學再創等條件。</p>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2 class="section-title">一、原文與核心設定</h2>
+
+        <div class="field">
+          <label for="sourceText">原文輸入</label>
+          <textarea id="sourceText" placeholder="請貼上欲轉寫為文言文的原文，可為白話文、半文半白、混合文體、敘事段落、散文、小說片段、評論等。"></textarea>
+          <div class="hint">建議輸入完整段落，模型較能判斷語義重心、情感走向與句法節奏。</div>
+        </div>
+
+        <div class="three">
+          <div class="field">
+            <label for="genre">文體類型</label>
+            <select id="genre">
+              <option>古文散體</option>
+              <option>筆記體</option>
+              <option>史傳體</option>
+              <option>序跋體</option>
+              <option>論說體</option>
+              <option>駢文體</option>
+              <option>詩性古文</option>
+              <option>章回敘事體</option>
+              <option>碑誌銘文體</option>
+              <option>尺牘書信體</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="density">文言濃度</label>
+            <select id="density">
+              <option>淺文言</option>
+              <option selected>中文言</option>
+              <option>濃文言</option>
+              <option>高古濃文言</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="era">時代風格</label>
+            <select id="era">
+              <option>不限</option>
+              <option>先秦</option>
+              <option>漢魏</option>
+              <option selected>唐宋</option>
+              <option>明清</option>
+              <option>現代仿古</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="three">
+          <div class="field">
+            <label for="tone">文章語氣</label>
+            <select id="tone">
+              <option selected>平敘雅正</option>
+              <option>冷靜克制</option>
+              <option>沈鬱哀感</option>
+              <option>蒼涼悲慨</option>
+              <option>疏淡清雅</option>
+              <option>莊重肅穆</option>
+              <option>雄渾激昂</option>
+              <option>婉約含蓄</option>
+              <option>諷喻微刺</option>
+              <option>議論明晰</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="length">文章長度</label>
+            <select id="length">
+              <option>極簡</option>
+              <option selected>簡約</option>
+              <option>平衡</option>
+              <option>展開</option>
+              <option>較長篇幅</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="viewpoint">敘事視角</label>
+            <select id="viewpoint">
+              <option selected>保留原視角</option>
+              <option>第一人稱（余／予／吾）</option>
+              <option>第三人稱（其人／某）</option>
+              <option>旁觀敘事</option>
+              <option>史書客觀記錄</option>
+              <option>無主體抒寫</option>
+            </select>
+          </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top:18px;">二、文學控制參數</h2>
+
+        <div class="three">
+          <div class="field">
+            <label for="tension">句子張力</label>
+            <select id="tension">
+              <option>平穩</option>
+              <option selected>凝練</option>
+              <option>舒展</option>
+              <option>峻拔</option>
+              <option>高張力</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="rhythm">句式節奏</label>
+            <select id="rhythm">
+              <option>自然散行</option>
+              <option selected>短句為主</option>
+              <option>長短交錯</option>
+              <option>四字節奏偏多</option>
+              <option>對偶感較強</option>
+              <option>駢儷節奏</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="rhetoric">修辭密度</label>
+            <select id="rhetoric">
+              <option>極簡平實</option>
+              <option selected>適度修辭</option>
+              <option>偏高修辭</option>
+              <option>華麗繁富</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="two">
+          <div class="field">
+            <label for="imagery">保留原意象程度</label>
+            <select id="imagery">
+              <option selected>高度保留</option>
+              <option>大致保留</option>
+              <option>可重新整飾</option>
+              <option>可文學再創</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="faithfulness">轉寫策略</label>
+            <select id="faithfulness">
+              <option selected>忠實轉寫</option>
+              <option>忠實中可微幅潤飾</option>
+              <option>偏重文學化改寫</option>
+              <option>文學再創優先</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="two">
+          <div class="field">
+            <label for="paragraphs">段落規劃</label>
+            <select id="paragraphs">
+              <option>單段成文</option>
+              <option selected>依內容自然分段</option>
+              <option>兩段</option>
+              <option>三段</option>
+              <option>四段以上</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="audience">適用用途</label>
+            <select id="audience">
+              <option selected>一般文學轉寫</option>
+              <option>古文練習</option>
+              <option>小說片段改寫</option>
+              <option>散文升格</option>
+              <option>書信序跋</option>
+              <option>研究教學示例</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="keywords">可選：核心關鍵字／必保留詞</label>
+          <input id="keywords" type="text" placeholder="例如：木棉、街道、春天、灰塵、口罩、工人、敲落" />
+          <div class="hint">以頓號、逗號或空格分隔皆可。可用來限制模型不要偏離原文核心物象。</div>
+        </div>
+
+        <div class="field">
+          <label for="avoid">可選：避免事項</label>
+          <input id="avoid" type="text" placeholder="例如：不要過度典故化、不要加入未出現人物、不要寫得像詩、避免浮誇詞藻" />
+        </div>
+
+        <div class="field">
+          <label for="extra">可選：額外指令</label>
+          <textarea id="extra" style="min-height:100px;" placeholder="例如：保留原文的冷感與城市壓迫感；避免勸說語氣；句尾不必皆作收束；必要時可略帶史傳感。"></textarea>
+        </div>
+
+        <div class="field">
+          <label>輸出附加要求</label>
+          <div class="check-row">
+            <label class="check"><input type="checkbox" id="chkExplain" checked> <span>附上「轉寫說明」，簡述採用之文體與轉寫策略</span></label>
+            <label class="check"><input type="checkbox" id="chkCompare"> <span>附上白話對照版，便於比較</span></label>
+            <label class="check"><input type="checkbox" id="chkAlt"> <span>提供兩個版本：較忠實版／較文學版</span></label>
+            <label class="check"><input type="checkbox" id="chkTitle"> <span>自擬一個古雅標題</span></label>
+            <label class="check"><input type="checkbox" id="chkSyntax"> <span>保留較清楚可讀性，避免艱澀過度</span></label>
+            <label class="check"><input type="checkbox" id="chkNoModern"> <span>避免明顯現代口語與網路語感</span></label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" onclick="generatePrompt()">生成提示句</button>
+          <button class="secondary" onclick="copyPrompt()">複製提示句</button>
+          <button class="ghost" onclick="loadSample()">載入示範資料</button>
+          <button class="ghost" onclick="resetAll()">全部清空</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="section-title">三、生成結果</h2>
+        <div id="output" class="output">按下「生成提示句」後，這裡會自動產出可直接貼給 AI 使用的完整提示句。</div>
+
+        <div class="actions">
+          <button class="secondary" onclick="copyPrompt()">複製結果</button>
+        </div>
+
+        <p class="footer-note">
+          專業建議：若你之後要擴充成系列工具，可再加入「是否使用典故」、「是否允許省略主語」、「是否保留原句順序」、「是否加入對偶」、「是否偏向韓柳古文、明清小品、史傳敘述」等高階控制。
+        </p>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function listKeywords(raw){
+      if(!raw.trim()) return "";
+      const items = raw.split(/[、,，;\s]+/).filter(Boolean);
+      return items.length ? items.join("、") : raw.trim();
+    }
+
+    function buildChecks(){
+      const items = [];
+      if ($("chkExplain").checked) items.push("請於正文後附上簡短「轉寫說明」，交代所採文體、濃度、節奏與主要轉寫策略。");
+      if ($("chkCompare").checked) items.push("請於最後附上一版較自然的白話對照，便於比讀。");
+      if ($("chkAlt").checked) items.push("請同時提供兩個版本：A 為較忠實轉寫版，B 為較具文學再創色彩之版本。");
+      if ($("chkTitle").checked) items.push("請為本文自擬一個古雅而不浮誇的標題。");
+      if ($("chkSyntax").checked) items.push("整體須保持可讀性，不可為求古奧而過度艱澀。");
+      if ($("chkNoModern").checked) items.push("避免出現明顯現代口語、網路語感與過度當代書寫習慣。");
+      return items;
+    }
+
+    function generatePrompt(){
+      const sourceText = $("sourceText").value.trim();
+      const genre = $("genre").value;
+      const density = $("density").value;
+      const era = $("era").value;
+      const tone = $("tone").value;
+      const length = $("length").value;
+      const viewpoint = $("viewpoint").value;
+      const tension = $("tension").value;
+      const rhythm = $("rhythm").value;
+      const rhetoric = $("rhetoric").value;
+      const imagery = $("imagery").value;
+      const faithfulness = $("faithfulness").value;
+      const paragraphs = $("paragraphs").value;
+      const audience = $("audience").value;
+      const keywords = listKeywords($("keywords").value);
+      const avoid = $("avoid").value.trim();
+      const extra = $("extra").value.trim();
+      const checkItems = buildChecks();
+
+      let prompt = "";
+      prompt += "你是一位精通中國古典文體、古文語法、文言修辭與現代文本轉寫的文學改寫模型。\n";
+      prompt += "請將以下原文改寫為文言文，並嚴格依照所給條件控制輸出。\n\n";
+
+      prompt += "【任務目標】\n";
+      prompt += "將原文由白話文、半文半白或混合文體，轉寫為具有一致風格的文言文版本。\n";
+      prompt += "重點不只是詞語替換，而是整體文體、句法節奏、語氣、修辭密度與敘事視角的系統性轉換。\n\n";
+
+      prompt += "【文體設定】\n";
+      prompt += `- 文體類型：${genre}\n`;
+      prompt += `- 文言濃度：${density}\n`;
+      prompt += `- 時代風格：${era}\n`;
+      prompt += `- 文章語氣：${tone}\n`;
+      prompt += `- 文章長度：${length}\n`;
+      prompt += `- 敘事視角：${viewpoint}\n`;
+      prompt += `- 句子張力：${tension}\n`;
+      prompt += `- 句式節奏：${rhythm}\n`;
+      prompt += `- 修辭密度：${rhetoric}\n`;
+      prompt += `- 保留原意象程度：${imagery}\n`;
+      prompt += `- 轉寫策略：${faithfulness}\n`;
+      prompt += `- 段落規劃：${paragraphs}\n`;
+      prompt += `- 使用情境：${audience}\n\n`;
+
+      prompt += "【轉寫原則】\n";
+      prompt += "- 不可僅做逐字替換，須使全文語氣、句法與風格一致。\n";
+      prompt += "- 應優先保留原文核心語意、事件順序與情感走向，除非設定允許較高程度再創。\n";
+      prompt += "- 文言表達須自然，不可堆砌辭藻，不可流於偽古文。\n";
+      prompt += "- 若原文具有現代意象，應盡量以古雅方式轉述，但仍須保留其辨識度。\n";
+      prompt += "- 可依所選文體調整句長、停頓、對偶感與敘述密度。\n";
+
+      if (keywords) {
+        prompt += `- 以下關鍵字或意象請優先保留或妥善轉化：${keywords}。\n`;
+      }
+      if (avoid) {
+        prompt += `- 以下事項請避免：${avoid}。\n`;
+      }
+      if (extra) {
+        prompt += `- 其他補充要求：${extra}\n`;
+      }
+      if (checkItems.length) {
+        prompt += "\n【附加輸出要求】\n";
+        checkItems.forEach(item => prompt += `- ${item}\n`);
+      }
+
+      prompt += "\n【輸出格式】\n";
+      prompt += "請直接輸出完成稿，不要先解釋方法。\n";
+      prompt += "除非上方要求附加說明或對照版本，否則不要加入多餘前言。\n\n";
+
+      prompt += "【原文】\n";
+      prompt += sourceText ? sourceText : "（尚未填入原文，請先貼上文本）";
+
+      $("output").textContent = prompt;
+    }
+
+    async function copyPrompt(){
+      const text = $("output").textContent;
+      try{
+        await navigator.clipboard.writeText(text);
+        alert("提示句已複製。");
+      }catch(e){
+        alert("複製失敗，請手動選取文字複製。");
+      }
+    }
+
+    function loadSample(){
+      $("sourceText").value = "春天來得很輕。先是風軟了一點，然後木棉花忽然亮起來。那種亮並不張揚，是在灰塵與水泥之間忽然長出一種不合時宜的熱烈。行人並沒有停下來看，他們忙著過斑馬線，低頭滑手機，或把口罩往上拉一點。城市並不需要春天，它只需要時間表。";
+      $("genre").value = "詩性古文";
+      $("density").value = "中文言";
+      $("era").value = "唐宋";
+      $("tone").value = "冷靜克制";
+      $("length").value = "平衡";
+      $("viewpoint").value = "旁觀敘事";
+      $("tension").value = "凝練";
+      $("rhythm").value = "長短交錯";
+      $("rhetoric").value = "適度修辭";
+      $("imagery").value = "高度保留";
+      $("faithfulness").value = "忠實中可微幅潤飾";
+      $("paragraphs").value = "依內容自然分段";
+      $("audience").value = "散文升格";
+      $("keywords").value = "春天、木棉、灰塵、水泥、行人、口罩、城市、時間表";
+      $("avoid").value = "不要過度典故化、不要寫成近體詩、避免浮誇抒情";
+      $("extra").value = "保留原文中的城市冷感與不合時宜的熱烈感，避免變成純抒情山水語境。";
+      $("chkExplain").checked = true;
+      $("chkCompare").checked = false;
+      $("chkAlt").checked = true;
+      $("chkTitle").checked = true;
+      $("chkSyntax").checked = true;
+      $("chkNoModern").checked = true;
+      generatePrompt();
+    }
+
+    function resetAll(){
+      ["sourceText","keywords","avoid","extra"].forEach(id => $(id).value = "");
+      $("genre").selectedIndex = 0;
+      $("density").value = "中文言";
+      $("era").value = "唐宋";
+      $("tone").value = "平敘雅正";
+      $("length").value = "簡約";
+      $("viewpoint").value = "保留原視角";
+      $("tension").value = "凝練";
+      $("rhythm").value = "短句為主";
+      $("rhetoric").value = "適度修辭";
+      $("imagery").value = "高度保留";
+      $("faithfulness").value = "忠實轉寫";
+      $("paragraphs").value = "依內容自然分段";
+      $("audience").value = "一般文學轉寫";
+      $("chkExplain").checked = true;
+      $("chkCompare").checked = false;
+      $("chkAlt").checked = false;
+      $("chkTitle").checked = false;
+      $("chkSyntax").checked = true;
+      $("chkNoModern").checked = true;
+      $("output").textContent = "按下「生成提示句」後，這裡會自動產出可直接貼給 AI 使用的完整提示句。";
+    }
+  </script>
+</body>
+</html>
