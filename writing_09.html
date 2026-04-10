@@ -1,0 +1,601 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>童話創作器</title>
+  <style>
+    :root{
+      --bg:#f6f2ea;
+      --panel:#fffdf8;
+      --ink:#2d2a26;
+      --soft:#6b6258;
+      --line:#d8cfc2;
+      --accent:#8b6f47;
+      --accent-2:#b7986b;
+      --accent-3:#efe7d9;
+      --shadow:0 12px 28px rgba(66, 49, 25, .08);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:"Noto Serif TC","PingFang TC","Microsoft JhengHei",serif;
+      background:
+        radial-gradient(circle at top left, rgba(183,152,107,.16), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(139,111,71,.11), transparent 24%),
+        var(--bg);
+      color:var(--ink);
+      line-height:1.7;
+    }
+
+    .wrap{
+      max-width:1280px;
+      margin:0 auto;
+      padding:28px 20px 56px;
+    }
+
+    .hero{
+      background:linear-gradient(135deg, rgba(139,111,71,.12), rgba(255,255,255,.78));
+      border:1px solid rgba(139,111,71,.18);
+      border-radius:24px;
+      padding:28px 28px 22px;
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
+    }
+
+    .badge{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      background:#efe7d9;
+      color:#5c4727;
+      font-size:.83rem;
+      margin-bottom:10px;
+    }
+
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(1.8rem,3vw,2.7rem);
+      line-height:1.2;
+      letter-spacing:.03em;
+    }
+
+    .sub{
+      margin:0;
+      color:var(--soft);
+      font-size:1rem;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1.08fr .92fr;
+      gap:20px;
+      align-items:start;
+    }
+
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+    }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
+    }
+
+    .section-title{
+      margin:0 0 14px;
+      font-size:1.08rem;
+      letter-spacing:.04em;
+      color:#4c3c27;
+    }
+
+    .field{
+      margin-bottom:14px;
+    }
+
+    .field label{
+      display:block;
+      font-weight:700;
+      margin-bottom:7px;
+      font-size:.96rem;
+    }
+
+    .hint{
+      color:var(--soft);
+      font-size:.88rem;
+      margin-top:5px;
+    }
+
+    textarea, select, input[type="text"]{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px 13px;
+      font-size:0.98rem;
+      background:#fff;
+      color:var(--ink);
+      outline:none;
+      transition:.18s ease;
+      font-family:inherit;
+    }
+
+    textarea:focus, select:focus, input:focus{
+      border-color:var(--accent-2);
+      box-shadow:0 0 0 4px rgba(183,152,107,.15);
+    }
+
+    textarea{
+      min-height:130px;
+      resize:vertical;
+    }
+
+    #output{
+      min-height:520px;
+    }
+
+    .two{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .three{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:12px;
+    }
+
+    @media (max-width: 760px){
+      .two,.three{grid-template-columns:1fr}
+    }
+
+    .check-row{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:10px 14px;
+      margin-top:6px;
+    }
+
+    @media (max-width:700px){
+      .check-row{grid-template-columns:1fr}
+    }
+
+    .check{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#fff;
+    }
+
+    .check input{
+      margin-top:4px;
+      transform:scale(1.05);
+      accent-color:var(--accent);
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+
+    button{
+      border:none;
+      border-radius:12px;
+      padding:12px 16px;
+      font-size:0.96rem;
+      font-weight:700;
+      cursor:pointer;
+      transition:.18s ease;
+      font-family:inherit;
+    }
+
+    .primary{
+      background:linear-gradient(135deg, var(--accent), #6f5638);
+      color:#fff;
+    }
+
+    .primary:hover{ transform:translateY(-1px); }
+
+    .secondary{
+      background:#efe7d9;
+      color:#4f402d;
+    }
+
+    .secondary:hover{
+      background:#e7dcc9;
+    }
+
+    .ghost{
+      background:#fff;
+      color:#5d5348;
+      border:1px solid var(--line);
+    }
+
+    .ghost:hover{
+      background:#faf7f1;
+    }
+
+    .output{
+      white-space:pre-wrap;
+      background:#fff;
+      border:1px dashed var(--accent-2);
+      border-radius:16px;
+      padding:16px;
+      font-size:0.98rem;
+      line-height:1.82;
+    }
+
+    .footer-note{
+      margin-top:14px;
+      color:var(--soft);
+      font-size:.9rem;
+    }
+
+    .mini{
+      font-size:.86rem;
+      color:var(--soft);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="badge">Fairy Tale Prompt Builder</div>
+      <h1>童話創作器</h1>
+      <p class="sub">
+        將你的創作動機、活動描述、角色設定、象徵主題與文體偏好，整合成可直接貼給 AI 的完整童話創作提示句。
+        本版比照你先前喜歡的版面風格，補入更多控制格與補充指令欄，便於做現代童話、寓言、誌記體或文言童話。
+      </p>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2 class="section-title">一、故事核心設定</h2>
+
+        <div class="field">
+          <label for="motivation">創作動機</label>
+          <textarea id="motivation" placeholder="例如：想寫一則有關守信、失約與集體報應的故事；或想透過童話處理成長、孤獨、交換、慾望等主題。"></textarea>
+          <div class="hint">這一格可放你真正想寫的核心動因，不只是表面題材。</div>
+        </div>
+
+        <div class="field">
+          <label for="activity">活動描述／故事情境</label>
+          <textarea id="activity" placeholder="請描述故事發生的情境、事件、活動過程或原始素材。可貼白話故事概念、比賽題目、課堂活動、經典童話改寫動機等。"></textarea>
+          <div class="hint">若你已有一段故事概要，可完整貼在這裡，模型會較容易抓住情節。</div>
+        </div>
+
+        <div class="three">
+          <div class="field">
+            <label for="theme">核心主題</label>
+            <input id="theme" type="text" placeholder="例如：承諾、貪心、試煉、交換、失去" />
+          </div>
+          <div class="field">
+            <label for="symbol">象徵主題</label>
+            <input id="symbol" type="text" placeholder="例如：笛聲、鞋、鏡子、森林、門" />
+          </div>
+          <div class="field">
+            <label for="ending">結尾傾向</label>
+            <select id="ending">
+              <option selected>開放式</option>
+              <option>溫柔收束</option>
+              <option>寓言式警示</option>
+              <option>反轉收尾</option>
+              <option>悲傷餘韻</option>
+              <option>希望感結尾</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="three">
+          <div class="field">
+            <label for="character">主要角色</label>
+            <input id="character" type="text" placeholder="例如：孤女、花衣人、老鞋匠、會說話的烏鴉" />
+          </div>
+          <div class="field">
+            <label for="scene">主要場景</label>
+            <input id="scene" type="text" placeholder="例如：山谷小鎮、港邊、森林、屋簷下" />
+          </div>
+          <div class="field">
+            <label for="conflict">主要衝突</label>
+            <input id="conflict" type="text" placeholder="例如：失信、誘惑、階級差異、內心恐懼" />
+          </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top:18px;">二、童話文體與敘事控制</h2>
+
+        <div class="three">
+          <div class="field">
+            <label for="style">童話織體</label>
+            <select id="style">
+              <option selected>現代童話散文體</option>
+              <option>寓言體</option>
+              <option>誌記體</option>
+              <option>詩化童話</option>
+              <option>文言童話</option>
+              <option>志怪體</option>
+              <option>蒙學節奏體</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="tone">文章語氣</label>
+            <select id="tone">
+              <option selected>溫柔含蓄</option>
+              <option>神秘幽微</option>
+              <option>冷靜寓言感</option>
+              <option>清淡疏雅</option>
+              <option>童真明亮</option>
+              <option>蒼涼哀感</option>
+              <option>哲理深沉</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="length">篇幅長度</label>
+            <select id="length">
+              <option>極短</option>
+              <option selected>短篇</option>
+              <option>中篇</option>
+              <option>較完整展開</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="three">
+          <div class="field">
+            <label for="viewpoint">敘事視角</label>
+            <select id="viewpoint">
+              <option selected>第三人稱</option>
+              <option>第一人稱</option>
+              <option>旁觀敘事</option>
+              <option>寓言式敘述者</option>
+              <option>保留原視角</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="rhythm">節奏感</label>
+            <select id="rhythm">
+              <option selected>自然流動</option>
+              <option>短句偏多</option>
+              <option>凝練簡短</option>
+              <option>較有詩意停頓</option>
+              <option>古典節奏感</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="symbolDensity">象徵密度</label>
+            <select id="symbolDensity">
+              <option>低</option>
+              <option selected>中</option>
+              <option>高</option>
+              <option>很高</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="two">
+          <div class="field">
+            <label for="audience">作品閱讀定位</label>
+            <select id="audience">
+              <option selected>一般文學讀者</option>
+              <option>兒少可讀但非低幼</option>
+              <option>偏成人寓言</option>
+              <option>文學獎導向</option>
+              <option>課堂創作使用</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="languageStyle">語言風格</label>
+            <select id="languageStyle">
+              <option selected>現代文學語言</option>
+              <option>偏古雅</option>
+              <option>半文半白</option>
+              <option>純文言傾向</option>
+            </select>
+          </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top:18px;">三、補充條件與限制</h2>
+
+        <div class="field">
+          <label for="keywords">必保留關鍵字／意象</label>
+          <input id="keywords" type="text" placeholder="例如：笛聲、紅鞋、月光、井、灰燼、木門" />
+          <div class="hint">可用頓號、逗號、空格分隔，讓模型盡量不要偏離你要的物象。</div>
+        </div>
+
+        <div class="field">
+          <label for="avoid">避免事項</label>
+          <input id="avoid" type="text" placeholder="例如：避免說教過重、不要太像兒童教材、不要加入現代網路語感、不要過度煽情" />
+        </div>
+
+        <div class="field">
+          <label for="extra">補充指令</label>
+          <textarea id="extra" placeholder="例如：希望有文學獎感，不要太直白點出寓意；保留故事暗流；結尾不要講破；可帶一點古典色彩；不要讓角色太臉譜化。"></textarea>
+        </div>
+
+        <div class="field">
+          <label>附加輸出要求</label>
+          <div class="check-row">
+            <label class="check"><input type="checkbox" id="chkTitle" checked> <span>自擬文學感標題</span></label>
+            <label class="check"><input type="checkbox" id="chkSummary"> <span>附上 1 則主題說明</span></label>
+            <label class="check"><input type="checkbox" id="chkAlt"> <span>提供兩個版本：直敘版／文學版</span></label>
+            <label class="check"><input type="checkbox" id="chkMoral"> <span>不要直接說破寓意</span></label>
+            <label class="check"><input type="checkbox" id="chkClassic"> <span>可適度加入古典修辭感</span></label>
+            <label class="check"><input type="checkbox" id="chkReadable" checked> <span>保持可讀性，不要過度艱澀</span></label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" onclick="generatePrompt()">生成提示句</button>
+          <button class="secondary" onclick="copyPrompt()">複製提示句</button>
+          <button class="ghost" onclick="resetAll()">全部清空</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="section-title">四、生成結果</h2>
+        <div id="output" class="output">按下「生成提示句」後，這裡會自動產出可直接貼給 AI 的完整童話創作提示句。</div>
+
+        <div class="actions">
+          <button class="secondary" onclick="copyPrompt()">複製結果</button>
+          <button class="ghost" onclick="resetOutput()">清空結果</button>
+        </div>
+
+        <p class="footer-note">
+          本版版面風格是依照你貼來的「古文節奏生成器」那種米色、留白、雙欄與補充控制格的邏輯重新整理而成，並改為童話創作流程。你提供的參考樣式見 fileciteturn0file0
+        </p>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function listKeywords(raw){
+      if(!raw.trim()) return "";
+      const items = raw.split(/[、,，;；\s]+/).filter(Boolean);
+      return items.length ? items.join("、") : raw.trim();
+    }
+
+    function buildChecks(){
+      const items = [];
+      if ($("chkTitle").checked) items.push("請先為作品自擬一個具有文學感、但不浮誇的標題。");
+      if ($("chkSummary").checked) items.push("正文後請補上一則簡短主題說明，說明作品所處理的核心意涵。");
+      if ($("chkAlt").checked) items.push("請同時提供兩個版本：A 為較直敘清晰版，B 為較具文學感與象徵性的版本。");
+      if ($("chkMoral").checked) items.push("不要直接說破寓意，應讓主題透過情節、象徵與氛圍自然浮現。");
+      if ($("chkClassic").checked) items.push("可適度加入古典修辭感，但不可影響整體自然度。");
+      if ($("chkReadable").checked) items.push("整體需保持可讀性與流暢度，不要為求華麗而失去清楚性。");
+      return items;
+    }
+
+    function generatePrompt(){
+      const motivation = $("motivation").value.trim();
+      const activity = $("activity").value.trim();
+      const theme = $("theme").value.trim();
+      const symbol = $("symbol").value.trim();
+      const ending = $("ending").value;
+      const character = $("character").value.trim();
+      const scene = $("scene").value.trim();
+      const conflict = $("conflict").value.trim();
+      const style = $("style").value;
+      const tone = $("tone").value;
+      const length = $("length").value;
+      const viewpoint = $("viewpoint").value;
+      const rhythm = $("rhythm").value;
+      const symbolDensity = $("symbolDensity").value;
+      const audience = $("audience").value;
+      const languageStyle = $("languageStyle").value;
+      const keywords = listKeywords($("keywords").value);
+      const avoid = $("avoid").value.trim();
+      const extra = $("extra").value.trim();
+      const checkItems = buildChecks();
+
+      let prompt = "";
+      prompt += "你是一位擅長童話、寓言、象徵敘事與文學改寫的創作模型。\n";
+      prompt += "請根據以下設定，創作一篇具有完整文學感的童話作品。\n\n";
+
+      prompt += "【任務目標】\n";
+      prompt += "將使用者提供的創作動機、情境、角色與象徵主題，整合為一篇可讀性高、具文學性與童話質地的作品。\n";
+      prompt += "作品不可只是兒童故事式交代事件，而須具備童話作為文學體裁所具有的象徵性、寓言性、敘事完整性與情感層次。\n\n";
+
+      prompt += "【創作素材】\n";
+      prompt += `- 創作動機：${motivation || "未填"}\n`;
+      prompt += `- 活動描述／故事情境：${activity || "未填"}\n`;
+      prompt += `- 核心主題：${theme || "未填"}\n`;
+      prompt += `- 象徵主題：${symbol || "未填"}\n`;
+      prompt += `- 主要角色：${character || "未填"}\n`;
+      prompt += `- 主要場景：${scene || "未填"}\n`;
+      prompt += `- 主要衝突：${conflict || "未填"}\n`;
+      prompt += `- 結尾傾向：${ending}\n\n`;
+
+      prompt += "【文體與敘事設定】\n";
+      prompt += `- 童話織體：${style}\n`;
+      prompt += `- 文章語氣：${tone}\n`;
+      prompt += `- 篇幅長度：${length}\n`;
+      prompt += `- 敘事視角：${viewpoint}\n`;
+      prompt += `- 節奏感：${rhythm}\n`;
+      prompt += `- 象徵密度：${symbolDensity}\n`;
+      prompt += `- 閱讀定位：${audience}\n`;
+      prompt += `- 語言風格：${languageStyle}\n\n`;
+
+      prompt += "【寫作要求】\n";
+      prompt += "- 作品需具備完整的童話感，而非僅是梗概。\n";
+      prompt += "- 需有清楚的情節推進、氛圍營造與結尾收束。\n";
+      prompt += "- 應透過角色、場景、事件與象徵物自然呈現主題，不要寫成直接說理。\n";
+      prompt += "- 可保留想像性、奇異性與寓言感，但整體仍需文學化。\n";
+      prompt += "- 若使用較高象徵密度，請保持可讀性，不可堆疊得太生硬。\n";
+
+      if (keywords) {
+        prompt += `- 以下關鍵字或意象請盡量保留或妥善轉化：${keywords}。\n`;
+      }
+      if (avoid) {
+        prompt += `- 以下事項請避免：${avoid}。\n`;
+      }
+      if (extra) {
+        prompt += `- 其他補充指令：${extra}\n`;
+      }
+
+      if (checkItems.length) {
+        prompt += "\n【附加輸出要求】\n";
+        checkItems.forEach(item => {
+          prompt += `- ${item}\n`;
+        });
+      }
+
+      prompt += "\n【輸出格式】\n";
+      prompt += "- 直接輸出完成作品。\n";
+      prompt += "- 除非有要求附加版本或主題說明，否則不要加入多餘前言。\n";
+      prompt += "- 若作品偏文學獎風格，請特別重視語感、結構與收尾餘韻。\n";
+
+      $("output").textContent = prompt;
+    }
+
+    async function copyPrompt(){
+      const text = $("output").textContent;
+      try{
+        await navigator.clipboard.writeText(text);
+        alert("提示句已複製。");
+      }catch(e){
+        alert("複製失敗，請手動選取文字複製。");
+      }
+    }
+
+    function resetOutput(){
+      $("output").textContent = "按下「生成提示句」後，這裡會自動產出可直接貼給 AI 的完整童話創作提示句。";
+    }
+
+    function resetAll(){
+      ["motivation","activity","theme","symbol","character","scene","conflict","keywords","avoid","extra"].forEach(id => $(id).value = "");
+
+      $("ending").value = "開放式";
+      $("style").value = "現代童話散文體";
+      $("tone").value = "溫柔含蓄";
+      $("length").value = "短篇";
+      $("viewpoint").value = "第三人稱";
+      $("rhythm").value = "自然流動";
+      $("symbolDensity").value = "中";
+      $("audience").value = "一般文學讀者";
+      $("languageStyle").value = "現代文學語言";
+
+      $("chkTitle").checked = true;
+      $("chkSummary").checked = false;
+      $("chkAlt").checked = false;
+      $("chkMoral").checked = false;
+      $("chkClassic").checked = false;
+      $("chkReadable").checked = true;
+
+      resetOutput();
+    }
+  </script>
+</body>
+</html>
