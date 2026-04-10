@@ -3,82 +3,119 @@
 <head>
 <meta charset="UTF-8">
 <title>三字經生成提示詞工具</title>
+
 <style>
 body{
     font-family: "Noto Sans TC", sans-serif;
-    background:#f6f8fb;
-    padding:20px;
+    background: linear-gradient(135deg,#fceabb,#f8b500);
+    margin:0;
+    padding:30px;
 }
 
 .container{
     max-width:900px;
     margin:auto;
     background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,0.08);
+    padding:25px;
+    border-radius:18px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
 }
 
 h1{
     text-align:center;
+    color:#ff7a18;
+}
+
+label{
+    font-weight:bold;
+    display:block;
+    margin-top:15px;
+    margin-bottom:5px;
 }
 
 textarea{
     width:100%;
     height:120px;
-    margin-top:5px;
-    margin-bottom:15px;
-    font-size:16px;
+    border-radius:12px;
+    border:2px solid #ffd27f;
     padding:10px;
+    font-size:15px;
 }
 
 select{
     width:100%;
-    padding:8px;
-    margin-bottom:15px;
+    padding:10px;
+    border-radius:12px;
+    border:2px solid #ffd27f;
     font-size:15px;
 }
 
-button{
-    background:#4a90e2;
-    color:white;
-    border:none;
-    padding:12px;
-    width:100%;
-    font-size:16px;
-    border-radius:5px;
-    cursor:pointer;
+.button-group{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
 }
 
-button:hover{
-    background:#357abd;
+button{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    font-size:15px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.generate{
+    background:#ff7a18;
+    color:white;
+}
+
+.copy{
+    background:#00c9a7;
+    color:white;
+}
+
+.clear{
+    background:#ff5e78;
+    color:white;
 }
 
 .output{
     margin-top:20px;
-    background:#f0f4ff;
+    background:#fff8e8;
+    border-radius:12px;
     padding:15px;
     white-space:pre-wrap;
-    border-radius:8px;
-    font-size:15px;
+    border:2px dashed #ffd27f;
 }
 </style>
+
 </head>
 
 <body>
+
 <div class="container">
 
 <h1>三字經生成提示詞工具</h1>
 
 <label>創作主題 / 素材</label>
-<textarea id="content" placeholder="請貼入主題或素材，例如：春天城市、花衣人故事、人生哲理..."></textarea>
+<textarea id="content" placeholder="請貼入主題或創作素材..."></textarea>
 
 <label>語氣風格</label>
 <select id="tone">
 <option>典雅古訓</option>
 <option>哲理格言</option>
-<option>敘事簡述</option>
 <option>詩意意境</option>
+<option>敘事簡述</option>
+</select>
+
+<label>視角模式</label>
+<select id="view">
+<option>經典命題視角</option>
+<option>第三人稱敘事</option>
+<option>勸戒語氣</option>
+<option>詩意描寫</option>
 </select>
 
 <label>意境強度</label>
@@ -96,22 +133,28 @@ button:hover{
 <option>強反轉</option>
 </select>
 
-<button onclick="generatePrompt()">產生三字經提示詞</button>
+<div class="button-group">
+<button class="generate" onclick="generatePrompt()">生成提示句</button>
+<button class="copy" onclick="copyPrompt()">複製提示句</button>
+<button class="clear" onclick="clearAll()">清空畫面</button>
+</div>
 
 <div class="output" id="output"></div>
 
 </div>
 
 <script>
+
 function generatePrompt(){
 
 let content = document.getElementById("content").value;
 let tone = document.getElementById("tone").value;
+let view = document.getElementById("view").value;
 let mood = document.getElementById("mood").value;
 let tension = document.getElementById("tension").value;
 
 let prompt = `
-你是一位精通中國古典蒙學文體的文學生成模型。
+你是一位精通中國古典蒙學與文言節奏的文學生成模型。
 
 請將以下素材轉寫為「三字經風格」文本。
 
@@ -121,11 +164,14 @@ ${content}
 【文體要求】
 - 每句三字
 - 節奏整齊
-- 可多行排列
-- 具教育或文學意味
+- 多行排列
+- 具文學濃度與意境
 
 【語氣風格】
 ${tone}
+
+【敘事視角】
+${view}
 
 【意境強度】
 ${mood}
@@ -133,19 +179,33 @@ ${mood}
 【張力程度】
 ${tension}
 
-【語言要求】
+【語言限制】
 - 使用文言風格
-- 避免現代白話句
-- 優先使用意象表達
+- 避免現代口語
 - 可使用對偶與遞進
+- 保持三字節奏一致
 
 【輸出格式】
-三字句逐行排列
-不需額外解釋
+僅輸出三字句
+逐行排列
+不可附加解釋
 `;
 
 document.getElementById("output").textContent = prompt;
+
 }
+
+function copyPrompt(){
+let text = document.getElementById("output").textContent;
+navigator.clipboard.writeText(text);
+alert("提示句已複製！");
+}
+
+function clearAll(){
+document.getElementById("content").value="";
+document.getElementById("output").textContent="";
+}
+
 </script>
 
 </body>
