@@ -21,3 +21,9 @@
 ## [writing_05](https://berneting.github.io/WEBAI/writing_05.html) 文學創作動機轉名家風格文章提示詞生成器
 
 ## [writing_06](https://berneting.github.io/WEBAI/writing_06.html) 作詩提示詞工具 
+
+## [writing_07](https://berneting.github.io/WEBAI/writing_06.html)文言文古風創作工具
+
+## [writing_08](https://berneting.github.io/WEBAI/writing_06.html) 三字經／多字節奏文言文創作
+
+## [writing_09](https://berneting.github.io/WEBAI/writing_06.html) 童話故事提示工具
