@@ -1,0 +1,780 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>繪本生成器</title>
+  <style>
+    :root{
+      --bg:#f6f2ea;
+      --panel:#fffdf8;
+      --ink:#2d2a26;
+      --soft:#6b6258;
+      --line:#d8cfc2;
+      --accent:#8b6f47;
+      --accent-2:#b7986b;
+      --accent-3:#efe7d9;
+      --shadow:0 12px 28px rgba(66, 49, 25, .08);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:"Noto Serif TC","PingFang TC","Microsoft JhengHei",serif;
+      background:
+        radial-gradient(circle at top left, rgba(183,152,107,.16), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(139,111,71,.11), transparent 24%),
+        var(--bg);
+      color:var(--ink);
+      line-height:1.7;
+    }
+
+    .wrap{
+      max-width:1280px;
+      margin:0 auto;
+      padding:28px 20px 56px;
+    }
+
+    .hero{
+      background:linear-gradient(135deg, rgba(139,111,71,.12), rgba(255,255,255,.78));
+      border:1px solid rgba(139,111,71,.18);
+      border-radius:24px;
+      padding:28px 28px 22px;
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
+    }
+
+    .badge{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      background:#efe7d9;
+      color:#5c4727;
+      font-size:.83rem;
+      margin-bottom:10px;
+    }
+
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(1.8rem,3vw,2.7rem);
+      line-height:1.2;
+      letter-spacing:.03em;
+    }
+
+    .sub{
+      margin:0;
+      color:var(--soft);
+      font-size:1rem;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1.08fr .92fr;
+      gap:20px;
+      align-items:start;
+    }
+
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+    }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
+    }
+
+    .section-title{
+      margin:0 0 14px;
+      font-size:1.08rem;
+      letter-spacing:.04em;
+      color:#4c3c27;
+    }
+
+    .field{
+      margin-bottom:14px;
+    }
+
+    .field label{
+      display:block;
+      font-weight:700;
+      margin-bottom:7px;
+      font-size:.96rem;
+    }
+
+    .hint{
+      color:var(--soft);
+      font-size:.88rem;
+      margin-top:5px;
+    }
+
+    textarea, select, input[type="text"], input[type="number"]{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px 13px;
+      font-size:0.98rem;
+      background:#fff;
+      color:var(--ink);
+      outline:none;
+      transition:.18s ease;
+      font-family:inherit;
+    }
+
+    textarea:focus, select:focus, input:focus{
+      border-color:var(--accent-2);
+      box-shadow:0 0 0 4px rgba(183,152,107,.15);
+    }
+
+    textarea{
+      min-height:150px;
+      resize:vertical;
+    }
+
+    .two{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .three{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:12px;
+    }
+
+    @media (max-width: 760px){
+      .two,.three{grid-template-columns:1fr}
+    }
+
+    .check-row{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:10px 14px;
+      margin-top:6px;
+    }
+
+    @media (max-width:700px){
+      .check-row{grid-template-columns:1fr}
+    }
+
+    .check{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#fff;
+    }
+
+    .check input{
+      margin-top:4px;
+      transform:scale(1.05);
+      accent-color:var(--accent);
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+
+    button{
+      border:none;
+      border-radius:12px;
+      padding:12px 16px;
+      font-size:0.96rem;
+      font-weight:700;
+      cursor:pointer;
+      transition:.18s ease;
+      font-family:inherit;
+    }
+
+    .primary{
+      background:linear-gradient(135deg, var(--accent), #6f5638);
+      color:#fff;
+    }
+
+    .primary:hover{ transform:translateY(-1px); }
+
+    .secondary{
+      background:#efe7d9;
+      color:#4f402d;
+    }
+
+    .secondary:hover{ background:#e7dcc9; }
+
+    .ghost{
+      background:#fff;
+      color:#5d5348;
+      border:1px solid var(--line);
+    }
+
+    .ghost:hover{ background:#faf7f1; }
+
+    .output{
+      min-height:460px;
+      white-space:pre-wrap;
+      background:#fff;
+      border:1px dashed var(--accent-2);
+      border-radius:16px;
+      padding:16px;
+      font-size:0.98rem;
+      line-height:1.82;
+    }
+
+    .sample{
+      margin-top:14px;
+      padding:14px 15px;
+      border-radius:14px;
+      background:#faf6ef;
+      border:1px solid #eadfcd;
+      color:#5f5548;
+      font-size:.92rem;
+    }
+
+    .footer-note{
+      margin-top:14px;
+      color:var(--soft);
+      font-size:.9rem;
+    }
+
+    .mini{
+      font-size:.86rem;
+      color:var(--soft);
+    }
+
+    .pill{
+      display:inline-block;
+      padding:3px 10px;
+      border-radius:999px;
+      background:#f3ecdf;
+      margin:0 6px 6px 0;
+      font-size:.83rem;
+      color:#66523a;
+      border:1px solid #e6d7c0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="badge">Picture Book Prompt Builder</div>
+      <h1>繪本生成器</h1>
+      <p class="sub">
+        可把故事動機、主題、角色、頁數、分頁情節與插畫風格，整合成可直接貼給 AI 的繪本提示句。
+        本版沿用你喜歡的暖色調、圓角卡片與留白版面，重點強化「頁數控制、故事邏輯、角色一致性、風格選擇」。
+      </p>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2 class="section-title">一、故事核心設定</h2>
+
+        <div class="field">
+          <label for="motivation">創作動機／故事主題</label>
+          <textarea id="motivation" placeholder="例如：想做一個關於害羞小熊學會表達情緒的繪本；或想寫祖孫互動、友情、勇氣、失落、成長、森林冒險等主題。"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="summary">故事簡述／事件描述</label>
+          <textarea id="summary" placeholder="請描述故事主要情節，例如角色遇到什麼問題、如何嘗試、如何轉折、最後如何收束。也可只貼零散素材，系統會幫你整理成繪本提示句。"></textarea>
+          <div class="hint">若想讓繪本更有邏輯，建議至少提供：角色、問題、行動、轉折、結尾。</div>
+        </div>
+
+        <div class="three">
+          <div class="field">
+            <label for="theme">繪本類型</label>
+            <select id="theme">
+              <option selected>溫暖童話</option>
+              <option>情緒成長</option>
+              <option>友情互助</option>
+              <option>家庭關係</option>
+              <option>品格教育</option>
+              <option>冒險故事</option>
+              <option>自然生態</option>
+              <option>長者與孩子互動</option>
+              <option>療癒抒情</option>
+              <option>奇幻想像</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="audience">閱讀年齡</label>
+            <select id="audience">
+              <option>幼兒</option>
+              <option selected>兒童</option>
+              <option>低年級</option>
+              <option>中年級</option>
+              <option>高年級</option>
+              <option>親子共讀</option>
+              <option>一般大眾</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="tone">故事語氣</label>
+            <select id="tone">
+              <option selected>溫暖柔和</option>
+              <option>療癒安靜</option>
+              <option>活潑可愛</option>
+              <option>神秘夢幻</option>
+              <option>幽默逗趣</option>
+              <option>淡淡憂傷</option>
+              <option>勇敢振作</option>
+              <option>莊重抒情</option>
+            </select>
+          </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top:18px;">二、角色與場景</h2>
+
+        <div class="three">
+          <div class="field">
+            <label for="character">主角</label>
+            <input id="character" type="text" placeholder="例如：小狐狸、小熊、小女孩、祖母與孩子、白鵠、機器人" />
+          </div>
+          <div class="field">
+            <label for="personality">主角特質</label>
+            <input id="personality" type="text" placeholder="例如：害羞、好奇、溫柔、固執、勇敢、慢熱" />
+          </div>
+          <div class="field">
+            <label for="supporting">配角／陪伴者</label>
+            <input id="supporting" type="text" placeholder="例如：小鳥、祖父、朋友、森林動物、妹妹" />
+          </div>
+        </div>
+
+        <div class="two">
+          <div class="field">
+            <label for="scene">主要場景</label>
+            <input id="scene" type="text" placeholder="例如：森林、湖邊、老榕樹下、城市街道、山谷小鎮、雪地" />
+          </div>
+          <div class="field">
+            <label for="season">季節／時間感</label>
+            <select id="season">
+              <option selected>不限</option>
+              <option>春天</option>
+              <option>夏天</option>
+              <option>秋天</option>
+              <option>冬天</option>
+              <option>清晨</option>
+              <option>傍晚</option>
+              <option>夜晚</option>
+              <option>雨天</option>
+            </select>
+          </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top:18px;">三、頁數與故事結構</h2>
+
+        <div class="three">
+          <div class="field">
+            <label for="pageCount">總頁數</label>
+            <select id="pageCount">
+              <option>4</option>
+              <option selected>5</option>
+              <option>6</option>
+              <option>8</option>
+              <option>10</option>
+              <option>12</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="ending">結局走向</label>
+            <select id="ending">
+              <option selected>溫暖收束</option>
+              <option>快樂結局</option>
+              <option>開放式結尾</option>
+              <option>淡淡餘韻</option>
+              <option>成長後回望</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="logic">敘事邏輯強度</label>
+            <select id="logic">
+              <option>鬆散抒情</option>
+              <option selected>清楚完整</option>
+              <option>分鏡明確</option>
+              <option>教育導向明確</option>
+              <option>情緒推進優先</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="pagePlan">可選：逐頁情節規劃</label>
+          <textarea id="pagePlan" placeholder="例如：
+第1頁：介紹小熊與安靜的森林
+第2頁：小熊想說話卻說不出口
+第3頁：遇見願意陪伴的小鳥
+第4頁：小熊終於說出心裡的話
+第5頁：森林變得明亮，留下溫暖結尾"></textarea>
+          <div class="hint">若不填，系統會依頁數自動安排「介紹 → 問題 → 嘗試 → 轉折 → 收束」之類的結構。</div>
+        </div>
+
+        <h2 class="section-title" style="margin-top:18px;">四、插畫風格與視覺控制</h2>
+
+        <div class="three">
+          <div class="field">
+            <label for="style">主要風格</label>
+            <select id="style">
+              <option selected>吉卜力風格</option>
+              <option>水彩繪本風</option>
+              <option>經典童書風</option>
+              <option>柔和粉彩風</option>
+              <option>鉛筆手繪風</option>
+              <option>復古童話風</option>
+              <option>日系可愛風</option>
+              <option>迪士尼動畫感</option>
+              <option>剪紙拼貼風</option>
+              <option>蠟筆畫風</option>
+              <option>極簡扁平插畫風</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="colorMood">色調</label>
+            <select id="colorMood">
+              <option selected>柔和暖色</option>
+              <option>春日明亮</option>
+              <option>森林綠意</option>
+              <option>奶油粉彩</option>
+              <option>夕陽金色</option>
+              <option>淡霧冷色</option>
+              <option>復古紙本色</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="detail">畫面細節</label>
+            <select id="detail">
+              <option>簡潔</option>
+              <option selected>平衡</option>
+              <option>細膩</option>
+              <option>高細節</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="two">
+          <div class="field">
+            <label for="ratio">畫面比例</label>
+            <select id="ratio">
+              <option selected>正方形</option>
+              <option>4:3</option>
+              <option>16:9</option>
+              <option>直式插畫</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="consistency">角色一致性要求</label>
+            <select id="consistency">
+              <option selected>高度一致</option>
+              <option>大致一致</option>
+              <option>風格感一致即可</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="keywords">可選：關鍵意象／必保留元素</label>
+          <input id="keywords" type="text" placeholder="例如：老榕樹、羽毛、月光、木棉、鞦韆、湖水、紅圍巾、紙船" />
+        </div>
+
+        <div class="field">
+          <label for="extra">可選：補充指令</label>
+          <textarea id="extra" style="min-height:110px;" placeholder="例如：畫面不要太擁擠；表情要溫柔；背景有風與樹影；避免過度華麗；每頁要像真正的繪本跨頁插畫；文字不要太說教。"></textarea>
+        </div>
+
+        <div class="field">
+          <label>附加輸出要求</label>
+          <div class="check-row">
+            <label class="check"><input type="checkbox" id="chkTitle" checked> <span>幫我替繪本取一個書名</span></label>
+            <label class="check"><input type="checkbox" id="chkSummary" checked> <span>先整理出故事大綱，再生成提示句</span></label>
+            <label class="check"><input type="checkbox" id="chkExact" checked> <span>明確限制只能輸出指定頁數，不可自行增加</span></label>
+            <label class="check"><input type="checkbox" id="chkPageText"> <span>每頁附簡短文字內容建議</span></label>
+            <label class="check"><input type="checkbox" id="chkStyleMix"> <span>允許混合兩種相近插畫風格</span></label>
+            <label class="check"><input type="checkbox" id="chkWarm"> <span>優先保留溫暖、療癒、柔和的畫面氣質</span></label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" onclick="generatePrompt()">生成提示句</button>
+          <button class="secondary" onclick="copyPrompt()">複製提示句</button>
+          <button class="ghost" onclick="resetAll()">全部清空</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="section-title">五、生成結果</h2>
+        <div id="output" class="output">按下「生成提示句」後，這裡會自動產出可直接貼給 AI 使用的完整繪本提示句。</div>
+
+        <div class="actions">
+          <button class="secondary" onclick="copyPrompt()">複製結果</button>
+          <button class="ghost" onclick="resetOutput()">清空結果</button>
+        </div>
+
+        <div class="sample">
+          <strong>可控制重點</strong><br>
+          <span class="pill">頁數固定</span>
+          <span class="pill">逐頁分鏡</span>
+          <span class="pill">角色一致</span>
+          <span class="pill">插畫風格</span>
+          <span class="pill">色調控制</span>
+          <span class="pill">情緒推進</span>
+          <span class="pill">教育或童話導向</span>
+        </div>
+
+        <p class="footer-note">
+          本版設計邏輯參考你先前喜歡的暖色圓框文學工具版面，並延伸成繪本結構控制器。你先前提供的文學工具版型就是這種暖米色背景、圓角卡片、分欄與生成區配置。fileciteturn1file0
+        </p>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function listKeywords(raw){
+      if(!raw.trim()) return "";
+      const items = raw.split(/[、,，;；\\s]+/).filter(Boolean);
+      return items.length ? items.join("、") : raw.trim();
+    }
+
+    function styleMap(style){
+      const map = {
+        "吉卜力風格":"Studio Ghibli inspired, warm natural lighting, whimsical atmosphere, soft hand-painted background",
+        "水彩繪本風":"watercolor children's picture book, soft brush texture, gentle layered color",
+        "經典童書風":"classic children's book illustration, storybook composition, warm and readable",
+        "柔和粉彩風":"soft pastel picture book, gentle tones, dreamy and calming",
+        "鉛筆手繪風":"pencil sketch illustration, hand-drawn lines, literary picture book feeling",
+        "復古童話風":"vintage fairy tale illustration, textured paper feel, nostalgic storybook mood",
+        "日系可愛風":"Japanese kawaii picture book, cute characters, clean and soft composition",
+        "迪士尼動畫感":"animated feature illustration, expressive characters, cinematic emotional storytelling",
+        "剪紙拼貼風":"paper collage children's book, layered cut-paper texture, handcrafted visual style",
+        "蠟筆畫風":"crayon drawing illustration, childlike warmth, playful handmade texture",
+        "極簡扁平插畫風":"flat illustration, simple shapes, clear educational picture book style"
+      };
+      return map[style] || style;
+    }
+
+    function defaultPageStructure(count){
+      const n = Number(count);
+      const structures = {
+        4: [
+          "Page 1: introduce the main character and setting",
+          "Page 2: the problem or wish appears",
+          "Page 3: the character takes action and faces a turning point",
+          "Page 4: a warm or meaningful ending"
+        ],
+        5: [
+          "Page 1: introduce the main character and atmosphere",
+          "Page 2: a problem, longing, or emotional difficulty appears",
+          "Page 3: the character tries to respond or move forward",
+          "Page 4: a turning point, discovery, or emotional release",
+          "Page 5: a warm ending with visual afterglow"
+        ],
+        6: [
+          "Page 1: introduce the character and setting",
+          "Page 2: show daily life or emotional background",
+          "Page 3: the problem or conflict appears",
+          "Page 4: the character tries to solve it",
+          "Page 5: a change, understanding, or turning point happens",
+          "Page 6: a gentle and complete ending"
+        ],
+        8: [
+          "Page 1: introduction of character and world",
+          "Page 2: emotional background or desire",
+          "Page 3: the problem appears",
+          "Page 4: the character hesitates or struggles",
+          "Page 5: help, discovery, or companionship appears",
+          "Page 6: a turning point changes the emotional direction",
+          "Page 7: resolution and emotional opening",
+          "Page 8: ending scene with warmth and lingering feeling"
+        ],
+        10: [
+          "Page 1: establish the character and setting",
+          "Page 2: daily routine or mood",
+          "Page 3: hint of an inner wish or lack",
+          "Page 4: the problem becomes clear",
+          "Page 5: the character attempts something",
+          "Page 6: difficulty increases",
+          "Page 7: support or insight appears",
+          "Page 8: turning point and change",
+          "Page 9: resolution",
+          "Page 10: final emotional image with warmth"
+        ],
+        12: [
+          "Page 1: opening atmosphere and world",
+          "Page 2: main character introduction",
+          "Page 3: daily life and emotional tone",
+          "Page 4: the problem appears",
+          "Page 5: confusion or hesitation",
+          "Page 6: first attempt",
+          "Page 7: deeper challenge or emotional tension",
+          "Page 8: support, memory, or discovery",
+          "Page 9: second attempt with change",
+          "Page 10: breakthrough",
+          "Page 11: resolution",
+          "Page 12: poetic closing image"
+        ]
+      };
+      return (structures[n] || structures[5]).join("\\n");
+    }
+
+    function buildChecks(){
+      const items = [];
+      if ($("chkTitle").checked) items.push("請先為這本繪本擬一個溫暖、有畫面感、適合出版感的書名。");
+      if ($("chkSummary").checked) items.push("請先整理成簡短故事大綱，再輸出最終繪本生成提示句。");
+      if ($("chkExact").checked) items.push("頁數必須嚴格固定為指定頁數，只能輸出這些頁面，不可自行增頁或減頁。");
+      if ($("chkPageText").checked) items.push("請為每一頁附上一句簡短文字內容建議，適合繪本頁面搭配插圖。");
+      if ($("chkStyleMix").checked) items.push("在不破壞整體一致性的前提下，可自然混合相近的插畫風格。");
+      if ($("chkWarm").checked) items.push("整體視覺與敘事請優先保持溫暖、療癒、柔和與可閱讀的氣質。");
+      return items;
+    }
+
+    function generatePrompt(){
+      const motivation = $("motivation").value.trim();
+      const summary = $("summary").value.trim();
+      const theme = $("theme").value;
+      const audience = $("audience").value;
+      const tone = $("tone").value;
+      const character = $("character").value.trim();
+      const personality = $("personality").value.trim();
+      const supporting = $("supporting").value.trim();
+      const scene = $("scene").value.trim();
+      const season = $("season").value;
+      const pageCount = $("pageCount").value;
+      const ending = $("ending").value;
+      const logic = $("logic").value;
+      const pagePlan = $("pagePlan").value.trim();
+      const style = $("style").value;
+      const colorMood = $("colorMood").value;
+      const detail = $("detail").value;
+      const ratio = $("ratio").value;
+      const consistency = $("consistency").value;
+      const keywords = listKeywords($("keywords").value);
+      const extra = $("extra").value.trim();
+      const stylePrompt = styleMap(style);
+      const checkItems = buildChecks();
+
+      let prompt = "";
+      prompt += "你是一位擅長兒童繪本、圖像敘事、故事分鏡與插畫風格控制的 AI 繪本生成模型。\\n";
+      prompt += "請根據以下設定，產出一份可直接用於生成繪本的完整提示句。\\n\\n";
+
+      prompt += "【任務目標】\\n";
+      prompt += "將使用者提供的動機、故事素材、角色、頁數與視覺風格，整理為一個有邏輯、可分頁、角色一致、畫面連貫的繪本生成提示。\\n";
+      prompt += "重點是讓繪本具有清楚的故事推進，而不是只有零散插圖。\\n\\n";
+
+      prompt += "【繪本基本設定】\\n";
+      prompt += `- 繪本類型：${theme}\\n`;
+      prompt += `- 閱讀年齡：${audience}\\n`;
+      prompt += `- 故事語氣：${tone}\\n`;
+      prompt += `- 總頁數：${pageCount} 頁\\n`;
+      prompt += `- 結局走向：${ending}\\n`;
+      prompt += `- 敘事邏輯強度：${logic}\\n\\n`;
+
+      prompt += "【角色與場景設定】\\n";
+      prompt += `- 主角：${character || "請根據故事素材判斷最合適的主角"}\\n`;
+      prompt += `- 主角特質：${personality || "請依故事內容補足合理的人格特質"}\\n`;
+      prompt += `- 配角或陪伴者：${supporting || "可視故事需要加入適度配角"}\\n`;
+      prompt += `- 主要場景：${scene || "請依故事氣氛安排合適場景"}\\n`;
+      prompt += `- 季節或時間感：${season}\\n\\n`;
+
+      prompt += "【插畫風格設定】\\n";
+      prompt += `- 主要插畫風格：${style}\\n`;
+      prompt += `- 風格提示：${stylePrompt}\\n`;
+      prompt += `- 色調：${colorMood}\\n`;
+      prompt += `- 畫面細節程度：${detail}\\n`;
+      prompt += `- 畫面比例：${ratio}\\n`;
+      prompt += `- 角色一致性要求：${consistency}\\n\\n`;
+
+      prompt += "【故事素材】\\n";
+      prompt += `- 創作動機／主題：${motivation || "未提供"}\\n`;
+      prompt += `- 故事簡述／事件描述：${summary || "未提供"}\\n`;
+      if (keywords) prompt += `- 必保留意象或元素：${keywords}\\n`;
+      if (extra) prompt += `- 補充指令：${extra}\\n`;
+      prompt += "\\n";
+
+      prompt += "【分頁要求】\\n";
+      if (pagePlan) {
+        prompt += "請依照以下逐頁規劃生成，不要任意改動整體頁數：\\n";
+        prompt += pagePlan + "\\n\\n";
+      } else {
+        prompt += "若使用者未提供逐頁情節，請依照以下故事節奏自動安排：\\n";
+        prompt += defaultPageStructure(pageCount) + "\\n\\n";
+      }
+
+      prompt += "【生成原則】\\n";
+      prompt += "- 每一頁都必須有明確的畫面重點與情緒推進。\\n";
+      prompt += "- 故事必須具備 beginning, development, turning point, ending 的敘事弧線。\\n";
+      prompt += "- 主角外觀、服裝、氣質與關鍵道具需在全書保持一致。\\n";
+      prompt += "- 插畫風格必須全書一致，不可忽然跳成不同畫風。\\n";
+      prompt += "- 每一頁都是繪本頁面，不是漫畫格，也不是單純概念草圖。\\n";
+      prompt += "- 畫面需適合兒童繪本閱讀，有可讀性、留白與情緒空間。\\n";
+      prompt += "- 若故事偏療癒或情緒型，請優先處理氛圍與情緒漸進。\\n";
+      prompt += "- 若故事偏教育型，請保持自然，不要過度說教。\\n";
+
+      if (checkItems.length) {
+        prompt += "\\n【附加輸出要求】\\n";
+        checkItems.forEach(item => {
+          prompt += `- ${item}\\n`;
+        });
+      }
+
+      prompt += "\\n【最終輸出格式】\\n";
+      prompt += "- 請先輸出書名（若有要求）。\\n";
+      prompt += "- 接著輸出簡短故事大綱（若有要求）。\\n";
+      prompt += "- 再輸出可直接給圖像模型使用的完整英文或中英混合繪本提示句。\\n";
+      prompt += "- 提示句中需明確列出每一頁 Page 1 到 Page " + pageCount + " 的畫面內容。\\n";
+      prompt += "- 請強調 fixed page count, consistent characters, story progression, picture book style。\\n";
+      prompt += "- 不要輸出超過指定頁數的內容。";
+
+      $("output").textContent = prompt;
+    }
+
+    async function copyPrompt(){
+      const text = $("output").textContent;
+      try{
+        await navigator.clipboard.writeText(text);
+        alert("提示句已複製。");
+      }catch(e){
+        alert("複製失敗，請手動選取文字複製。");
+      }
+    }
+
+    function resetOutput(){
+      $("output").textContent = "按下「生成提示句」後，這裡會自動產出可直接貼給 AI 使用的完整繪本提示句。";
+    }
+
+    function resetAll(){
+      ["motivation","summary","character","personality","supporting","scene","pagePlan","keywords","extra"].forEach(id => $(id).value = "");
+
+      $("theme").value = "溫暖童話";
+      $("audience").value = "兒童";
+      $("tone").value = "溫暖柔和";
+      $("season").value = "不限";
+      $("pageCount").value = "5";
+      $("ending").value = "溫暖收束";
+      $("logic").value = "清楚完整";
+      $("style").value = "吉卜力風格";
+      $("colorMood").value = "柔和暖色";
+      $("detail").value = "平衡";
+      $("ratio").value = "正方形";
+      $("consistency").value = "高度一致";
+
+      $("chkTitle").checked = true;
+      $("chkSummary").checked = true;
+      $("chkExact").checked = true;
+      $("chkPageText").checked = false;
+      $("chkStyleMix").checked = false;
+      $("chkWarm").checked = true;
+
+      resetOutput();
+    }
+  </script>
+</body>
+</html>
