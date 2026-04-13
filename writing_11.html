@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>研究寫作提示句工具 v5</title>
+  <title>研究寫作提示句工具</title>
   <style>
     :root{
       --bg:#f6f2ea;
@@ -42,7 +41,7 @@
       background:linear-gradient(135deg, rgba(139,111,71,.12), rgba(255,255,255,.78));
       border:1px solid rgba(139,111,71,.18);
       border-radius:24px;
-      padding:28px 28px 22px;
+      padding:24px 28px;
       box-shadow:var(--shadow);
       margin-bottom:20px;
     }
@@ -58,16 +57,10 @@
     }
 
     h1{
-      margin:0 0 8px;
+      margin:0;
       font-size:clamp(1.8rem,3vw,2.7rem);
       line-height:1.2;
       letter-spacing:.03em;
-    }
-
-    .sub{
-      margin:0;
-      color:var(--soft);
-      font-size:1rem;
     }
 
     .grid{
@@ -218,7 +211,7 @@
     .ghost:hover{ background:#faf7f1; }
 
     .output{
-      min-height:520px;
+      min-height:560px;
       white-space:pre-wrap;
       background:#fff;
       border:1px dashed var(--accent-2);
@@ -228,44 +221,13 @@
       line-height:1.82;
       overflow:auto;
     }
-
-    .sample{
-      margin-top:14px;
-      padding:14px 15px;
-      border-radius:14px;
-      background:#faf6ef;
-      border:1px solid #eadfcd;
-      color:#5f5548;
-      font-size:.92rem;
-    }
-
-    .footer-note{
-      margin-top:14px;
-      color:var(--soft);
-      font-size:.9rem;
-    }
-
-    .pill{
-      display:inline-block;
-      padding:3px 10px;
-      border-radius:999px;
-      background:#f3ecdf;
-      margin:0 6px 6px 0;
-      font-size:.83rem;
-      color:#66523a;
-      border:1px solid #e6d7c0;
-    }
   </style>
 </head>
 <body>
   <div class="wrap">
     <section class="hero">
-      <div class="badge">Direct-to-AI Manuscript Prompt Tool</div>
-      <h1>研究寫作提示句工具 v5</h1>
-      <p class="sub">
-        這一版直接產出可回貼到 AI 的下游寫作提示句。輸出內容會直接要求 AI 撰寫 Introduction 或 Discussion，
-        不再出現「請再生成 prompt」這一層中介語句。
-      </p>
+      <div class="badge">Research Writing Prompt Tool</div>
+      <h1>研究寫作提示句工具 v7</h1>
     </section>
 
     <div class="grid">
@@ -274,12 +236,12 @@
 
         <div class="field">
           <label for="methods">Methods / 方法學</label>
-          <textarea id="methods" placeholder="請貼入方法學內容。這裡是主要依據之一。"></textarea>
+          <textarea id="methods" placeholder="請貼入方法學內容。"></textarea>
         </div>
 
         <div class="field">
           <label for="results">Results / 結果報告</label>
-          <textarea id="results" placeholder="請貼入結果報告。這裡是提示句最重要的依據之一。"></textarea>
+          <textarea id="results" placeholder="請貼入結果報告。"></textarea>
         </div>
 
         <div class="three">
@@ -299,7 +261,7 @@
 
         <div class="field">
           <label for="extraContext">補充寫作要求（選填）</label>
-          <textarea id="extraContext" style="min-height:110px;" placeholder="例如：不要用 overstate 的句型；請保留結果先行、機制後置；不要寫成 review 口氣。"></textarea>
+          <textarea id="extraContext" style="min-height:110px;" placeholder="例如：不要寫成 review 口氣；請保留結果先行、機制後置。"></textarea>
         </div>
 
         <div class="actions">
@@ -414,12 +376,36 @@
             </select>
           </div>
           <div class="field">
-            <label for="outputMode">提示句驅動模式</label>
+            <label for="outputMode">章節驅動模式</label>
             <select id="outputMode">
               <option value="Direct article-writing prompt" selected>直接寫文章模式</option>
               <option value="Journal-prose forcing prompt">強制期刊語體模式</option>
               <option value="Ultra-controlled sentence architecture">超嚴格句位控制模式</option>
             </select>
+          </div>
+        </div>
+
+        <div class="three">
+          <div class="field">
+            <label for="subheadingMode">段落功能小標題模式</label>
+            <select id="subheadingMode">
+              <option value="No visible subheadings" selected>無小標題</option>
+              <option value="Internal structural cues only">僅內部結構提示</option>
+              <option value="Display functional subheadings">顯示功能型小標題</option>
+              <option value="Display custom subheadings">顯示自訂小標題</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="subheadingGranularity">小標題粒度</label>
+            <select id="subheadingGranularity">
+              <option value="Coarse">粗</option>
+              <option value="Medium" selected>中</option>
+              <option value="Fine">細</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="customSubheadings">自訂小標題（選填）</label>
+            <input id="customSubheadings" type="text" placeholder="例如：主要發現｜結果解釋｜文獻比較｜研究意義｜限制與結論" />
           </div>
         </div>
 
@@ -439,26 +425,12 @@
 
     <section class="card" style="margin-top:20px;">
       <h2 class="section-title">三、生成結果</h2>
-      <div id="output" class="output">按下「生成提示句」後，這裡會產出可直接回貼到 AI 的寫作提示句。這份提示句會直接要求 AI 寫出章節，而不是再要求它生成另一段 prompt。</div>
+      <div id="output" class="output"></div>
 
       <div class="actions">
         <button class="secondary" onclick="copyPrompt()">複製結果</button>
         <button class="ghost" onclick="resetOutput()">清空結果</button>
       </div>
-
-      <div class="sample">
-        <strong>v5 這次修掉的核心問題</strong><br>
-        <span class="pill">直接寫章節，不再生成 prompt</span>
-        <span class="pill">修正語義為目標章節輸出語言</span>
-        <span class="pill">段首中心句</span>
-        <span class="pill">機制後接實證例子</span>
-        <span class="pill">禁止空泛 filler</span>
-        <span class="pill">期刊語體</span>
-      </div>
-
-      <p class="footer-note">
-        本版維持暖米色卡片與留白配置，沿用你指定的版型方向；同時把內核修正為直接驅動下游 AI 撰寫章節，避免再出現「請先生成另一段 prompt」的中介語句。
-      </p>
     </section>
   </div>
 
@@ -585,6 +557,45 @@
       return out;
     }
 
+
+    function getDefaultSubheadings(section, granularity){
+      const map = {
+        "Introduction": {
+          "Coarse": ["Background", "Study rationale", "Study objective"],
+          "Medium": ["Background", "Current evidence", "Knowledge gap", "Study positioning"],
+          "Fine": ["Problem context", "Current evidence", "Unresolved gap", "Why this study was needed", "Study objective"]
+        },
+        "Discussion": {
+          "Coarse": ["Principal findings", "Interpretation", "Limitations", "Conclusion"],
+          "Medium": ["Principal findings", "Interpretation", "Literature comparison", "Implications", "Limitations", "Conclusion"],
+          "Fine": ["Principal findings", "Result interpretation", "Mechanistic context", "Literature comparison", "Integration", "Implications", "Limitations", "Conclusion"]
+        }
+      };
+      return (map[section] && map[section][granularity]) ? map[section][granularity] : [];
+    }
+
+    function subheadingRules(section, mode, granularity, customText){
+      const rules = [];
+      const defaults = getDefaultSubheadings(section, granularity);
+      const customItems = customText.split(/[｜|]+/).map(x => x.trim()).filter(Boolean);
+
+      if (mode === "No visible subheadings") {
+        rules.push("Do not use visible subheadings in the final section. Keep the section as continuous journal prose.");
+      } else if (mode === "Internal structural cues only") {
+        rules.push("Use the following paragraph functions internally to organize the section, but do not display visible subheadings in the final output: " + defaults.join(", ") + ".");
+      } else if (mode === "Display functional subheadings") {
+        rules.push("Use visible functional subheadings in the final section.");
+        rules.push("Use this subheading granularity: " + granularity + ".");
+        rules.push("Preferred subheadings: " + defaults.join(", ") + ".");
+      } else if (mode === "Display custom subheadings") {
+        const items = customItems.length ? customItems : defaults;
+        rules.push("Use visible subheadings in the final section.");
+        rules.push("Use the following custom or user-aligned subheadings in this order when applicable: " + items.join(", ") + ".");
+      }
+
+      return rules;
+    }
+
     function generatePrompt(){
       const methods = $("methods").value.trim();
       const results = $("results").value.trim();
@@ -610,6 +621,9 @@
       const mechanismMode = $("mechanismMode").value;
       const exampleRequirement = $("exampleRequirement").value;
       const outputMode = $("outputMode").value;
+      const subheadingMode = $("subheadingMode").value;
+      const subheadingGranularity = $("subheadingGranularity").value;
+      const customSubheadings = $("customSubheadings").value.trim();
 
       const parts = [];
 
@@ -662,6 +676,10 @@
       scientificLanguageRules(proseDensity, tone).forEach(rule => parts.push(`- ${rule}`));
       parts.push("");
 
+      parts.push("Subheading requirements:");
+      subheadingRules(sectionType, subheadingMode, subheadingGranularity, customSubheadings).forEach(rule => parts.push(`- ${rule}`));
+      parts.push("");
+
       parts.push("Mandatory control rules:");
       buildRules().forEach(rule => parts.push(`- ${rule}`));
       parts.push("- Remain strictly faithful to the supplied Methods and Results.");
@@ -685,6 +703,12 @@
       parts.push("Output requirement:");
       parts.push(`Return only the final ${sectionType} section in ${targetLanguage}. Do not add prefaces, bullet lists, explanations, headings about instructions, or commentary outside the section itself.`);
 
+      if (length === "Concise") {
+        parts.push("Keep the section concise and tightly compressed.");
+      } else if (length === "Extended") {
+        parts.push("Develop the section fully while preserving journal-level density and control.");
+      }
+
       $("output").textContent = parts.join("\n");
     }
 
@@ -699,11 +723,11 @@
     }
 
     function resetOutput(){
-      $("output").textContent = "按下「生成提示句」後，這裡會產出可直接回貼到 AI 的寫作提示句。這份提示句會直接要求 AI 寫出章節，而不是再要求它生成另一段 prompt。";
+      $("output").textContent = "";
     }
 
     function resetAll(){
-      ["methods","results","topic","population","outcomes","extraContext"].forEach(id => $(id).value = "");
+      ["methods","results","topic","population","outcomes","extraContext","customSubheadings"].forEach(id => $(id).value = "");
       $("sectionType").value = "Discussion";
       $("studyType").value = "Original research";
       $("targetLanguage").value = "English";
@@ -716,6 +740,8 @@
       $("mechanismMode").value = "Mechanism plus empirical example";
       $("exampleRequirement").value = "One example per proposed mechanism";
       $("outputMode").value = "Direct article-writing prompt";
+      $("subheadingMode").value = "No visible subheadings";
+      $("subheadingGranularity").value = "Medium";
       ["chkNoFabrication","chkSeparateObserved","chkSentenceOrder","chkNoFiller","chkMechanismTested","chkNmaCaution"].forEach(id => $(id).checked = true);
       resetOutput();
     }
