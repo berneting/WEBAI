@@ -1,649 +1,723 @@
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>研究寫作提示句生成器 v1</title>
+  <title>研究寫作提示句工具 v5</title>
   <style>
     :root{
-      --bg1:#f4f7fb;
-      --bg2:#eef3f9;
-      --card:#ffffff;
-      --line:#d8e2ef;
-      --text:#223042;
-      --sub:#5f7187;
-      --accent:#5b7cfa;
-      --accent2:#7c5cff;
-      --soft:#edf2ff;
-      --soft2:#f5f0ff;
-      --ok:#2e7d32;
-      --warn:#a36a00;
-      --shadow:0 10px 30px rgba(54, 88, 140, 0.10);
+      --bg:#f6f2ea;
+      --panel:#fffdf8;
+      --ink:#2d2a26;
+      --soft:#6b6258;
+      --line:#d8cfc2;
+      --accent:#8b6f47;
+      --accent-2:#b7986b;
+      --accent-3:#efe7d9;
+      --shadow:0 12px 28px rgba(66, 49, 25, .08);
       --radius:18px;
     }
 
-    *{box-sizing:border-box;}
+    *{box-sizing:border-box}
 
     body{
       margin:0;
-      font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
-      color:var(--text);
-      background:linear-gradient(180deg,var(--bg1),var(--bg2));
-      line-height:1.65;
+      font-family:"Noto Serif TC","PingFang TC","Microsoft JhengHei",serif;
+      background:
+        radial-gradient(circle at top left, rgba(183,152,107,.16), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(139,111,71,.11), transparent 24%),
+        var(--bg);
+      color:var(--ink);
+      line-height:1.7;
     }
 
     .wrap{
-      max-width:1400px;
+      max-width:1380px;
       margin:0 auto;
-      padding:28px 20px 40px;
+      padding:28px 20px 56px;
     }
 
     .hero{
-      background:linear-gradient(135deg,#fefeff,#eef3ff 55%,#f7f2ff);
-      border:1px solid var(--line);
+      background:linear-gradient(135deg, rgba(139,111,71,.12), rgba(255,255,255,.78));
+      border:1px solid rgba(139,111,71,.18);
       border-radius:24px;
-      box-shadow:var(--shadow);
       padding:28px 28px 22px;
-      margin-bottom:22px;
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
     }
 
-    .hero h1{
-      margin:0 0 10px;
-      font-size:30px;
-      line-height:1.25;
-      letter-spacing:0.5px;
+    .badge{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      background:#efe7d9;
+      color:#5c4727;
+      font-size:.83rem;
+      margin-bottom:10px;
     }
 
-    .hero p{
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(1.8rem,3vw,2.7rem);
+      line-height:1.2;
+      letter-spacing:.03em;
+    }
+
+    .sub{
       margin:0;
-      color:var(--sub);
-      font-size:15px;
+      color:var(--soft);
+      font-size:1rem;
     }
 
     .grid{
       display:grid;
-      grid-template-columns: 1.2fr 0.85fr;
+      grid-template-columns:1.06fr .94fr;
       gap:20px;
+      align-items:start;
+    }
+
+    @media (max-width: 1024px){
+      .grid{grid-template-columns:1fr}
     }
 
     .card{
-      background:var(--card);
+      background:var(--panel);
       border:1px solid var(--line);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
       padding:20px;
     }
 
-    .card h2{
+    .section-title{
       margin:0 0 14px;
-      font-size:22px;
+      font-size:1.08rem;
+      letter-spacing:.04em;
+      color:#4c3c27;
     }
 
-    .section-note{
-      color:var(--sub);
-      font-size:14px;
-      margin-bottom:14px;
-    }
+    .field{margin-bottom:14px;}
 
-    label{
+    .field label{
       display:block;
       font-weight:700;
-      margin:14px 0 8px;
-      font-size:15px;
+      margin-bottom:7px;
+      font-size:.96rem;
+    }
+
+    .hint{
+      color:var(--soft);
+      font-size:.88rem;
+      margin-top:5px;
     }
 
     textarea, select, input[type="text"]{
       width:100%;
       border:1px solid var(--line);
-      border-radius:14px;
-      padding:14px 14px;
-      font-size:15px;
-      color:var(--text);
-      background:#fbfdff;
+      border-radius:12px;
+      padding:12px 13px;
+      font-size:0.98rem;
+      background:#fff;
+      color:var(--ink);
       outline:none;
-      transition:0.2s ease;
+      transition:.18s ease;
+      font-family:inherit;
+    }
+
+    textarea:focus, select:focus, input:focus{
+      border-color:var(--accent-2);
+      box-shadow:0 0 0 4px rgba(183,152,107,.15);
     }
 
     textarea{
+      min-height:140px;
       resize:vertical;
-      min-height:180px;
     }
 
-    textarea:focus, select:focus, input[type="text"]:focus{
-      border-color:#9bb2ff;
-      box-shadow:0 0 0 4px rgba(91,124,250,0.10);
+    .two{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .three{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:12px;
+    }
+
+    @media (max-width: 760px){
+      .two,.three{grid-template-columns:1fr}
+    }
+
+    .check-row{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:10px 14px;
+      margin-top:6px;
+    }
+
+    @media (max-width:800px){
+      .check-row{grid-template-columns:1fr}
+    }
+
+    .check{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:12px;
       background:#fff;
     }
 
-    .row-2{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:14px;
-    }
-
-    .row-3{
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:14px;
-    }
-
-    .check-group{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:10px;
-      margin-top:10px;
-    }
-
-    .check-item{
-      display:flex;
-      align-items:flex-start;
-      gap:10px;
-      background:#fbfcff;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:10px 12px;
-    }
-
-    .check-item input{
+    .check input{
       margin-top:4px;
-      transform:scale(1.1);
+      transform:scale(1.05);
+      accent-color:var(--accent);
     }
 
-    .check-item span{
-      font-size:14px;
-      color:var(--text);
-    }
-
-    .btns{
+    .actions{
       display:flex;
+      gap:10px;
       flex-wrap:wrap;
-      gap:12px;
-      margin-top:18px;
+      margin-top:16px;
     }
 
     button{
       border:none;
-      border-radius:999px;
-      padding:12px 18px;
-      font-size:15px;
+      border-radius:12px;
+      padding:12px 16px;
+      font-size:0.96rem;
       font-weight:700;
       cursor:pointer;
-      transition:0.2s ease;
+      transition:.18s ease;
+      font-family:inherit;
     }
 
-    .btn-primary{
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
+    .primary{
+      background:linear-gradient(135deg, var(--accent), #6f5638);
       color:#fff;
-      box-shadow:0 8px 18px rgba(92, 99, 255, 0.22);
     }
 
-    .btn-primary:hover{
-      transform:translateY(-1px);
-      filter:brightness(1.02);
+    .primary:hover{ transform:translateY(-1px); }
+
+    .secondary{
+      background:#efe7d9;
+      color:#4f402d;
     }
 
-    .btn-secondary{
-      background:#eef3ff;
-      color:#3552b8;
-    }
+    .secondary:hover{ background:#e7dcc9; }
 
-    .btn-secondary:hover{
-      background:#e5edff;
-    }
-
-    .btn-light{
-      background:#f4f7fb;
-      color:#45586f;
-    }
-
-    .btn-light:hover{
-      background:#edf2f7;
-    }
-
-    .output-box{
-      min-height:420px;
-      white-space:pre-wrap;
-      background:linear-gradient(180deg,#fcfdff,#f7faff);
+    .ghost{
+      background:#fff;
+      color:#5d5348;
       border:1px solid var(--line);
+    }
+
+    .ghost:hover{ background:#faf7f1; }
+
+    .output{
+      min-height:520px;
+      white-space:pre-wrap;
+      background:#fff;
+      border:1px dashed var(--accent-2);
       border-radius:16px;
-      padding:18px;
-      font-size:15px;
+      padding:16px;
+      font-size:0.98rem;
+      line-height:1.82;
       overflow:auto;
     }
 
-    .mini-title{
-      font-size:13px;
-      letter-spacing:0.4px;
-      font-weight:800;
-      color:#4f5f74;
-      margin:10px 0 8px;
-      text-transform:uppercase;
-    }
-
-    .hint{
-      background:linear-gradient(135deg,var(--soft),var(--soft2));
-      border:1px solid #dfe4ff;
-      border-radius:16px;
-      padding:14px 16px;
-      color:#4a5870;
-      font-size:14px;
-      margin-top:16px;
-    }
-
-    .hint b{
-      color:#26364b;
+    .sample{
+      margin-top:14px;
+      padding:14px 15px;
+      border-radius:14px;
+      background:#faf6ef;
+      border:1px solid #eadfcd;
+      color:#5f5548;
+      font-size:.92rem;
     }
 
     .footer-note{
-      margin-top:18px;
-      color:var(--sub);
-      font-size:13px;
+      margin-top:14px;
+      color:var(--soft);
+      font-size:.9rem;
     }
 
-    .badge-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:12px;
-    }
-
-    .badge{
-      padding:7px 12px;
+    .pill{
+      display:inline-block;
+      padding:3px 10px;
       border-radius:999px;
-      background:#f3f6fb;
-      border:1px solid var(--line);
-      font-size:13px;
-      color:#52657b;
-    }
-
-    @media (max-width: 1040px){
-      .grid{
-        grid-template-columns:1fr;
-      }
-    }
-
-    @media (max-width: 720px){
-      .row-2, .row-3{
-        grid-template-columns:1fr;
-      }
-      .hero h1{
-        font-size:24px;
-      }
+      background:#f3ecdf;
+      margin:0 6px 6px 0;
+      font-size:.83rem;
+      color:#66523a;
+      border:1px solid #e6d7c0;
     }
   </style>
 </head>
 <body>
   <div class="wrap">
     <section class="hero">
-      <h1>研究寫作提示句生成器 v1</h1>
-      <p>
-        將 Methods 與 Results 貼入後，可生成 <b>Introduction</b> 或 <b>Discussion</b> 的學術寫作提示句。
-        本工具目前聚焦於科學論文敘事邏輯，不直接代寫全文，而是幫你生成可再送入 AI 的高品質 prompt。
+      <div class="badge">Direct-to-AI Manuscript Prompt Tool</div>
+      <h1>研究寫作提示句工具 v5</h1>
+      <p class="sub">
+        這一版直接產出可回貼到 AI 的下游寫作提示句。輸出內容會直接要求 AI 撰寫 Introduction 或 Discussion，
+        不再出現「請再生成 prompt」這一層中介語句。
       </p>
-      <div class="badge-row">
-        <div class="badge">支援前言 / 討論</div>
-        <div class="badge">醫學 / 生物醫學 / 公衛 / 一般科學</div>
-        <div class="badge">原始研究 / SR / MA / NMA</div>
-        <div class="badge">防止過度推論</div>
-      </div>
     </section>
 
     <div class="grid">
       <section class="card">
-        <h2>輸入內容</h2>
-        <div class="section-note">
-          只需貼入方法學與結果報告。其餘欄位可視需要補充。
+        <h2 class="section-title">一、研究材料輸入</h2>
+
+        <div class="field">
+          <label for="methods">Methods / 方法學</label>
+          <textarea id="methods" placeholder="請貼入方法學內容。這裡是主要依據之一。"></textarea>
         </div>
 
-        <label for="methods">Methods / 方法學</label>
-        <textarea id="methods" placeholder="請貼入研究方法學內容，例如 study design、population、intervention、comparison、outcomes、statistical methods 等。"></textarea>
+        <div class="field">
+          <label for="results">Results / 結果報告</label>
+          <textarea id="results" placeholder="請貼入結果報告。這裡是提示句最重要的依據之一。"></textarea>
+        </div>
 
-        <label for="results">Results / 結果報告</label>
-        <textarea id="results" placeholder="請貼入主要結果，例如納入研究數、主要效應、排名結果、異質性、敏感度分析、限制訊號等。"></textarea>
-
-        <div class="row-2">
-          <div>
+        <div class="three">
+          <div class="field">
             <label for="topic">研究主題（選填）</label>
-            <input id="topic" type="text" placeholder="例如：exercise for depression in older adults" />
+            <input id="topic" type="text" placeholder="例如：EEAC-induced phospholipid remodeling in hepatocytes" />
           </div>
-          <div>
-            <label for="population">研究對象（選填）</label>
-            <input id="population" type="text" placeholder="例如：older adults with depressive symptoms" />
+          <div class="field">
+            <label for="population">研究對象或模型（選填）</label>
+            <input id="population" type="text" placeholder="例如：AML-12 hepatocytes" />
           </div>
-        </div>
-
-        <div class="row-2">
-          <div>
-            <label for="intervention">介入 / 暴露（選填）</label>
-            <input id="intervention" type="text" placeholder="例如：exercise interventions" />
-          </div>
-          <div>
-            <label for="outcomes">主要結果指標（選填）</label>
-            <input id="outcomes" type="text" placeholder="例如：depressive symptoms, dropout rate" />
+          <div class="field">
+            <label for="outcomes">主要結果領域（選填）</label>
+            <input id="outcomes" type="text" placeholder="例如：transcriptomics, lipidomics" />
           </div>
         </div>
 
-        <div class="btns">
-          <button class="btn-primary" onclick="generatePrompt()">生成提示句</button>
-          <button class="btn-secondary" onclick="copyOutput()">複製提示句</button>
-          <button class="btn-light" onclick="clearAllFields()">清空全部</button>
-          <button class="btn-light" onclick="loadDemo()">載入示範</button>
+        <div class="field">
+          <label for="extraContext">補充寫作要求（選填）</label>
+          <textarea id="extraContext" style="min-height:110px;" placeholder="例如：不要用 overstate 的句型；請保留結果先行、機制後置；不要寫成 review 口氣。"></textarea>
         </div>
 
-        <div class="hint">
-          <b>建議：</b>
-          若你貼入的是 SR / MA / NMA 研究，結果欄位最好含有：
-          納入篇數、樣本規模、主要效應方向、異質性、偏倚或限制訊號。
-          這樣生成的 prompt 會更穩定。
+        <div class="actions">
+          <button class="primary" onclick="generatePrompt()">生成提示句</button>
+          <button class="secondary" onclick="copyPrompt()">複製提示句</button>
+          <button class="ghost" onclick="resetAll()">全部清空</button>
         </div>
       </section>
 
       <section class="card">
-        <h2>控制參數</h2>
+        <h2 class="section-title">二、控制參數</h2>
 
-        <div class="row-2">
-          <div>
-            <label for="sectionType">輸出章節</label>
+        <div class="three">
+          <div class="field">
+            <label for="sectionType">目標章節</label>
             <select id="sectionType">
-              <option value="Introduction">前言 Introduction</option>
-              <option value="Discussion">討論 Discussion</option>
+              <option value="Introduction">Introduction</option>
+              <option value="Discussion" selected>Discussion</option>
             </select>
           </div>
-          <div>
+          <div class="field">
             <label for="studyType">研究類型</label>
             <select id="studyType">
-              <option value="Original research">原始研究</option>
-              <option value="Systematic review">系統性回顧 SR</option>
-              <option value="Meta-analysis">統合分析 MA</option>
-              <option value="Network meta-analysis">網絡統合分析 NMA</option>
+              <option value="Original research" selected>原始研究</option>
+              <option value="Systematic review">系統性回顧</option>
+              <option value="Meta-analysis">統合分析</option>
+              <option value="Network meta-analysis">網絡統合分析</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="targetLanguage">目標章節輸出語言</label>
+            <select id="targetLanguage">
+              <option value="English" selected>English</option>
+              <option value="Traditional Chinese">繁體中文</option>
+              <option value="Bilingual with English main text">中英混合，以英文為主</option>
             </select>
           </div>
         </div>
 
-        <div class="row-2">
-          <div>
-            <label for="disciplineStyle">學術風格</label>
-            <select id="disciplineStyle">
+        <div class="three">
+          <div class="field">
+            <label for="discipline">學科風格</label>
+            <select id="discipline">
               <option value="Medical academic">醫學學術</option>
-              <option value="Biomedical">生物醫學</option>
+              <option value="Biomedical" selected>生物醫學</option>
               <option value="Public health and epidemiology">公衛與流行病學</option>
               <option value="General scientific writing">一般科學寫作</option>
             </select>
           </div>
-          <div>
-            <label for="journalType">期刊取向</label>
-            <select id="journalType">
-              <option value="High-impact general journal">綜合型高影響期刊</option>
-              <option value="Specialty journal">專科期刊</option>
-              <option value="Evidence-based journal">實證導向期刊</option>
-              <option value="Methodologically rigorous journal">方法學嚴謹型期刊</option>
+          <div class="field">
+            <label for="journalOrientation">期刊敘事取向</label>
+            <select id="journalOrientation">
+              <option value="High-impact general journal">綜合型高影響</option>
+              <option value="Clinical specialty journal">臨床專科</option>
+              <option value="Biomedical journal" selected>生物醫學</option>
+              <option value="Evidence-based journal">實證醫學</option>
+              <option value="Methodologically rigorous journal">方法學嚴謹型</option>
             </select>
           </div>
-        </div>
-
-        <div class="row-3">
-          <div>
-            <label for="toneStrength">論證強度</label>
-            <select id="toneStrength">
-              <option value="Conservative">保守</option>
-              <option value="Balanced" selected>平衡</option>
-              <option value="Interpretive">詮釋型</option>
-            </select>
-          </div>
-          <div>
-            <label for="lengthControl">輸出長度</label>
-            <select id="lengthControl">
+          <div class="field">
+            <label for="length">輸出長度</label>
+            <select id="length">
               <option value="Concise">短</option>
               <option value="Standard" selected>中</option>
               <option value="Extended">長</option>
             </select>
           </div>
-          <div>
-            <label for="languageStyle">提示句語言</label>
-            <select id="languageStyle">
-              <option value="English">英文</option>
-              <option value="Traditional Chinese">繁體中文</option>
-              <option value="Bilingual">中英雙語混合提示</option>
+        </div>
+
+        <div class="three">
+          <div class="field">
+            <label for="tone">詮釋強度</label>
+            <select id="tone">
+              <option value="Conservative">保守</option>
+              <option value="Balanced">平衡</option>
+              <option value="Interpretive" selected>詮釋型</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="paragraphMode">段落開頭模式</label>
+            <select id="paragraphMode">
+              <option value="Topic sentence first" selected>段首即重點</option>
+              <option value="Highly condensed claim-led">高度凝練 claim-led</option>
+              <option value="Traditional journal development">傳統期刊展開</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="proseDensity">科學語體密度</label>
+            <select id="proseDensity">
+              <option value="Standard academic">標準學術</option>
+              <option value="Journal-style condensed">期刊凝練式</option>
+              <option value="Highly condensed SCI style" selected>高度凝練 SCI 式</option>
             </select>
           </div>
         </div>
 
-        <div class="mini-title">安全與邏輯限制</div>
-        <div class="check-group">
-          <label class="check-item">
-            <input type="checkbox" id="limitMechanism" checked />
-            <span>限制未被結果支持的機制推論</span>
-          </label>
-          <label class="check-item">
-            <input type="checkbox" id="preventCausal" checked />
-            <span>避免不當因果宣稱</span>
-          </label>
-          <label class="check-item">
-            <input type="checkbox" id="emphasizeGap" checked />
-            <span>強化研究缺口與定位</span>
-          </label>
-          <label class="check-item">
-            <input type="checkbox" id="litCompare" checked />
-            <span>要求與既有文獻比較</span>
-          </label>
-          <label class="check-item">
-            <input type="checkbox" id="includeLimitations" checked />
-            <span>要求處理限制與邊界</span>
-          </label>
-          <label class="check-item">
-            <input type="checkbox" id="nmaCaution" checked />
-            <span>NMA / MA 結果採審慎詮釋</span>
-          </label>
+        <div class="three">
+          <div class="field">
+            <label for="mechanismMode">機制處理模式</label>
+            <select id="mechanismMode">
+              <option value="No mechanism unless unavoidable">原則上不寫機制</option>
+              <option value="Conservative mechanism only">保守機制</option>
+              <option value="Mechanism plus empirical example" selected>機制＋實證例子</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="exampleRequirement">例證要求</label>
+            <select id="exampleRequirement">
+              <option value="No example">不要求例證</option>
+              <option value="One example per major paragraph">每個主要段落一例</option>
+              <option value="One example per proposed mechanism" selected>每個機制一例</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="outputMode">提示句驅動模式</label>
+            <select id="outputMode">
+              <option value="Direct article-writing prompt" selected>直接寫文章模式</option>
+              <option value="Journal-prose forcing prompt">強制期刊語體模式</option>
+              <option value="Ultra-controlled sentence architecture">超嚴格句位控制模式</option>
+            </select>
+          </div>
         </div>
 
-        <label for="extraInstruction">額外指令（選填）</label>
-        <textarea id="extraInstruction" style="min-height:110px;" placeholder="例如：請避免使用過度渲染性語言；請偏向 reviewer-friendly 結構；請強調臨床可轉譯性。"></textarea>
+        <div class="field">
+          <label>附加控制</label>
+          <div class="check-row">
+            <label class="check"><input type="checkbox" id="chkNoFabrication" checked> <span>禁止虛構引用與書目細節</span></label>
+            <label class="check"><input type="checkbox" id="chkSeparateObserved" checked> <span>區分直接觀察與文獻脈絡</span></label>
+            <label class="check"><input type="checkbox" id="chkSentenceOrder" checked> <span>固定觀察→詮釋→例證→限定的句序</span></label>
+            <label class="check"><input type="checkbox" id="chkNoFiller" checked> <span>抑制空泛 academic filler</span></label>
+            <label class="check"><input type="checkbox" id="chkMechanismTested" checked> <span>機制後明說本研究未直接測試</span></label>
+            <label class="check"><input type="checkbox" id="chkNmaCaution" checked> <span>MA / NMA 審慎解讀</span></label>
+          </div>
+        </div>
       </section>
     </div>
 
     <section class="card" style="margin-top:20px;">
-      <h2>生成的提示句</h2>
-      <div class="section-note">
-        這裡輸出的是可直接貼給 AI 的 prompt。你可先生成 Introduction，再切換成 Discussion 分次輸出。
+      <h2 class="section-title">三、生成結果</h2>
+      <div id="output" class="output">按下「生成提示句」後，這裡會產出可直接回貼到 AI 的寫作提示句。這份提示句會直接要求 AI 寫出章節，而不是再要求它生成另一段 prompt。</div>
+
+      <div class="actions">
+        <button class="secondary" onclick="copyPrompt()">複製結果</button>
+        <button class="ghost" onclick="resetOutput()">清空結果</button>
       </div>
-      <div id="output" class="output-box">請先填入 Methods 與 Results，然後按「生成提示句」。</div>
-      <div class="footer-note">
-        v1 說明：目前為單一頁面版本。下一版可再加入「期刊風格細分」、「句型嚴謹度」、「NMA/SR 特化模板」、「一鍵匯出 txt」等功能。
+
+      <div class="sample">
+        <strong>v5 這次修掉的核心問題</strong><br>
+        <span class="pill">直接寫章節，不再生成 prompt</span>
+        <span class="pill">修正語義為目標章節輸出語言</span>
+        <span class="pill">段首中心句</span>
+        <span class="pill">機制後接實證例子</span>
+        <span class="pill">禁止空泛 filler</span>
+        <span class="pill">期刊語體</span>
       </div>
+
+      <p class="footer-note">
+        本版維持暖米色卡片與留白配置，沿用你指定的版型方向；同時把內核修正為直接驅動下游 AI 撰寫章節，避免再出現「請先生成另一段 prompt」的中介語句。
+      </p>
     </section>
   </div>
 
   <script>
-    function getValue(id){
-      return document.getElementById(id).value.trim();
+    const $ = (id) => document.getElementById(id);
+
+    function checked(id){ return $(id).checked; }
+
+    function buildRules(){
+      const rules = [];
+      if (checked("chkNoFabrication")) {
+        rules.push("Do not fabricate citations, author names, publication years, journals, PMIDs, trial names, or unsupported study details.");
+      }
+      if (checked("chkSeparateObserved")) {
+        rules.push("Explicitly distinguish what was directly observed in the present study from what is introduced as prior literature context or empirical example.");
+      }
+      if (checked("chkSentenceOrder")) {
+        rules.push("Use controlled sentence order so that observations, interpretation, examples, and qualification appear in a stable argumentative sequence rather than in loose descriptive prose.");
+      }
+      if (checked("chkNoFiller")) {
+        rules.push("Do not rely on generic academic filler or ornamental transitions such as 'Taken together,' 'It is worth noting that,' or 'In this context,' unless they carry specific argumentative content.");
+      }
+      if (checked("chkMechanismTested")) {
+        rules.push("Whenever a possible mechanism is discussed, state clearly that it was not directly tested in the present study.");
+      }
+      if (checked("chkNmaCaution")) {
+        rules.push("If the study is a meta-analysis or network meta-analysis, interpret pooled effects, indirect comparisons, rankings, certainty, heterogeneity, and assumptions cautiously.");
+      }
+      return rules;
     }
 
-    function getChecked(id){
-      return document.getElementById(id).checked;
+    function sectionSpecific(section){
+      if (section === "Introduction") {
+        return [
+          "Write only the Introduction section, not any other manuscript section.",
+          "Construct the Introduction as a sequence of publishable journal paragraphs rather than a checklist response.",
+          "Move from the broader scientific or clinical problem to current evidence, then to the unresolved gap, and finally to the positioning of the present study.",
+          "Ensure that the stated gap is actually addressable by the supplied Methods and Results.",
+          "Do not overstate novelty, mechanism, or clinical relevance beyond the reported outcomes.",
+          "Make the first sentence of each paragraph function as the paragraph's core claim."
+        ];
+      }
+      return [
+        "Write only the Discussion section, not any other manuscript section.",
+        "Construct the Discussion as a sequence of publishable journal paragraphs rather than a checklist-like response.",
+        "Begin with a synthesized statement of the principal findings in claim-led prose rather than numeric repetition.",
+        "Body paragraphs should move from observed finding to restrained interpretation to literature-grounded context when appropriate.",
+        "When relevant, integrate multiple result domains at the level of convergent pattern, not as proof of a unified causal mechanism.",
+        "State biological, conceptual, methodological, or clinical implications only when genuinely supported.",
+        "Define limitations concretely and end with a proportionate conclusion aligned with the actual evidence base."
+      ];
+    }
+
+    function paragraphArchitecture(mode, section, mechanismMode, exampleRequirement, outputMode){
+      const lines = [];
+      lines.push("The first sentence of every paragraph must function as the paragraph's core claim and make the argumentative purpose of that paragraph immediately visible.");
+
+      if (mode === "Highly condensed claim-led" || outputMode === "Ultra-controlled sentence architecture") {
+        lines.push("Use a stable paragraph architecture: sentence 1 states the main claim directly; sentence 2 specifies the relevant observation from the present study; sentence 3 provides restrained interpretation; sentence 4, when applicable, gives one literature-grounded empirical example with a generic placeholder such as [citation]; sentence 5 clarifies the boundary of inference, including that the mechanism was not directly tested here when relevant.");
+      } else if (mode === "Topic sentence first") {
+        lines.push("Subsequent sentences should elaborate, qualify, or exemplify the claim rather than delay it.");
+      }
+
+      if (section === "Discussion" && mechanismMode !== "No mechanism unless unavoidable") {
+        lines.push("Whenever a possible mechanism is discussed, move immediately from observed finding to cautious mechanistic interpretation to one prior empirical example placeholder to an explicit statement that the mechanism was not directly tested here.");
+      }
+
+      if (exampleRequirement === "One example per proposed mechanism") {
+        lines.push("Every proposed mechanism must be followed immediately by one concrete literature-grounded empirical example placeholder.");
+      } else if (exampleRequirement === "One example per major paragraph") {
+        lines.push("Each major interpretive paragraph should include one concrete literature-grounded empirical example placeholder when relevant.");
+      }
+
+      if (outputMode === "Journal-prose forcing prompt") {
+        lines.push("Make the prose read like publishable journal writing rather than a response to instructions.");
+      }
+      return lines;
+    }
+
+    function journalOrientationRules(orientation){
+      const map = {
+        "High-impact general journal": [
+          "Keep background and interpretation compressed and high-yield.",
+          "Prioritize problem importance, gap sharpness, and clear study positioning.",
+          "Avoid overextended literature review behavior."
+        ],
+        "Clinical specialty journal": [
+          "Frame interpretation in a field-relevant manner rather than as broad universal novelty.",
+          "Allow somewhat more domain-specific context when it clarifies relevance."
+        ],
+        "Biomedical journal": [
+          "Allow biologically informed interpretation only when clearly tied to the observed outcomes.",
+          "Use mechanistic framing cautiously and keep it evidence-aligned rather than speculative.",
+          "Maintain conceptual interpretation at the level supported by the data."
+        ],
+        "Evidence-based journal": [
+          "Minimize speculative interpretation and keep all inference tightly evidence-aligned.",
+          "Give visible weight to uncertainty, boundaries, and analytic restraint."
+        ],
+        "Methodologically rigorous journal": [
+          "Foreground methodological discipline, inferential boundaries, and analytic assumptions where relevant.",
+          "Do not let biological interpretation outrun design-level limits."
+        ]
+      };
+      return map[orientation] || [];
+    }
+
+    function scientificLanguageRules(density, tone){
+      const out = [
+        "Use precise, publication-oriented diction typical of journal prose.",
+        "Favor restrained, evidence-aligned, analytically controlled wording.",
+        "Avoid vague wording such as 'a lot of studies,' 'very important,' 'huge benefit,' 'clearly proves,' or similarly loose phrasing."
+      ];
+      if (density === "Highly condensed SCI style") {
+        out.push("Write in highly condensed SCI-style prose with direct argumentative movement and minimal waste.");
+      } else if (density === "Journal-style condensed") {
+        out.push("Write in concise journal prose with limited filler and controlled sentence economy.");
+      }
+      if (tone === "Conservative") {
+        out.push("Keep interpretation cautious and avoid expansive claims.");
+      } else if (tone === "Interpretive") {
+        out.push("Allow interpretation, but keep it subordinate to the reported evidence and clearly bounded.");
+      }
+      return out;
     }
 
     function generatePrompt(){
-      const methods = getValue("methods");
-      const results = getValue("results");
-      const topic = getValue("topic");
-      const population = getValue("population");
-      const intervention = getValue("intervention");
-      const outcomes = getValue("outcomes");
-      const sectionType = getValue("sectionType");
-      const studyType = getValue("studyType");
-      const disciplineStyle = getValue("disciplineStyle");
-      const journalType = getValue("journalType");
-      const toneStrength = getValue("toneStrength");
-      const lengthControl = getValue("lengthControl");
-      const languageStyle = getValue("languageStyle");
-      const extraInstruction = getValue("extraInstruction");
+      const methods = $("methods").value.trim();
+      const results = $("results").value.trim();
+      const topic = $("topic").value.trim() || "Not specified";
+      const population = $("population").value.trim() || "Not specified";
+      const outcomes = $("outcomes").value.trim() || "Not specified";
+      const extraContext = $("extraContext").value.trim();
 
-      if(!methods || !results){
-        document.getElementById("output").textContent =
-          "請先填入 Methods 與 Results。這兩個欄位是生成提示句的必要內容。";
+      if (!methods || !results) {
+        $("output").textContent = "請先貼入 Methods 與 Results，這兩欄是生成提示句的必要依據。";
         return;
       }
 
-      let constraints = [];
-      if(getChecked("limitMechanism")){
-        constraints.push("Do not introduce biological or psychosocial mechanisms unless they are directly supported by the provided results or clearly framed as cautious possibilities.");
-      }
-      if(getChecked("preventCausal")){
-        constraints.push("Avoid causal claims unless the design and evidence clearly support them.");
-      }
-      if(getChecked("emphasizeGap")){
-        constraints.push("Ensure the section clearly identifies the unresolved gap and positions the current study logically in relation to that gap.");
-      }
-      if(getChecked("litCompare")){
-        constraints.push("Include comparison with existing literature in a generalized, non-fabricated manner without inventing specific references.");
-      }
-      if(getChecked("includeLimitations")){
-        constraints.push("Explicitly address limitations, uncertainty, and boundaries of interpretation when appropriate.");
-      }
-      if(getChecked("nmaCaution")){
-        constraints.push("For meta-analysis or network meta-analysis, interpret pooled effects, rankings, heterogeneity, consistency, and transitivity cautiously.");
+      const sectionType = $("sectionType").value;
+      const studyType = $("studyType").value;
+      const targetLanguage = $("targetLanguage").value;
+      const discipline = $("discipline").value;
+      const journalOrientation = $("journalOrientation").value;
+      const length = $("length").value;
+      const tone = $("tone").value;
+      const paragraphMode = $("paragraphMode").value;
+      const proseDensity = $("proseDensity").value;
+      const mechanismMode = $("mechanismMode").value;
+      const exampleRequirement = $("exampleRequirement").value;
+      const outputMode = $("outputMode").value;
+
+      const parts = [];
+
+      parts.push(`Write the ${sectionType} section of a ${discipline.toLowerCase()} ${studyType.toLowerCase()} in ${targetLanguage}. Do not write any other manuscript sections.`);
+      parts.push(`The writing should be suitable for a ${journalOrientation.toLowerCase()} and should read like publishable journal prose rather than a checklist response.`);
+      parts.push("");
+      parts.push("Study context:");
+      parts.push(`- Topic: ${topic}`);
+      parts.push(`- Population or model: ${population}`);
+      parts.push(`- Main outcomes or result domains: ${outcomes}`);
+      parts.push("");
+      parts.push("You must rely strictly on the following source material:");
+      parts.push("[Methods]");
+      parts.push(methods);
+      parts.push("");
+      parts.push("[Results]");
+      parts.push(results);
+      parts.push("");
+
+      parts.push("Section-specific requirements:");
+      sectionSpecific(sectionType).forEach(rule => parts.push(`- ${rule}`));
+      parts.push("");
+
+      parts.push("Paragraph architecture requirements:");
+      paragraphArchitecture(paragraphMode, sectionType, mechanismMode, exampleRequirement, outputMode)
+        .forEach(rule => parts.push(`- ${rule}`));
+      parts.push("");
+
+      if (sectionType === "Discussion") {
+        parts.push("Mechanism handling requirements:");
+        if (mechanismMode === "No mechanism unless unavoidable") {
+          parts.push("- Avoid mechanistic discussion unless it is necessary for interpreting the reported findings.");
+        } else if (mechanismMode === "Conservative mechanism only") {
+          parts.push("- If a possible mechanism is introduced, present it conservatively as a plausible interpretation rather than an established causal account.");
+          parts.push("- Mechanistic language must remain subordinate to the reported data.");
+        } else {
+          parts.push("- If a possible mechanism is introduced, present it conservatively as a plausible interpretation rather than an established causal account.");
+          parts.push("- Mechanistic language must remain subordinate to the reported data.");
+          parts.push("- Immediately after each proposed mechanism, provide one concrete empirical example framed as a prior literature-based observation followed by a generic placeholder such as [citation].");
+          parts.push("- Immediately state that this example reflects prior literature and that the mechanism was not directly tested in the present study.");
+        }
+        parts.push("");
       }
 
-      let sectionInstruction = "";
-      if(sectionType === "Introduction"){
-        sectionInstruction = `
-Task:
-Generate a high-quality academic prompt that instructs an AI writing assistant to draft the Introduction section of a manuscript.
+      parts.push("Journal-orientation requirements:");
+      journalOrientationRules(journalOrientation).forEach(rule => parts.push(`- ${rule}`));
+      parts.push("");
 
-The prompt should require the AI to:
-1. Define the broader clinical, scientific, or public health problem.
-2. Summarize what is already known in a concise and synthesized manner.
-3. Identify the most relevant unresolved gap based on the provided Methods and Results.
-4. Position the present study as a direct response to that gap.
-5. Maintain alignment between the scope of the Introduction and the actual outcomes reported in the Results.
-6. Avoid turning the Introduction into an overextended literature review.
+      parts.push("Scientific language requirements:");
+      scientificLanguageRules(proseDensity, tone).forEach(rule => parts.push(`- ${rule}`));
+      parts.push("");
 
-Additional Introduction-specific expectations:
-- The Introduction should move from general problem to specific rationale.
-- It should not pre-claim findings beyond what the study design can support.
-- It should set up the study aim with precise rhetorical positioning.
-`;
+      parts.push("Mandatory control rules:");
+      buildRules().forEach(rule => parts.push(`- ${rule}`));
+      parts.push("- Remain strictly faithful to the supplied Methods and Results.");
+      parts.push("- Align scope, interpretation, and conclusion with the actual evidence base.");
+      parts.push("- Do not encourage decorative writing, rhetorical inflation, speculative overextension, or fabricated citation behavior.");
+      if (outputMode === "Direct article-writing prompt") {
+        parts.push("- Output the section itself, not instructions, commentary, or a prompt about how to write it.");
+      } else if (outputMode === "Journal-prose forcing prompt") {
+        parts.push("- Make the final output read as finished manuscript prose rather than an answer to a task description.");
       } else {
-        sectionInstruction = `
-Task:
-Generate a high-quality academic prompt that instructs an AI writing assistant to draft the Discussion section of a manuscript.
+        parts.push("- Keep sentence movement tightly controlled so that each paragraph behaves like journal prose under explicit argumentative discipline.");
+      }
+      parts.push("");
 
-The prompt should require the AI to:
-1. Begin with the principal findings in synthesized prose rather than numeric repetition.
-2. Interpret the findings in a restrained, evidence-aligned manner.
-3. Compare the findings with the broader literature without fabricating references.
-4. Explain clinical, scientific, or methodological implications as appropriate.
-5. Address limitations, sources of uncertainty, and interpretive boundaries.
-6. End with a proportionate concluding statement consistent with the evidence.
-
-Additional Discussion-specific expectations:
-- Do not simply restate the Results section.
-- Distinguish clearly between direct evidence, cautious interpretation, and broader implications.
-- Ensure that any mechanistic discussion remains proportional to the data actually reported.
-`;
+      if (extraContext) {
+        parts.push("Additional user requirements:");
+        parts.push(extraContext);
+        parts.push("");
       }
 
-      const prompt = `You are an academic writing prompt engineer specializing in scientific manuscripts.
+      parts.push("Output requirement:");
+      parts.push(`Return only the final ${sectionType} section in ${targetLanguage}. Do not add prefaces, bullet lists, explanations, headings about instructions, or commentary outside the section itself.`);
 
-Please generate a precise and publication-oriented writing prompt for an AI assistant.
-
-Target section:
-${sectionType}
-
-Study type:
-${studyType}
-
-Disciplinary writing style:
-${disciplineStyle}
-
-Journal orientation:
-${journalType}
-
-Interpretive tone:
-${toneStrength}
-
-Requested output length:
-${lengthControl}
-
-Prompt language:
-${languageStyle}
-
-Study context:
-- Topic: ${topic || "Not specified"}
-- Population: ${population || "Not specified"}
-- Intervention / Exposure: ${intervention || "Not specified"}
-- Main outcomes: ${outcomes || "Not specified"}
-
-Source material to be used by the downstream AI:
-[Methods]
-${methods}
-
-[Results]
-${results}
-
-Instructions for the prompt to be generated:
-${sectionInstruction}
-
-Global constraints:
-${constraints.map((c, i) => `${i + 1}. ${c}`).join("\n")}
-
-The generated prompt should:
-- be explicit, structured, and ready to paste into ChatGPT, Claude, Gemini, or similar tools
-- instruct the model to remain faithful to the provided Methods and Results
-- reduce the risk of overinterpretation, narrative inflation, and unsupported claims
-- produce writing in a scientific manuscript style rather than blog, editorial, or popular science style
-- avoid fabricated citations or invented study details
-
-${extraInstruction ? "Extra user-defined instruction:\n" + extraInstruction + "\n" : ""}
-
-Output requirement for this task:
-Please output only the final writing prompt, with no explanation before or after it.`;
-
-      document.getElementById("output").textContent = prompt.trim();
+      $("output").textContent = parts.join("\n");
     }
 
-    function copyOutput(){
-      const text = document.getElementById("output").textContent;
-      navigator.clipboard.writeText(text).then(() => {
+    async function copyPrompt(){
+      const text = $("output").textContent;
+      try{
+        await navigator.clipboard.writeText(text);
         alert("提示句已複製。");
-      }).catch(() => {
-        alert("複製失敗，請手動選取複製。");
-      });
+      }catch(e){
+        alert("複製失敗，請手動選取文字複製。");
+      }
     }
 
-    function clearAllFields(){
-      ["methods","results","topic","population","intervention","outcomes","extraInstruction"].forEach(id=>{
-        document.getElementById(id).value = "";
-      });
-      document.getElementById("sectionType").value = "Introduction";
-      document.getElementById("studyType").value = "Original research";
-      document.getElementById("disciplineStyle").value = "Medical academic";
-      document.getElementById("journalType").value = "High-impact general journal";
-      document.getElementById("toneStrength").value = "Balanced";
-      document.getElementById("lengthControl").value = "Standard";
-      document.getElementById("languageStyle").value = "English";
-
-      ["limitMechanism","preventCausal","emphasizeGap","litCompare","includeLimitations","nmaCaution"].forEach(id=>{
-        document.getElementById(id).checked = true;
-      });
-
-      document.getElementById("output").textContent = "請先填入 Methods 與 Results，然後按「生成提示句」。";
+    function resetOutput(){
+      $("output").textContent = "按下「生成提示句」後，這裡會產出可直接回貼到 AI 的寫作提示句。這份提示句會直接要求 AI 寫出章節，而不是再要求它生成另一段 prompt。";
     }
 
-    function loadDemo(){
-      document.getElementById("methods").value =
-`This study was a systematic review and network meta-analysis of randomized controlled trials. Eligible studies included older adults with depressive symptoms or diagnosed depression. Exercise interventions of different modalities were compared with usual care or other active comparators. Primary outcome was depressive symptom severity. Secondary outcome included dropout rate. Standard pairwise meta-analysis and network meta-analysis were performed. Risk of bias, inconsistency, and sensitivity analyses were assessed where applicable.`;
-
-      document.getElementById("results").value =
-`A total of 28 randomized controlled trials were included. Several exercise modalities showed significant reductions in depressive symptoms compared with control conditions. Ranking analysis suggested that some interventions may be more favorable than others, although confidence varied across comparisons. Dropout rates were generally low and did not differ markedly across most intervention categories. Heterogeneity was present in some comparisons, and the overall certainty of evidence ranged from low to moderate.`;
-
-      document.getElementById("topic").value = "Exercise interventions for depressive symptoms in older adults";
-      document.getElementById("population").value = "Older adults with depressive symptoms";
-      document.getElementById("intervention").value = "Multiple exercise modalities";
-      document.getElementById("outcomes").value = "Depressive symptoms, dropout rate";
-      document.getElementById("studyType").value = "Network meta-analysis";
-      document.getElementById("sectionType").value = "Introduction";
-      document.getElementById("output").textContent = "示範資料已載入，請按「生成提示句」。";
+    function resetAll(){
+      ["methods","results","topic","population","outcomes","extraContext"].forEach(id => $(id).value = "");
+      $("sectionType").value = "Discussion";
+      $("studyType").value = "Original research";
+      $("targetLanguage").value = "English";
+      $("discipline").value = "Biomedical";
+      $("journalOrientation").value = "Biomedical journal";
+      $("length").value = "Standard";
+      $("tone").value = "Interpretive";
+      $("paragraphMode").value = "Topic sentence first";
+      $("proseDensity").value = "Highly condensed SCI style";
+      $("mechanismMode").value = "Mechanism plus empirical example";
+      $("exampleRequirement").value = "One example per proposed mechanism";
+      $("outputMode").value = "Direct article-writing prompt";
+      ["chkNoFabrication","chkSeparateObserved","chkSentenceOrder","chkNoFiller","chkMechanismTested","chkNmaCaution"].forEach(id => $(id).checked = true);
+      resetOutput();
     }
   </script>
 </body>
