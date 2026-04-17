@@ -1,0 +1,535 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>現代新詩提示詞生成器 Pro v2</title>
+  <style>
+    :root{
+      --bg:#f6f2ea;
+      --panel:#fffdf8;
+      --ink:#2d2a26;
+      --soft:#6b6258;
+      --line:#d8cfc2;
+      --accent:#8b6f47;
+      --accent-2:#b7986b;
+      --accent-3:#efe7d9;
+      --shadow:0 12px 28px rgba(66,49,25,.08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Noto Serif TC","PingFang TC","Microsoft JhengHei",serif;
+      background:
+        radial-gradient(circle at top left, rgba(183,152,107,.16), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(139,111,71,.11), transparent 24%),
+        var(--bg);
+      color:var(--ink);
+      line-height:1.72;
+    }
+    .wrap{max-width:1320px;margin:0 auto;padding:28px 20px 56px}
+    .hero{
+      background:linear-gradient(135deg, rgba(139,111,71,.12), rgba(255,255,255,.78));
+      border:1px solid rgba(139,111,71,.18);
+      border-radius:24px;
+      padding:28px 28px 22px;
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
+    }
+    .badge{
+      display:inline-block;padding:4px 10px;border-radius:999px;background:#efe7d9;
+      color:#5c4727;font-size:.83rem;margin-bottom:10px;
+    }
+    h1{margin:0 0 8px;font-size:clamp(1.8rem,3vw,2.7rem);line-height:1.2;letter-spacing:.03em}
+    .sub{margin:0;color:var(--soft);font-size:1rem}
+    .grid{display:grid;grid-template-columns:1.08fr .92fr;gap:20px;align-items:start}
+    @media (max-width:980px){.grid{grid-template-columns:1fr}}
+    .card{
+      background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+      box-shadow:var(--shadow);padding:20px;
+    }
+    .section-title{margin:0 0 14px;font-size:1.08rem;letter-spacing:.04em;color:#4c3c27}
+    .field{margin-bottom:14px}
+    .field label{display:block;font-weight:700;margin-bottom:7px;font-size:.96rem}
+    .hint{color:var(--soft);font-size:.88rem;margin-top:5px}
+    textarea, select, input[type="text"], input[type="number"]{
+      width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 13px;font-size:.98rem;
+      background:#fff;color:var(--ink);outline:none;transition:.18s ease;font-family:inherit;
+    }
+    textarea:focus, select:focus, input:focus{
+      border-color:var(--accent-2);box-shadow:0 0 0 4px rgba(183,152,107,.15);
+    }
+    textarea{min-height:140px;resize:vertical}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    @media (max-width:760px){.two,.three{grid-template-columns:1fr}}
+    .chip-grid{display:flex;flex-wrap:wrap;gap:10px 10px;margin-top:6px}
+    .chip{
+      display:inline-flex;gap:8px;align-items:center;padding:10px 12px;border:1px solid var(--line);
+      border-radius:999px;background:#fff;cursor:pointer;font-size:.93rem;color:#4d4030;
+      transition:.16s ease;user-select:none;
+    }
+    .chip:hover{background:#faf7f1}
+    .chip input{accent-color:var(--accent);transform:scale(1.04)}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    button{
+      border:none;border-radius:12px;padding:12px 16px;font-size:.96rem;font-weight:700;cursor:pointer;
+      transition:.18s ease;font-family:inherit;
+    }
+    .primary{background:linear-gradient(135deg,var(--accent),#6f5638);color:#fff}
+    .primary:hover{transform:translateY(-1px)}
+    .secondary{background:#efe7d9;color:#4f402d}
+    .secondary:hover{background:#e7dcc9}
+    .ghost{background:#fff;color:#5d5348;border:1px solid var(--line)}
+    .ghost:hover{background:#faf7f1}
+    .output{
+      min-height:540px;white-space:pre-wrap;background:#fff;border:1px dashed var(--accent-2);
+      border-radius:16px;padding:16px;font-size:.98rem;line-height:1.82;
+    }
+    .sample{margin-top:14px;padding:14px 15px;border-radius:14px;background:#faf6ef;border:1px solid #eadfcd;color:#5f5548;font-size:.92rem}
+    .footer-note{margin-top:14px;color:var(--soft);font-size:.9rem}
+    .pill{display:inline-block;padding:3px 10px;border-radius:999px;background:#f3ecdf;margin:0 6px 6px 0;font-size:.83rem;color:#66523a;border:1px solid #e6d7c0}
+    .slider-wrap{padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#fff}
+    .slider-top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+    .slider-value{font-weight:700;color:#6a512f}
+    input[type="range"]{width:100%;accent-color:var(--accent)}
+    .mini-scale{display:flex;justify-content:space-between;font-size:.8rem;color:var(--soft);margin-top:4px;gap:6px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="badge">Modern Poetry Prompt Builder</div>
+      <h1>現代新詩提示詞生成器 Pro v2</h1>
+      <p class="sub">
+        可輸入創作動機、核心情緒、意象與詩性機制，結構式產出可直接貼給 AI 的新詩提示詞。
+        本版擴充更多明亮與多元向度，包括樂觀、鼓勵、活潑、黑色幽默、都市冷感、社會觀察與防 AI 味控制。
+      </p>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2 class="section-title">一、創作核心</h2>
+
+        <div class="field">
+          <label for="motivation">創作動機／想寫的核心感受</label>
+          <textarea id="motivation" placeholder="例如：我想寫一首關於人在疲憊之中仍慢慢往前走的詩。或想寫長者在日常裡仍有生命光亮、校園青春、城市孤獨、黑色幽默、希望感、微小幸福等。"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="material">事件素材／場景片段／腦中畫面</label>
+          <textarea id="material" placeholder="可輸入具體片段，例如：清晨公車站、汗濕的校服、醫院走廊、颱風前的窗、菜市場、跑道、老屋、手機亮起又熄滅。也可以貼零散句子，系統會整理成結構式提示詞。"></textarea>
+        </div>
+
+        <div class="three">
+          <div class="field">
+            <label for="mode">詩體模式</label>
+            <select id="mode">
+              <option selected>現代自由詩</option>
+              <option>短詩</option>
+              <option>散文詩</option>
+              <option>組詩單首風</option>
+              <option>社群短詩</option>
+              <option>文學獎感新詩</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="length">篇幅長度</label>
+            <select id="length">
+              <option>極短</option>
+              <option selected>短</option>
+              <option>中等</option>
+              <option>偏長</option>
+              <option>長篇抒情</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="voice">敘事視角</label>
+            <select id="voice">
+              <option selected>第一人稱</option>
+              <option>第二人稱</option>
+              <option>第三人稱</option>
+              <option>無主體抒寫</option>
+              <option>物件視角</option>
+              <option>群體視角</option>
+            </select>
+          </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top:18px;">二、主題傾向</h2>
+        <div class="chip-grid" id="themeGroup">
+          <label class="chip"><input type="checkbox" value="孤獨與距離">孤獨與距離</label>
+          <label class="chip"><input type="checkbox" value="愛與失落">愛與失落</label>
+          <label class="chip"><input type="checkbox" value="記憶與時間">記憶與時間</label>
+          <label class="chip"><input type="checkbox" value="城市生活">城市生活</label>
+          <label class="chip"><input type="checkbox" value="成長蛻變">成長蛻變</label>
+          <label class="chip"><input type="checkbox" value="希望與重生">希望與重生</label>
+          <label class="chip"><input type="checkbox" value="日常微小幸福">日常微小幸福</label>
+          <label class="chip"><input type="checkbox" value="家庭親情">家庭親情</label>
+          <label class="chip"><input type="checkbox" value="校園青春">校園青春</label>
+          <label class="chip"><input type="checkbox" value="老年與生命感">老年與生命感</label>
+          <label class="chip"><input type="checkbox" value="社會觀察">社會觀察</label>
+          <label class="chip"><input type="checkbox" value="旅行與遠方">旅行與遠方</label>
+          <label class="chip"><input type="checkbox" value="自然季節">自然季節</label>
+          <label class="chip"><input type="checkbox" value="荒謬現代感">荒謬現代感</label>
+          <label class="chip"><input type="checkbox" value="身體與病痛">身體與病痛</label>
+          <label class="chip"><input type="checkbox" value="AI與科技感">AI與科技感</label>
+          <label class="chip"><input type="checkbox" value="勞動與小人物">勞動與小人物</label>
+          <label class="chip"><input type="checkbox" value="運動與意志">運動與意志</label>
+          <label class="chip"><input type="checkbox" value="童趣與遊戲感">童趣與遊戲感</label>
+          <label class="chip"><input type="checkbox" value="社區與人情溫度">社區與人情溫度</label>
+        </div>
+
+        <h2 class="section-title" style="margin-top:18px;">三、整體語氣與情緒溫度</h2>
+        <div class="chip-grid" id="toneGroup">
+          <label class="chip"><input type="checkbox" value="溫柔療癒">溫柔療癒</label>
+          <label class="chip"><input type="checkbox" value="明亮樂觀">明亮樂觀</label>
+          <label class="chip"><input type="checkbox" value="鼓舞堅定">鼓舞堅定</label>
+          <label class="chip"><input type="checkbox" value="活潑跳躍">活潑跳躍</label>
+          <label class="chip"><input type="checkbox" value="幽默俏皮">幽默俏皮</label>
+          <label class="chip"><input type="checkbox" value="微憂傷">微憂傷</label>
+          <label class="chip"><input type="checkbox" value="深沉孤寂">深沉孤寂</label>
+          <label class="chip"><input type="checkbox" value="冷調克制">冷調克制</label>
+          <label class="chip"><input type="checkbox" value="哲理沉思">哲理沉思</label>
+          <label class="chip"><input type="checkbox" value="黑色幽默">黑色幽默</label>
+          <label class="chip"><input type="checkbox" value="狂放奔跑感">狂放奔跑感</label>
+          <label class="chip"><input type="checkbox" value="神秘夢境感">神秘夢境感</label>
+          <label class="chip"><input type="checkbox" value="日常口語感">日常口語感</label>
+          <label class="chip"><input type="checkbox" value="青春透明感">青春透明感</label>
+        </div>
+
+        <div class="field">
+          <label for="emotionTemp">情緒溫度</label>
+          <div class="slider-wrap">
+            <div class="slider-top">
+              <div>從低潮到奔放的整體溫度</div>
+              <div class="slider-value" id="tempLabel">0｜平靜</div>
+            </div>
+            <input type="range" id="emotionTemp" min="-5" max="5" step="1" value="0" oninput="updateTempLabel()" />
+            <div class="mini-scale"><span>-5 絕望</span><span>-3 低潮</span><span>0 平靜</span><span>+2 希望</span><span>+4 熱血</span><span>+5 狂喜</span></div>
+          </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top:18px;">四、語言與意象控制</h2>
+        <div class="three">
+          <div class="field">
+            <label for="imageDensity">意象密度</label>
+            <select id="imageDensity">
+              <option>稀疏</option>
+              <option selected>平衡</option>
+              <option>濃密</option>
+              <option>高密度跳躍</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="abstractLevel">抽象程度</label>
+            <select id="abstractLevel">
+              <option>具體寫實</option>
+              <option selected>具體中帶抽象</option>
+              <option>抽象偏多</option>
+              <option>高度象徵化</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="texture">語言質地</label>
+            <select id="texture">
+              <option selected>乾淨凝練</option>
+              <option>柔軟細膩</option>
+              <option>銳利克制</option>
+              <option>口語自然</option>
+              <option>華麗流動</option>
+              <option>冷白極簡</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="two">
+          <div class="field">
+            <label for="keywords">關鍵意象／必保留詞</label>
+            <input id="keywords" type="text" placeholder="例如：捷運、雨衣、汗、走廊、月光、裂縫、橘子、跑道、病房、窗簾、老椅子" />
+          </div>
+          <div class="field">
+            <label for="avoidWords">可選：避免使用的詞</label>
+            <input id="avoidWords" type="text" placeholder="例如：夢想、加油、永遠、靈魂、幸福、宇宙、溫柔地、破碎" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="lineStyle">分行與節奏方式</label>
+          <select id="lineStyle">
+            <option selected>自然斷行</option>
+            <option>短句切分</option>
+            <option>長短交錯</option>
+            <option>階梯式推進</option>
+            <option>散文詩式長行</option>
+            <option>冷靜稀疏留白</option>
+          </select>
+        </div>
+
+        <h2 class="section-title" style="margin-top:18px;">五、詩性機制（可多選）</h2>
+        <div class="chip-grid" id="deviceGroup">
+          <label class="chip"><input type="checkbox" value="陌生化">陌生化</label>
+          <label class="chip"><input type="checkbox" value="留白">留白</label>
+          <label class="chip"><input type="checkbox" value="跳接">跳接</label>
+          <label class="chip"><input type="checkbox" value="象徵">象徵</label>
+          <label class="chip"><input type="checkbox" value="反諷">反諷</label>
+          <label class="chip"><input type="checkbox" value="反差對照">反差對照</label>
+          <label class="chip"><input type="checkbox" value="童趣視角">童趣視角</label>
+          <label class="chip"><input type="checkbox" value="黑色幽默">黑色幽默</label>
+          <label class="chip"><input type="checkbox" value="擬人化">擬人化</label>
+          <label class="chip"><input type="checkbox" value="城市噪音感">城市噪音感</label>
+          <label class="chip"><input type="checkbox" value="時間倒敘">時間倒敘</label>
+          <label class="chip"><input type="checkbox" value="微電影畫面感">微電影畫面感</label>
+          <label class="chip"><input type="checkbox" value="呼吸節奏句型">呼吸節奏句型</label>
+          <label class="chip"><input type="checkbox" value="層層遞進">層層遞進</label>
+          <label class="chip"><input type="checkbox" value="金句式收尾">金句式收尾</label>
+          <label class="chip"><input type="checkbox" value="結尾反轉">結尾反轉</label>
+          <label class="chip"><input type="checkbox" value="物件承載情緒">物件承載情緒</label>
+          <label class="chip"><input type="checkbox" value="日常物件放大">日常物件放大</label>
+        </div>
+
+        <h2 class="section-title" style="margin-top:18px;">六、結構與開收控制</h2>
+        <div class="three">
+          <div class="field">
+            <label for="structure">結構骨架</label>
+            <select id="structure">
+              <option selected>片段式拼接</option>
+              <option>起承轉合式</option>
+              <option>單一場景推進</option>
+              <option>情緒漸層推進</option>
+              <option>物件展開式</option>
+              <option>對照式雙場景</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="opening">開頭方式</label>
+            <select id="opening">
+              <option selected>從具體畫面切入</option>
+              <option>從一句突兀陳述切入</option>
+              <option>從動作切入</option>
+              <option>從氣味或聲音切入</option>
+              <option>從對話殘片切入</option>
+              <option>從時間感切入</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="ending">收尾方式</label>
+            <select id="ending">
+              <option selected>留有餘韻</option>
+              <option>微光收束</option>
+              <option>突然反轉</option>
+              <option>安靜停住</option>
+              <option>一句穿心</option>
+              <option>帶希望收尾</option>
+              <option>幽默收尾</option>
+            </select>
+          </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top:18px;">七、防 AI 味與附加要求</h2>
+        <div class="chip-grid" id="antiAiGroup">
+          <label class="chip"><input type="checkbox" value="避免雞湯感" checked>避免雞湯感</label>
+          <label class="chip"><input type="checkbox" value="避免空泛哲理" checked>避免空泛哲理</label>
+          <label class="chip"><input type="checkbox" value="避免濫情">避免濫情</label>
+          <label class="chip"><input type="checkbox" value="避免過度修辭">避免過度修辭</label>
+          <label class="chip"><input type="checkbox" value="避免每句都像名言">避免每句都像名言</label>
+          <label class="chip"><input type="checkbox" value="保留真人手寫感" checked>保留真人手寫感</label>
+          <label class="chip"><input type="checkbox" value="允許少量口語感">允許少量口語感</label>
+          <label class="chip"><input type="checkbox" value="不要像分行散文" checked>不要像分行散文</label>
+        </div>
+
+        <div class="field">
+          <label for="extra">補充要求</label>
+          <textarea id="extra" style="min-height:110px;" placeholder="例如：不要太像社群語錄；希望有台灣都市感；詩裡不要直接說教；希望快樂但不要幼稚；有鼓勵感但不要口號化；收尾要留下輕微震動。"></textarea>
+        </div>
+
+        <div class="actions">
+          <button class="primary" onclick="generatePrompt()">生成提示詞</button>
+          <button class="secondary" onclick="copyPrompt()">複製提示詞</button>
+          <button class="ghost" onclick="resetAll()">全部清空</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="section-title">八、生成結果</h2>
+        <div id="output" class="output">按下「生成提示詞」後，這裡會自動產出可直接貼給 AI 使用的完整新詩提示詞。</div>
+
+        <div class="actions">
+          <button class="secondary" onclick="copyPrompt()">複製結果</button>
+          <button class="ghost" onclick="resetOutput()">清空結果</button>
+        </div>
+
+        <div class="sample">
+          <strong>本版擴充重點</strong><br>
+          <span class="pill">樂觀清朗</span>
+          <span class="pill">鼓舞堅定</span>
+          <span class="pill">活潑跳躍</span>
+          <span class="pill">黑色幽默</span>
+          <span class="pill">情緒溫度滑桿</span>
+          <span class="pill">詩性機制多選</span>
+          <span class="pill">防 AI 味控制</span>
+          <span class="pill">結構式輸出</span>
+        </div>
+
+        <p class="footer-note">
+          這版延續你前一版指定的暖米色卡片風與雙欄配置，同時把新詩的主題、情緒與技法選項拉得更開，讓生成器不只服務哀傷書寫，也能支撐明亮、活潑、鼓舞、童趣、社會觀察與荒謬感等路線。
+        </p>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function getCheckedValues(groupId){
+      return [...document.querySelectorAll(`#${groupId} input[type="checkbox"]:checked`)].map(el => el.value);
+    }
+
+    function listText(raw){
+      if(!raw.trim()) return "";
+      const items = raw.split(/[、,，;；\s]+/).filter(Boolean);
+      return items.join("、");
+    }
+
+    function tempLabelText(v){
+      const map = {
+        "-5":"絕望","-4":"極低潮","-3":"低潮","-2":"陰鬱","-1":"微沉","0":"平靜",
+        "1":"微亮","2":"希望","3":"昂揚","4":"熱血","5":"狂喜"
+      };
+      return `${v}｜${map[String(v)] || "平靜"}`;
+    }
+
+    function updateTempLabel(){
+      $("tempLabel").textContent = tempLabelText($("emotionTemp").value);
+    }
+
+    function buildPrompt(){
+      const motivation = $("motivation").value.trim();
+      const material = $("material").value.trim();
+      const mode = $("mode").value;
+      const length = $("length").value;
+      const voice = $("voice").value;
+      const themes = getCheckedValues("themeGroup");
+      const tones = getCheckedValues("toneGroup");
+      const temp = $("emotionTemp").value;
+      const imageDensity = $("imageDensity").value;
+      const abstractLevel = $("abstractLevel").value;
+      const texture = $("texture").value;
+      const keywords = listText($("keywords").value);
+      const avoidWords = listText($("avoidWords").value);
+      const lineStyle = $("lineStyle").value;
+      const devices = getCheckedValues("deviceGroup");
+      const structure = $("structure").value;
+      const opening = $("opening").value;
+      const ending = $("ending").value;
+      const antiAi = getCheckedValues("antiAiGroup");
+      const extra = $("extra").value.trim();
+
+      let prompt = "";
+      prompt += "你是一位擅長現代新詩、自由詩、散文詩與當代語言節奏控制的寫作模型。\n";
+      prompt += "請根據以下設定，直接寫出一首完成度高、具有詩感與語言控制力的現代新詩。\n\n";
+
+      prompt += "【任務目標】\n";
+      prompt += "將使用者提供的創作動機、素材片段、情緒溫度、意象與詩性機制，轉化成一首真正具有詩感的現代新詩，而不是把散文硬分行，也不是空泛語錄。\n\n";
+
+      prompt += "【基本設定】\n";
+      prompt += `- 詩體模式：${mode}\n`;
+      prompt += `- 篇幅長度：${length}\n`;
+      prompt += `- 敘事視角：${voice}\n`;
+      prompt += `- 結構骨架：${structure}\n`;
+      prompt += `- 開頭方式：${opening}\n`;
+      prompt += `- 收尾方式：${ending}\n`;
+      prompt += `- 分行與節奏方式：${lineStyle}\n\n`;
+
+      prompt += "【主題與情緒】\n";
+      prompt += `- 主題傾向：${themes.length ? themes.join("、") : "請依創作動機自行判斷"}\n`;
+      prompt += `- 整體語氣：${tones.length ? tones.join("、") : "請依素材決定合理語氣"}\n`;
+      prompt += `- 情緒溫度：${tempLabelText(temp)}\n\n`;
+
+      prompt += "【語言與意象控制】\n";
+      prompt += `- 意象密度：${imageDensity}\n`;
+      prompt += `- 抽象程度：${abstractLevel}\n`;
+      prompt += `- 語言質地：${texture}\n`;
+      if (keywords) prompt += `- 必保留的關鍵意象或詞：${keywords}\n`;
+      if (avoidWords) prompt += `- 盡量避免使用的詞：${avoidWords}\n`;
+      prompt += "\n";
+
+      prompt += "【詩性機制】\n";
+      prompt += `- 優先使用：${devices.length ? devices.join("、") : "陌生化、留白、物件承載情緒等基本詩性方法"}\n\n`;
+
+      prompt += "【使用者素材】\n";
+      prompt += `- 創作動機：${motivation || "未提供"}\n`;
+      prompt += `- 事件素材／場景片段：${material || "未提供"}\n`;
+      if (extra) prompt += `- 補充要求：${extra}\n`;
+      prompt += "\n";
+
+      prompt += "【寫作要求】\n";
+      prompt += "- 請讓詩中的情緒透過畫面、動作、物件、聲音、氣味與停頓自然浮現，不要直接講大道理。\n";
+      prompt += "- 允許詩意跳接，但整體仍需具有內在張力與可感的情緒流。\n";
+      prompt += "- 若語氣偏樂觀或鼓勵，請避免口號化；要讓希望從畫面裡長出來。\n";
+      prompt += "- 若語氣偏活潑或幽默，仍要保留詩的密度與節奏，不要變成單純俏皮文案。\n";
+      prompt += "- 若語氣偏沉靜或憂傷，請避免濫情與過度自我沉溺。\n";
+      prompt += "- 讓句子保有可朗讀性與停頓感。\n";
+      prompt += "- 盡量讓讀者在讀完後留下餘韻，而不只是理解字面意思。\n";
+      if (antiAi.length) {
+        antiAi.forEach(item => prompt += `- ${item}。\n`);
+      }
+
+      prompt += "\n【輸出格式】\n";
+      prompt += "- 直接輸出詩題與詩作本身。\n";
+      prompt += "- 不要解說創作方法。\n";
+      prompt += "- 不要列點分析。\n";
+      prompt += "- 不要先講這首詩的主題。\n";
+      prompt += "- 只輸出完成後的現代新詩。";
+
+      return prompt;
+    }
+
+    function generatePrompt(){
+      $("output").textContent = buildPrompt();
+    }
+
+    async function copyPrompt(){
+      try{
+        await navigator.clipboard.writeText($("output").textContent);
+        alert("提示詞已複製。");
+      }catch(e){
+        alert("複製失敗，請手動選取文字複製。");
+      }
+    }
+
+    function resetOutput(){
+      $("output").textContent = "按下「生成提示詞」後，這裡會自動產出可直接貼給 AI 使用的完整新詩提示詞。";
+    }
+
+    function resetAll(){
+      ["motivation","material","keywords","avoidWords","extra"].forEach(id => $(id).value = "");
+      ["themeGroup","toneGroup","deviceGroup"].forEach(groupId => {
+        document.querySelectorAll(`#${groupId} input[type="checkbox"]`).forEach(cb => cb.checked = false);
+      });
+      document.querySelectorAll(`#antiAiGroup input[type="checkbox"]`).forEach(cb => cb.checked = false);
+      ["避免雞湯感","避免空泛哲理","保留真人手寫感","不要像分行散文"].forEach(v => {
+        const target = [...document.querySelectorAll('#antiAiGroup input[type="checkbox"]')].find(el => el.value === v);
+        if(target) target.checked = true;
+      });
+      $("mode").value = "現代自由詩";
+      $("length").value = "短";
+      $("voice").value = "第一人稱";
+      $("emotionTemp").value = 0;
+      $("imageDensity").value = "平衡";
+      $("abstractLevel").value = "具體中帶抽象";
+      $("texture").value = "乾淨凝練";
+      $("lineStyle").value = "自然斷行";
+      $("structure").value = "片段式拼接";
+      $("opening").value = "從具體畫面切入";
+      $("ending").value = "留有餘韻";
+      updateTempLabel();
+      resetOutput();
+    }
+
+    updateTempLabel();
+  </script>
+</body>
+</html>
