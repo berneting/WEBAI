@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 文宣句與提示句生成器｜親民商業版</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      margin: 0;
+      padding: 24px;
+      color: #eef4ff;
+      line-height: 1.75;
+      min-height: 100vh;
+      background: linear-gradient(-45deg, #08131f, #0f2233, #13324b, #0c1a28);
+      background-size: 400% 400%;
+      animation: bgMove 16s ease infinite;
+    }
+
+    @keyframes bgMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      background: rgba(0, 0, 0, 0.34);
+      border-radius: 22px;
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
+      padding: 30px;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .top-link {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: #9ad9ff;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .top-link:hover { text-decoration: underline; }
+
+    .hero {
+      margin-bottom: 24px;
+      padding: 20px 22px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 31px;
+      color: #ffffff;
+      letter-spacing: 0.4px;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: #dcecff;
+      font-size: 16px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .tag {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(84, 170, 255, 0.14);
+      border: 1px solid rgba(128, 197, 255, 0.22);
+      color: #eaf5ff;
+      font-size: 13px;
+    }
+
+    h2 {
+      margin-top: 30px;
+      margin-bottom: 10px;
+      font-size: 22px;
+      border-left: 5px solid #39b7ff;
+      padding-left: 12px;
+      color: #ffffff;
+    }
+
+    p.note {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(120, 190, 255, 0.25);
+      padding: 15px 17px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      color: #eaf4ff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin: 12px 0 6px;
+      color: #ffffff;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 16px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.08);
+      color: #ffffff;
+      outline: none;
+      resize: vertical;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: rgba(255,255,255,0.62);
+    }
+
+    select option { color: #222; }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #31b8ff;
+      box-shadow: 0 0 0 3px rgba(49, 184, 255, 0.18);
+    }
+
+    .btn-group {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      padding: 11px 18px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      cursor: pointer;
+      color: white;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
+    }
+
+    button.secondary { background: linear-gradient(135deg, #4b5d73, #34495e); }
+    button.copy { background: linear-gradient(135deg, #00b894, #009c7a); }
+
+    .small {
+      font-size: 13px;
+      color: rgba(255,255,255,0.78);
+      margin-bottom: 10px;
+    }
+
+    .output-box {
+      margin-top: 12px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 18px;
+      white-space: pre-wrap;
+      min-height: 140px;
+      color: #f4f8ff;
+    }
+
+    .hint-box {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #e8f3ff;
+    }
+
+    .hint-box ul {
+      margin: 8px 0 0 18px;
+      padding: 0;
+    }
+
+    .hint-box li { margin-bottom: 6px; }
+
+    @media (max-width: 900px) {
+      .grid, .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 16px; }
+      .container { padding: 22px; }
+      h1 { font-size: 27px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="top-link" href="./index.html">← 回首頁</a>
+
+    <div class="hero">
+      <h1>AI 文宣句與提示句生成器｜親民商業版</h1>
+      <p class="subtitle">把專業說得更有人味，不走硬推銷，不走壓迫式話術，而是像一位懂行的前輩，陪讀者慢慢理解。</p>
+      <div class="tag-row">
+        <span class="tag">降階術</span>
+        <span class="tag">生活化對比</span>
+        <span class="tag">陪伴式語氣</span>
+        <span class="tag">可直接複製回 AI</span>
+      </div>
+    </div>
+
+    <p class="note">
+      <strong>使用方式：</strong><br>
+      1. 輸入要推廣的產品、服務、課程或專業內容。<br>
+      2. 選擇想要的語氣方向。<br>
+      3. 可加上讀者情境與你的分享角度。<br>
+      4. 點擊「生成內容」後，上方會出現較親民的參考文宣，下方會生成可直接貼回 AI 的完整提示句。<br>
+      5. 這一版特別弱化了傳統商業文案常見的業務感，改用比較真實、可親近的溝通方式。
+    </p>
+
+    <div class="grid">
+      <div>
+        <label for="product">產品 / 服務 / 主題名稱</label>
+        <input id="product" placeholder="例如：老齡健康顧問、失智照護課程、社區健康講座" />
+      </div>
+
+      <div>
+        <label for="style">整體語氣風格</label>
+        <select id="style">
+          <option value="soft_business">親民分享版</option>
+          <option value="warm">溫和陪伴版</option>
+          <option value="professional_soft">專業但不硬版</option>
+          <option value="social_post">社群貼文版</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div>
+        <label for="reader">目標讀者</label>
+        <input id="reader" placeholder="例如：一般民眾、家屬、學生、第一次接觸的人" />
+      </div>
+
+      <div>
+        <label for="painPoint">讀者常見卡點</label>
+        <input id="painPoint" placeholder="例如：看不懂專業內容、資訊太多、不知道從哪開始" />
+      </div>
+
+      <div>
+        <label for="goal">你想傳達的核心幫助</label>
+        <input id="goal" placeholder="例如：讓人更快聽懂、降低距離感、建立信任" />
+      </div>
+    </div>
+
+    <label for="context">補充情境 / 分享角度（可選）</label>
+    <textarea id="context" rows="4" placeholder="例如：希望像一位專業前輩分享一路摸索的心得，不要太像在賣東西；可以用生活化對比與同理語氣。"></textarea>
+
+    <div class="btn-group">
+      <button onclick="generateContent()">生成內容</button>
+      <button class="secondary" onclick="clearAll()">清空</button>
+    </div>
+
+    <div class="hint-box">
+      <strong>這一版的語氣原則</strong>
+      <ul>
+        <li>把「緊張感」改寫成「我懂你那種說了很多卻沒人聽進去的委屈」。</li>
+        <li>把「解決方案」改寫成「我試過後，發現這樣說比較容易讓人懂」。</li>
+        <li>把「行動呼籲」改寫成「先聊聊、先試試看，不急著成交」。</li>
+      </ul>
+    </div>
+
+    <h2>① 參考文宣句</h2>
+    <div class="small">這裡會先生成一段較柔和、較生活化的版本，可作為社群文案、簡介文字或改寫底稿。</div>
+    <div id="marketingOutput" class="output-box"></div>
+
+    <h2>② AI 提示句</h2>
+    <div class="small">這段可以直接複製貼回 AI，讓 AI 依照你的新邏輯生成完整內容。</div>
+    <div class="btn-group">
+      <button class="copy" onclick="copyPrompt()">複製 AI 提示句</button>
+    </div>
+    <div id="promptOutput" class="output-box"></div>
+  </div>
+
+  <script>
+    function getStyleText(style) {
+      const styles = {
+        soft_business: {
+          tone: "像專業前輩在分享經驗，親民、有溫度、降低推銷感",
+          extra: "多使用同理心、生活化對比與經驗式語氣，避免像業務話術。"
+        },
+        warm: {
+          tone: "溫和、陪伴、讓讀者感到被理解",
+          extra: "多站在讀者委屈與困惑的角度說話，不給壓力。"
+        },
+        professional_soft: {
+          tone: "有專業感，但語氣柔和、可信、不生硬",
+          extra: "保留專業穩定度，但用一般人聽得懂的表達方式。"
+        },
+        social_post: {
+          tone: "適合社群貼文，口語自然，有節奏感與親近感",
+          extra: "可加入提問句、生活觀察與較短的段落安排。"
+        }
+      };
+      return styles[style] || styles.soft_business;
+    }
+
+    function safeValue(value, fallback) {
+      return value && value.trim() ? value.trim() : fallback;
+    }
+
+    function generateMarketingText(product, style, reader, painPoint, goal, context) {
+      const s = getStyleText(style);
+
+      return `【從讀者的委屈開始】
+你有沒有發現，有時候我們明明很認真想把「${product}」說清楚，卻還是很容易遇到一種情況：自己講得很用心，對方卻不一定聽得進去。尤其是 ${reader}，他們常常不是不在乎，而是真的已經被太多資訊塞滿了。
+
+【把問題說成人話】
+很多人碰到 ${product} 時，最大的卡點其實不是內容不重要，而是「${painPoint}」。當資訊太硬、太滿、太像在上課時，再好的內容也容易被滑掉。
+
+【我後來比較相信的方法】
+我慢慢發現，與其急著證明自己多專業，不如先把語言調整到對方聽得懂。寫作更像是一種翻譯工具，把原本有距離的內容，變成生活裡可以理解、可以接住的話。這樣做，不只是比較容易傳達，也更容易走到「${goal}」。
+
+【邀請，而不是施壓】
+所以現在如果我要介紹 ${product}，我會更傾向用陪伴的方式，而不是催促的方式。先讓人願意看下去、願意聽下去，再慢慢理解它真正的價值。${context ? '\n\n【補充分享角度】\n' + context : ''}\n\n【最後的語氣】\n不一定要很會賣，也不需要把自己寫得很厲害。只要你能把真正想說的事，換成別人願意靠近的語言，很多事情就會開始不一樣。`;
+    }
+
+    function generatePrompt(product, style, reader, painPoint, goal, context) {
+      const s = getStyleText(style);
+
+      return `請根據以下條件，為「${product}」生成一組完整、親民、去業務感的推廣文案。
+
+【你的角色】
+你不是傳統業務型文案，也不是硬派銷售助手。
+你更像是一位有經驗的專業前輩，懂得把原本偏硬的商業寫作邏輯，轉成一般人願意閱讀、願意相信、願意靠近的內容。
+
+【核心寫作任務】
+請將原本偏商業導向的文案邏輯，改寫為：
+1. 從讀者的委屈與卡點出發，而不是先製造壓力。
+2. 把「解決方案」寫成「我試過後發現這樣比較有效」的經驗式分享。
+3. 把「行動呼籲」改成邀請、交流、陪伴式語氣，而不是催促成交。
+4. 善用「降階術」與「生活化對比」，把專業內容翻成一般人能懂的話。
+
+【主題】
+${product}
+
+【目標讀者】
+${reader}
+
+【讀者常見卡點】
+${painPoint}
+
+【希望傳達的核心幫助】
+${goal}
+
+【整體語氣】
+${s.tone}
+
+【補充情境】
+${context || '可依主題自行補足自然情境，但要避免過度戲劇化。'}
+
+【寫作要求】
+1. 使用繁體中文。
+2. 不要有強烈推銷感，不要像在下指令。
+3. 不要使用太硬的商業術語，例如轉換率、成交、業績爆發、強力行動等。
+4. 盡量改用更親民的表達，例如認同感、迴響、願意靠近、願意聊聊、先試試看。
+5. 內容要有溫度，但不能空泛。
+6. 可加入生活化的比喻或日常感受，讓讀者更容易共鳴。
+7. 不要把作者寫成高高在上的專家，而要像一位走過路、願意分享的人。
+8. ${s.extra}
+
+【請優先套用以下改寫邏輯】
+一、把「緊張感」改成「同理心」
+- 從讀者那種明明很努力、卻不被理解或不被看見的感受出發。
+- 可用提問句開頭，例如「你有沒有也有過這種感覺？」
+
+二、把「解決方案」改成「實驗結果」
+- 不要寫成產品功能推銷。
+- 改寫成「我後來發現」「我試著這樣調整後」這類經驗式口吻。
+
+三、把「行動呼籲」改成「邀請與陪伴」
+- 不要強調立即購買、立即報名、立即採取行動。
+- 可改成「先聊聊看」「先試試看」「我整理了一份簡單筆記」這類低壓力表達。
+
+【請輸出以下內容】
+A. 標題 3 個
+- 要自然、有吸引力，但不要聳動。
+- 其中至少 1 個標題要偏生活感。
+
+B. 短版文宣
+- 80 到 120 字
+- 適合快速介紹或貼文前言
+
+C. 完整文宣
+- 約 300 到 500 字
+- 段落清楚，有情緒轉折與親近感
+
+D. 社群貼文版
+- 口語一些
+- 可加入一到兩個提問句
+- 段落不要太長，適合滑手機閱讀
+
+E. 口語分享版
+- 像真人面對面在說明
+- 可用於介紹、聊天、簡單說明
+
+F. 關鍵字替換建議表
+- 左欄：偏硬商業語句
+- 右欄：較親民柔和語句
+- 再附一欄說明替換後帶來的感受差異
+
+【重要限制】
+- 不要寫成傳統廣告稿。
+- 不要滿篇口號。
+- 不要堆疊空泛形容詞。
+- 不要有壓迫感。
+- 要讓人感覺：這不是有人在賣我東西，而是有人真的懂我卡在哪裡，願意陪我整理。`;
+    }
+
+    function generateContent() {
+      const product = safeValue(document.getElementById("product").value, "你的專業主題");
+      const style = document.getElementById("style").value;
+      const reader = safeValue(document.getElementById("reader").value, "一般讀者");
+      const painPoint = safeValue(document.getElementById("painPoint").value, "資訊太多、太硬、不容易快速看懂");
+      const goal = safeValue(document.getElementById("goal").value, "讓對方更願意理解與信任");
+      const context = document.getElementById("context").value.trim();
+
+      document.getElementById("marketingOutput").textContent = generateMarketingText(product, style, reader, painPoint, goal, context);
+      document.getElementById("promptOutput").textContent = generatePrompt(product, style, reader, painPoint, goal, context);
+    }
+
+    function copyPrompt() {
+      const text = document.getElementById("promptOutput").textContent;
+      if (!text.trim()) {
+        alert("請先生成內容");
+        return;
+      }
+      navigator.clipboard.writeText(text)
+        .then(() => alert("AI 提示句已複製"))
+        .catch(() => alert("複製失敗，請手動複製"));
+    }
+
+    function clearAll() {
+      document.getElementById("product").value = "";
+      document.getElementById("style").value = "soft_business";
+      document.getElementById("reader").value = "";
+      document.getElementById("painPoint").value = "";
+      document.getElementById("goal").value = "";
+      document.getElementById("context").value = "";
+      document.getElementById("marketingOutput").textContent = "";
+      document.getElementById("promptOutput").textContent = "";
+    }
+  </script>
+</body>
+</html>
