@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 商用文宣與專業策展提示詞生成器 Pro Max</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg1: #06111f;
+      --bg2: #0d2237;
+      --bg3: #133655;
+      --card: rgba(255,255,255,0.08);
+      --card-strong: rgba(255,255,255,0.12);
+      --line: rgba(255,255,255,0.14);
+      --text: #eef5ff;
+      --muted: rgba(238,245,255,0.76);
+      --accent: #69c0ff;
+      --accent2: #b8e6ff;
+      --shadow: 0 18px 40px rgba(0,0,0,0.32);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(115, 191, 255, 0.14), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(180, 220, 255, 0.08), transparent 30%),
+        linear-gradient(135deg, var(--bg1), var(--bg2) 52%, var(--bg3));
+      padding: 22px;
+      line-height: 1.7;
+    }
+
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 28px 28px 22px;
+      backdrop-filter: blur(12px);
+      margin-bottom: 20px;
+    }
+
+    .hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .back-link {
+      color: var(--accent2);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    .badge-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .badge {
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.10);
+      color: var(--accent2);
+      font-size: 13px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      letter-spacing: 0.5px;
+      color: #fff;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 980px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(360px, 0.95fr) minmax(420px, 1.05fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 18px 20px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 22px;
+      color: #fff;
+    }
+
+    .panel-head p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .panel-body {
+      padding: 20px;
+    }
+
+    .section {
+      margin-bottom: 20px;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .section h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      color: #fff;
+      border-left: 4px solid var(--accent);
+      padding-left: 10px;
+    }
+
+    .hint {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .grid-2, .grid-3 {
+      display: grid;
+      gap: 14px;
+    }
+
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+    .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+    label {
+      display: block;
+      font-weight: bold;
+      color: #fff;
+      margin: 0 0 6px;
+      font-size: 14px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      border-radius: 12px;
+      padding: 12px 13px;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: rgba(255,255,255,0.46);
+    }
+
+    select option {
+      color: #111;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(105,192,255,0.18);
+      background: rgba(255,255,255,0.10);
+    }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 12px;
+      margin-top: 8px;
+    }
+
+    .check-item {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .check-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin-top: 3px;
+      accent-color: #6cc7ff;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 15px;
+      cursor: pointer;
+      color: white;
+      background: linear-gradient(135deg, #2dbdff, #1569ff);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.24);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 26px rgba(0,0,0,0.28);
+    }
+
+    button.secondary { background: linear-gradient(135deg, #4b5d73, #334255); }
+    button.copy { background: linear-gradient(135deg, #00ba95, #00896f); }
+
+    .output-card {
+      margin-bottom: 18px;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .output-card h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      color: #fff;
+    }
+
+    .subnote {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .output-box {
+      white-space: pre-wrap;
+      min-height: 120px;
+      background: rgba(6, 16, 26, 0.56);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 16px;
+      color: #f3f8ff;
+      font-size: 15px;
+    }
+
+    .mini-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .mini-tag {
+      font-size: 12px;
+      color: #d9eeff;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(105,192,255,0.10);
+      border: 1px solid rgba(105,192,255,0.18);
+    }
+
+    .footer-note {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 1120px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 14px; }
+      .hero { padding: 22px 18px 18px; }
+      .panel-body, .panel-head { padding-left: 16px; padding-right: 16px; }
+      .grid-2, .grid-3, .checklist { grid-template-columns: 1fr; }
+      .main-actions button, .output-card .btn-row button { width: 100%; }
+      h1 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <div class="hero-top">
+        <a class="back-link" href="./index.html">← 回首頁</a>
+      </div>
+      <h1>AI 商用文宣與專業策展提示詞生成器 Pro Max</h1>
+      <p>
+        這一版不只做「推廣文案」，而是把不同層級的專業價值翻譯成市場讀得懂、願意讀、也願意相信的語言。
+        可切換大眾商業、親民信任、專業策展三種主軸，並加入專家模型、問題解構、負向限制與觀察式邏輯。
+      </p>
+      <div class="badge-wrap">
+        <span class="badge">大眾商業版</span>
+        <span class="badge">親民信任版</span>
+        <span class="badge">專業策展版</span>
+        <span class="badge">專家模型</span>
+        <span class="badge">問題解構</span>
+        <span class="badge">文字限制條件</span>
+        <span class="badge">觀察報告邏輯</span>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>輸入設定</h2>
+          <p>先定義商品、受眾與專業視角，再由系統生成參考文宣與可直接複製的 AI 提示詞。</p>
+        </div>
+        <div class="panel-body">
+          <div class="section">
+            <h3>一、基本定位</h3>
+            <div class="hint">這裡先決定你的產品是一般推廣、溫和分享，還是走專業策展與高信任感路線。</div>
+            <div class="grid-2">
+              <div>
+                <label for="product">商品 / 服務 / 主題名稱</label>
+                <input id="product" placeholder="例如：卡拉揚經典錄音套裝、音樂與大腦課程、高齡健康顧問" />
+              </div>
+              <div>
+                <label for="mode">主模式</label>
+                <select id="mode">
+                  <option value="mass">大眾商業版</option>
+                  <option value="warm">親民信任版</option>
+                  <option value="pro">專業策展版</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid-2" style="margin-top:14px;">
+              <div>
+                <label for="audience">目標讀者 / 目標客群</label>
+                <input id="audience" placeholder="例如：對古典樂有興趣但選擇困難的人、希望建立專業品牌的教師" />
+              </div>
+              <div>
+                <label for="goal">這份文案最想達成的目的</label>
+                <select id="goal">
+                  <option value="awareness">建立認識</option>
+                  <option value="trust">建立信任</option>
+                  <option value="invite">邀請交流</option>
+                  <option value="conversion">引導詢問 / 轉換</option>
+                  <option value="curation">呈現策展觀點與價值層次</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>二、讀者卡點與核心價值</h3>
+            <div class="hint">專業感不只在於說自己多厲害，而是能夠精準指出讀者真正卡在哪裡。</div>
+            <label for="pain">讀者常見卡點 / 問題解構</label>
+            <textarea id="pain" placeholder="例如：資訊過載引發的選擇困難；面對多個版本產生審美疲勞與數位焦慮；明明有專業卻不知道如何說成人話"></textarea>
+
+            <label for="value" style="margin-top:12px;">你真正提供的核心幫助 / 價值模型</label>
+            <textarea id="value" placeholder="例如：把複雜的版本比較轉化為可感知的聆聽秩序；把學術專業翻譯成可理解又不失厚度的語言"></textarea>
+
+            <label for="context" style="margin-top:12px;">補充情境 / 你想強調的觀察</label>
+            <textarea id="context" placeholder="例如：在忙碌研究生活中，人的大腦其實更需要結構清晰、節奏穩定的聲音系統，而不是更多雜訊"></textarea>
+          </div>
+
+          <div class="section">
+            <h3>三、專家模型</h3>
+            <div class="hint">這裡不是裝懂，而是明確告訴 AI：應該用什麼專業框架來思考與說話。</div>
+            <div class="grid-2">
+              <div>
+                <label for="persona">專家角色設定</label>
+                <select id="persona">
+                  <option value="curator">高端策展人</option>
+                  <option value="professor">深夜教授式</option>
+                  <option value="clinical">臨床顧問式</option>
+                  <option value="scholar">學者散文式</option>
+                  <option value="analyst">系統分析式</option>
+                  <option value="gentle">理性溫暖式</option>
+                </select>
+              </div>
+              <div>
+                <label for="framework">引用的思維框架 / 理論視角</label>
+                <input id="framework" placeholder="例如：認知負荷理論、結構化聆聽、品牌信任邏輯、臨床溝通" />
+              </div>
+            </div>
+            <label for="personaDetail" style="margin-top:12px;">補充專家背景（可選）</label>
+            <textarea id="personaDetail" placeholder="例如：熟悉音樂史、錄音版本差異與聆聽心理；長期處理高知識產品的大眾轉譯"></textarea>
+          </div>
+
+          <div class="section">
+            <h3>四、文字質感與限制條件</h3>
+            <div class="hint">真正讓文字變高級的，往往不是多加形容詞，而是懂得限制哪些低階語氣不該出現。</div>
+            <div class="grid-3">
+              <div>
+                <label for="texture">文字質感</label>
+                <select id="texture">
+                  <option value="clean">乾淨理性</option>
+                  <option value="glow">微光式顆粒感</option>
+                  <option value="essay">散文式深描</option>
+                  <option value="calm">平靜穩重</option>
+                  <option value="scholarly">學術克制</option>
+                  <option value="warm_order">溫暖但有秩序</option>
+                </select>
+              </div>
+              <div>
+                <label for="sentence">句式節奏</label>
+                <select id="sentence">
+                  <option value="mixed">長短句交錯</option>
+                  <option value="short">短句偏多</option>
+                  <option value="long">長句偏多</option>
+                  <option value="reflective">以思辨長句帶短句收束</option>
+                </select>
+              </div>
+              <div>
+                <label for="ctaStyle">互動方式</label>
+                <select id="ctaStyle">
+                  <option value="invite">邀請交流</option>
+                  <option value="gentle_cta">溫和建議</option>
+                  <option value="seminar">非正式研討邀請</option>
+                  <option value="soft_conversion">低壓詢問引導</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="checklist">
+              <label class="check-item"><input type="checkbox" id="banExclaim" checked /> 禁止使用驚嘆號</label>
+              <label class="check-item"><input type="checkbox" id="banSlogan" checked /> 禁用商業口號與廉價促銷語</label>
+              <label class="check-item"><input type="checkbox" id="banOverSell" checked /> 避免「震撼、必買、頂級、錯過可惜」等銷售字眼</label>
+              <label class="check-item"><input type="checkbox" id="banFakeData" checked /> 不捏造數據與案例</label>
+              <label class="check-item"><input type="checkbox" id="keepRespect" checked /> 尊重讀者智性，不把讀者當小孩</label>
+              <label class="check-item"><input type="checkbox" id="useContrast" checked /> 可使用生活化對比，但不流於網紅口吻</label>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>五、生成內容範圍</h3>
+            <div class="hint">這裡控制你要 AI 一次輸出哪些版本。</div>
+            <div class="checklist">
+              <label class="check-item"><input type="checkbox" id="needShort" checked /> 短版文宣</label>
+              <label class="check-item"><input type="checkbox" id="needFull" checked /> 完整文宣</label>
+              <label class="check-item"><input type="checkbox" id="needSocial" checked /> 社群貼文版</label>
+              <label class="check-item"><input type="checkbox" id="needOral" checked /> 口語分享版</label>
+              <label class="check-item"><input type="checkbox" id="needTitles" checked /> 標題 3 個</label>
+              <label class="check-item"><input type="checkbox" id="needFramework" checked /> 段落架構說明</label>
+            </div>
+          </div>
+
+          <div class="btn-row main-actions">
+            <button onclick="generateAll()">生成內容</button>
+            <button class="secondary" onclick="clearAll()">清空內容</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>輸出結果</h2>
+          <p>上方可先看參考方向，下方可直接複製完整 Prompt 回到 AI 使用。</p>
+        </div>
+        <div class="panel-body">
+          <div class="output-card">
+            <h3>① 參考文宣方向</h3>
+            <div class="subnote">幫你先看這套邏輯會生成什麼氣質，不一定要原封照用，也可作為人工微調底稿。</div>
+            <div id="previewOutput" class="output-box"></div>
+            <div id="previewTags" class="mini-tags"></div>
+          </div>
+
+          <div class="output-card">
+            <h3>② AI 提示詞</h3>
+            <div class="subnote">這段可直接複製到其他 AI，讓它按你的結構與限制生成完整專業文案。</div>
+            <div class="btn-row" style="margin-top:0; margin-bottom:12px;">
+              <button class="copy" onclick="copyPrompt()">複製 AI 提示詞</button>
+            </div>
+            <div id="promptOutput" class="output-box"></div>
+          </div>
+
+          <div class="footer-note">
+            建議使用方式：先用「參考文宣方向」看整體調性，再把 Prompt 丟回 AI 產生完整版本。若商品知識門檻高，優先使用「專業策展版」。
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const personaMap = {
+      curator: '一位具備學術嚴謹度與藝術人文涵養的高端策展人，擅長把複雜知識轉化為可感知的價值層次',
+      professor: '一位在深夜書房與後輩交談的教授型人物，語氣平靜、理性中帶溫度，不急著說服人',
+      clinical: '一位有臨床判讀與實務經驗的專業顧問，重視辨識問題、說明機制與穩健溝通',
+      scholar: '一位具備學術背景與散文節奏的研究型寫作者，能在知識與可讀性之間維持平衡',
+      analyst: '一位系統分析式的專業工作者，擅長拆解需求、建立層次並提出有根據的判斷',
+      gentle: '一位理性溫暖、尊重讀者感受與智性的專業前輩，擅長降低門檻但不降格'
+    };
+
+    const textureMap = {
+      clean: '文字乾淨、清楚、克制，不堆砌形容詞',
+      glow: '採用微光式顆粒感，不刺眼，但能照亮細節，保有封套般的質地',
+      essay: '偏散文式，文字有流動感與思考餘韻',
+      calm: '語氣平靜穩重，不急著下判斷',
+      scholarly: '偏學術克制，像經過思辨後的專業說明',
+      warm_order: '語氣溫暖，但有清楚秩序與結構'
+    };
+
+    const sentenceMap = {
+      mixed: '長短句交錯，保持閱讀節奏',
+      short: '以較短句子呈現，清楚直接',
+      long: '以較長句子展開思路，形成層次',
+      reflective: '以思辨長句帶出觀點，再用短句收束感受'
+    };
+
+    const modeMap = {
+      mass: {
+        title: '大眾商業版',
+        logic: '從讀者熟悉的生活情境切入，快速建立需求感與理解門檻，適合大眾產品與服務。',
+        preview: (data) => `【從讀者生活切入】
+很多人第一次接觸「${data.product}」時，並不是不需要，而是不知道怎麼判斷什麼才真正適合自己。
+
+【問題放回日常】
+當資訊很多、選擇很多、時間卻很少時，人最容易做的不是理性比較，而是憑印象快速決定。這時候，真正值得被說清楚的，不是漂亮包裝，而是「${data.product}」到底能幫人省下哪些摸索成本。
+
+【價值說清楚】
+如果能把 ${data.value || '專業價值'} 講得具體一點，把 ${data.pain || '讀者常見困擾'} 說得更貼近日常，讀者就比較能感受到這不是抽象介紹，而是和自己有關。
+
+【結尾方式】
+這份介紹不需要太用力，只要讓人看完願意多停一下、想多了解一點，就已經是好的開始。`,
+        promptFocus: '以讀者理解與需求引導為主，不要太學術，也不要太硬。'
+      },
+      warm: {
+        title: '親民信任版',
+        logic: '把推廣改寫成陪伴式分享，從委屈感、卡住感與「說不出口的辛苦」出發。',
+        preview: (data) => `【先理解讀者】
+有時候真正讓人無力的，不是沒有內容，而是明明有很多想說的，卻總是無法被好好接住。${data.product} 如果要被理解，往往不是把專業再講深一點，而是換一種更能靠近人的方式。
+
+【把專業說成人話】
+我後來比較相信一種方法：不要急著證明自己多厲害，而是先把 ${data.pain || '那個卡住的地方'} 說清楚。當讀者覺得「對，這就是我現在的感受」，信任才會慢慢進來。
+
+【分享而非推銷】
+所以 ${data.product} 比較適合被寫成一份整理過的心得，一種走過之後願意陪人少繞一點路的分享，而不是一句句太滿的推銷詞。
+
+【邀請式收束】
+如果有人正好也在找一種更適合自己的理解方式，也許這就是可以慢慢聊的起點。`,
+        promptFocus: '語氣要親切、克制、有陪伴感，不要像業務話術。'
+      },
+      pro: {
+        title: '專業策展版',
+        logic: '以專家模型、問題解構、限制條件與觀察報告式邏輯，展現高知識產品的價值厚度。',
+        preview: (data) => `【觀察起點】
+當代讀者面對 ${data.product} 時，真正的障礙往往不是缺乏資訊，而是資訊密度過高之後產生的辨識疲勞。${data.pain || '這種心理壓力'} 並不只是選擇困難，更是一種認知資源被持續消耗後的失序感。
+
+【策展式判讀】
+因此，${data.product} 不宜被寫成一般宣傳物，而更像是一份有判準的專業引導。它要說明的不是「它很好」，而是它如何在複雜選項之間，提供一種較穩定、較清晰、較可被感知的秩序。
+
+【價值定位】
+如果把核心價值定義為「${data.value || '把複雜性轉化為可理解的秩序'}」，那麼文字就不應急著販售，而應先完成診斷、再提出觀察、最後邀請讀者進入一種更成熟的理解方式。
+
+【收束方式】
+真正有質地的文案，不需要喊得太大聲。它只需要讓對的人感受到：這裡有一個經過思考的選擇。`,
+        promptFocus: '要像具備判準與閱歷的專業策展人，不像促銷文案。'
+      }
+    };
+
+    function getData() {
+      return {
+        product: document.getElementById('product').value.trim(),
+        mode: document.getElementById('mode').value,
+        audience: document.getElementById('audience').value.trim(),
+        goal: document.getElementById('goal').value,
+        pain: document.getElementById('pain').value.trim(),
+        value: document.getElementById('value').value.trim(),
+        context: document.getElementById('context').value.trim(),
+        persona: document.getElementById('persona').value,
+        framework: document.getElementById('framework').value.trim(),
+        personaDetail: document.getElementById('personaDetail').value.trim(),
+        texture: document.getElementById('texture').value,
+        sentence: document.getElementById('sentence').value,
+        ctaStyle: document.getElementById('ctaStyle').value,
+        bans: collectBans(),
+        outputs: collectOutputs()
+      };
+    }
+
+    function collectBans() {
+      const items = [];
+      if (document.getElementById('banExclaim').checked) items.push('禁止使用驚嘆號');
+      if (document.getElementById('banSlogan').checked) items.push('禁用商業口號與廉價促銷語');
+      if (document.getElementById('banOverSell').checked) items.push('避免使用「震撼、必買、頂級、錯過可惜」等銷售字眼');
+      if (document.getElementById('banFakeData').checked) items.push('不可捏造數據、見證或案例');
+      if (document.getElementById('keepRespect').checked) items.push('尊重讀者智性，不把讀者當小孩');
+      if (document.getElementById('useContrast').checked) items.push('可用生活化對比，但避免網紅式浮誇口吻');
+      return items;
+    }
+
+    function collectOutputs() {
+      const items = [];
+      if (document.getElementById('needShort').checked) items.push('短版文宣');
+      if (document.getElementById('needFull').checked) items.push('完整文宣');
+      if (document.getElementById('needSocial').checked) items.push('社群貼文版');
+      if (document.getElementById('needOral').checked) items.push('口語分享版');
+      if (document.getElementById('needTitles').checked) items.push('標題 3 個');
+      if (document.getElementById('needFramework').checked) items.push('段落架構說明');
+      return items;
+    }
+
+    function goalText(goal) {
+      const map = {
+        awareness: '建立基本認識與閱讀興趣',
+        trust: '建立可信度與專業信任感',
+        invite: '促成溫和交流與後續對話',
+        conversion: '引導詢問、比較或進一步接觸',
+        curation: '呈現策展觀點、層次與判準'
+      };
+      return map[goal] || '建立信任';
+    }
+
+    function ctaText(style) {
+      const map = {
+        invite: '收尾請採取邀請式對話，不要壓迫，也不要直接催促購買',
+        gentle_cta: '收尾像一個溫和建議，讓讀者覺得可以先試試看、先聊聊看',
+        seminar: '收尾像非正式研討邀請，語氣保有知性與留白',
+        soft_conversion: '收尾可有低壓轉換意圖，但仍保持克制與體面'
+      };
+      return map[style] || '收尾要自然';
+    }
+
+    function renderTags(data) {
+      const tags = [
+        modeMap[data.mode].title,
+        document.getElementById('persona').selectedOptions[0].text,
+        document.getElementById('texture').selectedOptions[0].text,
+        document.getElementById('sentence').selectedOptions[0].text,
+        document.getElementById('ctaStyle').selectedOptions[0].text
+      ];
+      const wrap = document.getElementById('previewTags');
+      wrap.innerHTML = tags.map(tag => `<span class="mini-tag">${tag}</span>`).join('');
+    }
+
+    function generatePrompt(data) {
+      const modeInfo = modeMap[data.mode];
+      const roleText = personaMap[data.persona];
+      const textureText = textureMap[data.texture];
+      const sentenceText = sentenceMap[data.sentence];
+      const outputLine = data.outputs.length ? data.outputs.map((item, idx) => `${idx + 1}. ${item}`).join('\n') : '請至少輸出一種版本';
+      const banLine = data.bans.length ? data.bans.map(item => `- ${item}`).join('\n') : '- 請維持專業克制';
+
+      return `請根據以下設定，為「${data.product}」撰寫一組具有專業感、邏輯厚度與可讀性的中文文案。\n\n【角色設定】\n你現在不是一般行銷助手，而是 ${roleText}。\n${data.personaDetail ? `補充背景：${data.personaDetail}。\n` : ''}${data.framework ? `請運用「${data.framework}」作為思考框架，將複雜內容轉化為可理解、可感知、但不失深度的表達。\n` : ''}\n【主模式】\n本次文案屬於「${modeInfo.title}」。\n核心寫作邏輯：${modeInfo.logic}\n本次任務焦點：${modeInfo.promptFocus}\n\n【商品 / 服務 / 主題】\n${data.product}\n\n【目標讀者】\n${data.audience || '請自行推定一組合理且成熟的目標讀者'}\n\n【文案目的】\n${goalText(data.goal)}\n\n【問題解構】\n請不要只寫表面需求，請先辨識讀者真正的卡點。\n目前已知的讀者卡點為：${data.pain || '尚未明確提供，請從高知識產品常見的理解門檻、選擇疲勞、資訊過載或信任建立困難進行推定'}\n\n【核心價值】\n請將這份商品 / 服務的價值，定位為：${data.value || '把複雜專業轉化為可理解的秩序與信任'}\n\n【補充觀察】\n${data.context || '請以觀察報告式邏輯，先描述讀者當前處境，再提出較穩定、較清晰的理解方式。'}\n\n【文體與語氣】\n- ${textureText}\n- ${sentenceText}\n- 使用繁體中文\n- 語氣要有專業感，但不能像廉價廣告\n- 可以有溫度，但不能流於煽情\n- 盡量像一位有閱歷、有判準的人在說話，而不是一般業務人員\n\n【文字限制條件】\n${banLine}\n\n【結構要求】\n請依照以下順序建立文案邏輯：\n1. 先從讀者的處境、疲勞、困惑、焦慮或辨識困難切入，而不是直接從商品出發。\n2. 再用「問題解構」方式，說明真正困難不是表面資訊不足，而是更深一層的判斷壓力、理解門檻或認知負荷。\n3. 接著引入「${data.product}」如何作為一種較穩定、較有秩序、較值得信任的介入或選擇。\n4. 不要直接說它很好，而要說它如何提供結構清晰度、辨識感、安心感、理解效率或美感秩序。\n5. 收尾請採用邀請制，而不是命令式 CTA。${ctaText(data.ctaStyle)}\n\n【輸出內容】\n${outputLine}\n\n【額外要求】\n- 若是高知識或高審美產品，請適度呈現策展觀點與判準。\n- 不要把讀者當成無知消費者，而要當成需要被尊重、但尚未被好好引導的人。\n- 不要製造廉價刺激感。要製造的是理解後的信任感。\n- 若有需要，可加入少量生活化對比，協助降低理解門檻。\n- 若內容涉及專業判斷，請用「觀察後的結論」語氣，不要用「設定好的推銷台詞」語氣。\n\n【輸出形式】\n- 各段請加小標題\n- 層次清楚\n- 避免重複\n- 句子不要過度整齊機械化\n- 讓整體讀起來像經過思考的專業書寫，而非套版文案`; }
+
+    function generateAll() {
+      const data = getData();
+      if (!data.product) {
+        alert('請先輸入商品、服務或主題名稱');
+        return;
+      }
+      document.getElementById('previewOutput').textContent = modeMap[data.mode].preview(data);
+      document.getElementById('promptOutput').textContent = generatePrompt(data);
+      renderTags(data);
+    }
+
+    function copyPrompt() {
+      const text = document.getElementById('promptOutput').textContent.trim();
+      if (!text) {
+        alert('請先生成內容');
+        return;
+      }
+      navigator.clipboard.writeText(text)
+        .then(() => alert('已複製提示詞'))
+        .catch(() => alert('複製失敗，請手動複製'));
+    }
+
+    function clearAll(force = false) {
+      if (!force) {
+        const hasContent = ['product','audience','pain','value','context','framework','personaDetail']
+          .some(id => document.getElementById(id).value.trim() !== '') ||
+          document.getElementById('previewOutput').textContent.trim() !== '' ||
+          document.getElementById('promptOutput').textContent.trim() !== '';
+        if (hasContent) {
+          const ok = window.confirm('確定清除目前所有輸入與輸出內容？');
+          if (!ok) return;
+        }
+      }
+      document.getElementById('product').value = '';
+      document.getElementById('mode').value = 'mass';
+      document.getElementById('audience').value = '';
+      document.getElementById('goal').value = 'awareness';
+      document.getElementById('pain').value = '';
+      document.getElementById('value').value = '';
+      document.getElementById('context').value = '';
+      document.getElementById('persona').value = 'curator';
+      document.getElementById('framework').value = '';
+      document.getElementById('personaDetail').value = '';
+      document.getElementById('texture').value = 'clean';
+      document.getElementById('sentence').value = 'mixed';
+      document.getElementById('ctaStyle').value = 'invite';
+
+      ['banExclaim','banSlogan','banOverSell','banFakeData','keepRespect','useContrast','needShort','needFull','needSocial','needOral','needTitles','needFramework']
+        .forEach(id => document.getElementById(id).checked = true);
+
+      document.getElementById('previewOutput').textContent = '';
+      document.getElementById('promptOutput').textContent = '';
+      document.getElementById('previewTags').innerHTML = '';
+    }
+
+    function loadExample(type) {
+      clearAll(true);
+      if (type === 'pro') {
+        document.getElementById('product').value = '卡拉揚經典錄音套裝';
+        document.getElementById('mode').value = 'pro';
+        document.getElementById('audience').value = '對古典音樂有興趣，但常在版本比較中感到疲勞與焦慮的聆聽者';
+        document.getElementById('goal').value = 'curation';
+        document.getElementById('pain').value = '資訊過載引發的選擇困難；面對 1963、1977 與不同修復版本時產生審美疲勞與數位焦慮；總想找到完美版本，反而失去聆聽本身的秩序感';
+        document.getElementById('value').value = '把版本比較的複雜性轉化為可感知的聽覺秩序，讓人重新回到穩定、清晰、可被安放的聆聽經驗';
+        document.getElementById('context').value = '在忙碌生活與長時間腦力消耗之後，人真正需要的未必是更多刺激，而可能是一套結構清楚、層次安定、能幫助思緒回歸秩序的聲音系統';
+        document.getElementById('persona').value = 'curator';
+        document.getElementById('framework').value = '認知負荷理論、結構化聆聽、審美疲勞修復';
+        document.getElementById('personaDetail').value = '熟悉音樂史、錄音版本差異、指揮風格與聆聽心理，能區分資訊密度與感知秩序之間的關係';
+        document.getElementById('texture').value = 'glow';
+        document.getElementById('sentence').value = 'reflective';
+        document.getElementById('ctaStyle').value = 'seminar';
+      } else if (type === 'warm') {
+        document.getElementById('product').value = '專業分享寫作筆記';
+        document.getElementById('mode').value = 'warm';
+        document.getElementById('audience').value = '有深厚專業背景，但不知道怎麼把內容說得親切又有感的人';
+        document.getElementById('goal').value = 'trust';
+        document.getElementById('pain').value = '內容很專業，卻常常寫得太硬；明明花很多心力整理，發出去後沒什麼回應；不想寫得像廣告，但也不知道怎麼被看懂';
+        document.getElementById('value').value = '把專業翻譯成對方願意讀、讀得懂、也感受得到溫度的文字';
+        document.getElementById('context').value = '不是每個人都缺內容，很多人缺的是一種比較不費力、也不失尊嚴的表達方式';
+        document.getElementById('persona').value = 'gentle';
+        document.getElementById('framework').value = '陪伴式溝通、降階術、生活化對比';
+        document.getElementById('texture').value = 'warm_order';
+        document.getElementById('sentence').value = 'mixed';
+        document.getElementById('ctaStyle').value = 'invite';
+      } else {
+        document.getElementById('product').value = '老齡健康顧問服務';
+        document.getElementById('mode').value = 'mass';
+        document.getElementById('audience').value = '一般家庭照顧者與中高齡族群';
+        document.getElementById('goal').value = 'conversion';
+        document.getElementById('pain').value = '資訊很多，卻不知道哪些建議真正適合家中長輩；怕選錯、怕花冤枉錢、也怕照顧方式不對';
+        document.getElementById('value').value = '協助家庭快速釐清方向，減少摸索時間，讓照顧更有秩序';
+        document.getElementById('context').value = '多數人不是不重視健康，而是在繁忙生活裡很難快速判斷什麼才真正適合自己的家庭';
+        document.getElementById('persona').value = 'clinical';
+        document.getElementById('framework').value = '需求辨識、風險溝通、生活化說明';
+        document.getElementById('texture').value = 'clean';
+        document.getElementById('sentence').value = 'short';
+        document.getElementById('ctaStyle').value = 'soft_conversion';
+      }
+      generateAll();
+    }
+  </script>
+</body>
+</html>
