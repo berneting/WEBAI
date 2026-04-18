@@ -307,6 +307,29 @@
       color: var(--muted);
     }
 
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: rgba(8, 26, 42, 0.95);
+      color: #eaf7ff;
+      border: 1px solid rgba(105,192,255,0.24);
+      padding: 12px 16px;
+      border-radius: 12px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+      font-size: 14px;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+      z-index: 9999;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     @media (max-width: 1120px) {
       .layout { grid-template-columns: 1fr; }
     }
@@ -316,8 +339,14 @@
       .hero { padding: 22px 18px 18px; }
       .panel-body, .panel-head { padding-left: 16px; padding-right: 16px; }
       .grid-2, .grid-3, .checklist { grid-template-columns: 1fr; }
-      .main-actions button, .output-card .btn-row button { width: 100%; }
       h1 { font-size: 28px; }
+      .btn-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .btn-row button {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -480,8 +509,9 @@
             </div>
           </div>
 
-          <div class="btn-row main-actions">
+          <div class="btn-row">
             <button onclick="generateAll()">生成內容</button>
+            <button class="copy" onclick="copyPromptTop()">複製 AI 提示詞</button>
             <button class="secondary" onclick="clearAll()">清空內容</button>
           </div>
         </div>
@@ -516,6 +546,8 @@
       </section>
     </div>
   </div>
+
+  <div id="toast" class="toast"></div>
 
   <script>
     const personaMap = {
@@ -677,7 +709,71 @@
       const outputLine = data.outputs.length ? data.outputs.map((item, idx) => `${idx + 1}. ${item}`).join('\n') : '請至少輸出一種版本';
       const banLine = data.bans.length ? data.bans.map(item => `- ${item}`).join('\n') : '- 請維持專業克制';
 
-      return `請根據以下設定，為「${data.product}」撰寫一組具有專業感、邏輯厚度與可讀性的中文文案。\n\n【角色設定】\n你現在不是一般行銷助手，而是 ${roleText}。\n${data.personaDetail ? `補充背景：${data.personaDetail}。\n` : ''}${data.framework ? `請運用「${data.framework}」作為思考框架，將複雜內容轉化為可理解、可感知、但不失深度的表達。\n` : ''}\n【主模式】\n本次文案屬於「${modeInfo.title}」。\n核心寫作邏輯：${modeInfo.logic}\n本次任務焦點：${modeInfo.promptFocus}\n\n【商品 / 服務 / 主題】\n${data.product}\n\n【目標讀者】\n${data.audience || '請自行推定一組合理且成熟的目標讀者'}\n\n【文案目的】\n${goalText(data.goal)}\n\n【問題解構】\n請不要只寫表面需求，請先辨識讀者真正的卡點。\n目前已知的讀者卡點為：${data.pain || '尚未明確提供，請從高知識產品常見的理解門檻、選擇疲勞、資訊過載或信任建立困難進行推定'}\n\n【核心價值】\n請將這份商品 / 服務的價值，定位為：${data.value || '把複雜專業轉化為可理解的秩序與信任'}\n\n【補充觀察】\n${data.context || '請以觀察報告式邏輯，先描述讀者當前處境，再提出較穩定、較清晰的理解方式。'}\n\n【文體與語氣】\n- ${textureText}\n- ${sentenceText}\n- 使用繁體中文\n- 語氣要有專業感，但不能像廉價廣告\n- 可以有溫度，但不能流於煽情\n- 盡量像一位有閱歷、有判準的人在說話，而不是一般業務人員\n\n【文字限制條件】\n${banLine}\n\n【結構要求】\n請依照以下順序建立文案邏輯：\n1. 先從讀者的處境、疲勞、困惑、焦慮或辨識困難切入，而不是直接從商品出發。\n2. 再用「問題解構」方式，說明真正困難不是表面資訊不足，而是更深一層的判斷壓力、理解門檻或認知負荷。\n3. 接著引入「${data.product}」如何作為一種較穩定、較有秩序、較值得信任的介入或選擇。\n4. 不要直接說它很好，而要說它如何提供結構清晰度、辨識感、安心感、理解效率或美感秩序。\n5. 收尾請採用邀請制，而不是命令式 CTA。${ctaText(data.ctaStyle)}\n\n【輸出內容】\n${outputLine}\n\n【額外要求】\n- 若是高知識或高審美產品，請適度呈現策展觀點與判準。\n- 不要把讀者當成無知消費者，而要當成需要被尊重、但尚未被好好引導的人。\n- 不要製造廉價刺激感。要製造的是理解後的信任感。\n- 若有需要，可加入少量生活化對比，協助降低理解門檻。\n- 若內容涉及專業判斷，請用「觀察後的結論」語氣，不要用「設定好的推銷台詞」語氣。\n\n【輸出形式】\n- 各段請加小標題\n- 層次清楚\n- 避免重複\n- 句子不要過度整齊機械化\n- 讓整體讀起來像經過思考的專業書寫，而非套版文案`; }
+      return `請根據以下設定，為「${data.product}」撰寫一組具有專業感、邏輯厚度與可讀性的中文文案。
+
+【角色設定】
+你現在不是一般行銷助手，而是 ${roleText}。
+${data.personaDetail ? `補充背景：${data.personaDetail}。\n` : ''}${data.framework ? `請運用「${data.framework}」作為思考框架，將複雜內容轉化為可理解、可感知、但不失深度的表達。\n` : ''}
+【主模式】
+本次文案屬於「${modeInfo.title}」。
+核心寫作邏輯：${modeInfo.logic}
+本次任務焦點：${modeInfo.promptFocus}
+
+【商品 / 服務 / 主題】
+${data.product}
+
+【目標讀者】
+${data.audience || '請自行推定一組合理且成熟的目標讀者'}
+
+【文案目的】
+${goalText(data.goal)}
+
+【問題解構】
+請不要只寫表面需求，請先辨識讀者真正的卡點。
+目前已知的讀者卡點為：${data.pain || '尚未明確提供，請從高知識產品常見的理解門檻、選擇疲勞、資訊過載或信任建立困難進行推定'}
+
+【核心價值】
+請將這份商品 / 服務的價值，定位為：${data.value || '把複雜專業轉化為可理解的秩序與信任'}
+
+【補充觀察】
+${data.context || '請以觀察報告式邏輯，先描述讀者當前處境，再提出較穩定、較清晰的理解方式。'}
+
+【文體與語氣】
+- ${textureText}
+- ${sentenceText}
+- 使用繁體中文
+- 語氣要有專業感，但不能像廉價廣告
+- 可以有溫度，但不能流於煽情
+- 盡量像一位有閱歷、有判準的人在說話，而不是一般業務人員
+
+【文字限制條件】
+${banLine}
+
+【結構要求】
+請依照以下順序建立文案邏輯：
+1. 先從讀者的處境、疲勞、困惑、焦慮或辨識困難切入，而不是直接從商品出發。
+2. 再用「問題解構」方式，說明真正困難不是表面資訊不足，而是更深一層的判斷壓力、理解門檻或認知負荷。
+3. 接著引入「${data.product}」如何作為一種較穩定、較有秩序、較值得信任的介入或選擇。
+4. 不要直接說它很好，而要說它如何提供結構清晰度、辨識感、安心感、理解效率或美感秩序。
+5. 收尾請採用邀請制，而不是命令式 CTA。${ctaText(data.ctaStyle)}
+
+【輸出內容】
+${outputLine}
+
+【額外要求】
+- 若是高知識或高審美產品，請適度呈現策展觀點與判準。
+- 不要把讀者當成無知消費者，而要當成需要被尊重、但尚未被好好引導的人。
+- 不要製造廉價刺激感。要製造的是理解後的信任感。
+- 若有需要，可加入少量生活化對比，協助降低理解門檻。
+- 若內容涉及專業判斷，請用「觀察後的結論」語氣，不要用「設定好的推銷台詞」語氣。
+
+【輸出形式】
+- 各段請加小標題
+- 層次清楚
+- 避免重複
+- 句子不要過度整齊機械化
+- 讓整體讀起來像經過思考的專業書寫，而非套版文案`;
+    }
 
     function generateAll() {
       const data = getData();
@@ -690,6 +786,16 @@
       renderTags(data);
     }
 
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 1800);
+    }
+
     function copyPrompt() {
       const text = document.getElementById('promptOutput').textContent.trim();
       if (!text) {
@@ -697,21 +803,18 @@
         return;
       }
       navigator.clipboard.writeText(text)
-        .then(() => alert('已複製提示詞'))
+        .then(() => showToast('AI 提示詞已複製'))
         .catch(() => alert('複製失敗，請手動複製'));
     }
 
-    function clearAll(force = false) {
-      if (!force) {
-        const hasContent = ['product','audience','pain','value','context','framework','personaDetail']
-          .some(id => document.getElementById(id).value.trim() !== '') ||
-          document.getElementById('previewOutput').textContent.trim() !== '' ||
-          document.getElementById('promptOutput').textContent.trim() !== '';
-        if (hasContent) {
-          const ok = window.confirm('確定清除目前所有輸入與輸出內容？');
-          if (!ok) return;
-        }
-      }
+    function copyPromptTop() {
+      copyPrompt();
+    }
+
+    function clearAll() {
+      const ok = confirm('確定要清空目前所有輸入內容嗎？');
+      if (!ok) return;
+
       document.getElementById('product').value = '';
       document.getElementById('mode').value = 'mass';
       document.getElementById('audience').value = '';
@@ -732,52 +835,7 @@
       document.getElementById('previewOutput').textContent = '';
       document.getElementById('promptOutput').textContent = '';
       document.getElementById('previewTags').innerHTML = '';
-    }
-
-    function loadExample(type) {
-      clearAll(true);
-      if (type === 'pro') {
-        document.getElementById('product').value = '卡拉揚經典錄音套裝';
-        document.getElementById('mode').value = 'pro';
-        document.getElementById('audience').value = '對古典音樂有興趣，但常在版本比較中感到疲勞與焦慮的聆聽者';
-        document.getElementById('goal').value = 'curation';
-        document.getElementById('pain').value = '資訊過載引發的選擇困難；面對 1963、1977 與不同修復版本時產生審美疲勞與數位焦慮；總想找到完美版本，反而失去聆聽本身的秩序感';
-        document.getElementById('value').value = '把版本比較的複雜性轉化為可感知的聽覺秩序，讓人重新回到穩定、清晰、可被安放的聆聽經驗';
-        document.getElementById('context').value = '在忙碌生活與長時間腦力消耗之後，人真正需要的未必是更多刺激，而可能是一套結構清楚、層次安定、能幫助思緒回歸秩序的聲音系統';
-        document.getElementById('persona').value = 'curator';
-        document.getElementById('framework').value = '認知負荷理論、結構化聆聽、審美疲勞修復';
-        document.getElementById('personaDetail').value = '熟悉音樂史、錄音版本差異、指揮風格與聆聽心理，能區分資訊密度與感知秩序之間的關係';
-        document.getElementById('texture').value = 'glow';
-        document.getElementById('sentence').value = 'reflective';
-        document.getElementById('ctaStyle').value = 'seminar';
-      } else if (type === 'warm') {
-        document.getElementById('product').value = '專業分享寫作筆記';
-        document.getElementById('mode').value = 'warm';
-        document.getElementById('audience').value = '有深厚專業背景，但不知道怎麼把內容說得親切又有感的人';
-        document.getElementById('goal').value = 'trust';
-        document.getElementById('pain').value = '內容很專業，卻常常寫得太硬；明明花很多心力整理，發出去後沒什麼回應；不想寫得像廣告，但也不知道怎麼被看懂';
-        document.getElementById('value').value = '把專業翻譯成對方願意讀、讀得懂、也感受得到溫度的文字';
-        document.getElementById('context').value = '不是每個人都缺內容，很多人缺的是一種比較不費力、也不失尊嚴的表達方式';
-        document.getElementById('persona').value = 'gentle';
-        document.getElementById('framework').value = '陪伴式溝通、降階術、生活化對比';
-        document.getElementById('texture').value = 'warm_order';
-        document.getElementById('sentence').value = 'mixed';
-        document.getElementById('ctaStyle').value = 'invite';
-      } else {
-        document.getElementById('product').value = '老齡健康顧問服務';
-        document.getElementById('mode').value = 'mass';
-        document.getElementById('audience').value = '一般家庭照顧者與中高齡族群';
-        document.getElementById('goal').value = 'conversion';
-        document.getElementById('pain').value = '資訊很多，卻不知道哪些建議真正適合家中長輩；怕選錯、怕花冤枉錢、也怕照顧方式不對';
-        document.getElementById('value').value = '協助家庭快速釐清方向，減少摸索時間，讓照顧更有秩序';
-        document.getElementById('context').value = '多數人不是不重視健康，而是在繁忙生活裡很難快速判斷什麼才真正適合自己的家庭';
-        document.getElementById('persona').value = 'clinical';
-        document.getElementById('framework').value = '需求辨識、風險溝通、生活化說明';
-        document.getElementById('texture').value = 'clean';
-        document.getElementById('sentence').value = 'short';
-        document.getElementById('ctaStyle').value = 'soft_conversion';
-      }
-      generateAll();
+      showToast('內容已清空');
     }
   </script>
 </body>
