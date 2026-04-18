@@ -1,301 +1,804 @@
+
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>WEBAI 首頁</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WEBAI｜AI 寫作與研究提示詞工具集合</title>
+  <style>
+    :root {
+      --bg: #05070b;
+      --bg-deep: #0a1220;
+      --panel: #0f1b31;
+      --panel-2: #101722;
+      --line: rgba(255,255,255,0.12);
+      --line-strong: rgba(255,255,255,0.22);
+      --text: #f5f7fb;
+      --muted: #b9c3d6;
+      --soft: #dfe8f7;
+      --accent: #7fb0ff;
+      --accent-2: #dce9ff;
+      --shadow: 0 20px 60px rgba(0,0,0,0.35);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --max: 1280px;
+    }
 
-<style>
-* {
-  box-sizing: border-box;
-}
+    * { box-sizing: border-box; }
 
-body {
-  margin: 0;
-  font-family: "Microsoft JhengHei", "Noto Sans TC", sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-  color: #eef4ff;
+    html {
+      scroll-behavior: smooth;
+    }
 
-  background: linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#1c3b57);
-  background-size: 400% 400%;
-  animation: bgMove 14s ease infinite;
-}
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(52, 104, 196, 0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(135, 180, 255, 0.08), transparent 18%),
+        linear-gradient(180deg, #08111d 0%, #05070b 48%, #020304 100%);
+      color: var(--text);
+      line-height: 1.7;
+      letter-spacing: 0.02em;
+    }
 
-@keyframes bgMove {
-  0% { background-position:0% 50%; }
-  50% { background-position:100% 50%; }
-  100% { background-position:0% 50%; }
-}
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-.page-wrap {
-  position: relative;
-  z-index: 2;
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 56px 20px 80px;
-}
+    .wrap {
+      width: min(calc(100% - 40px), var(--max));
+      margin: 0 auto;
+    }
 
-.bubble {
-  position: fixed;
-  bottom: -120px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 50%;
-  animation: floatUp linear infinite;
-  z-index: 0;
-}
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(14px);
+      background: rgba(5, 7, 11, 0.72);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
 
-.bubble:nth-child(1){ width:80px;height:80px;left:10%;animation-duration:18s;}
-.bubble:nth-child(2){ width:50px;height:50px;left:30%;animation-duration:14s;}
-.bubble:nth-child(3){ width:100px;height:100px;left:65%;animation-duration:22s;}
-.bubble:nth-child(4){ width:60px;height:60px;left:85%;animation-duration:16s;}
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 16px 0;
+    }
 
-@keyframes floatUp{
-  from{ transform:translateY(0); opacity:0.7;}
-  to{ transform:translateY(-120vh); opacity:0;}
-}
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
 
-.hero-card{
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.32);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-radius: 28px;
-  padding: 46px 32px;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.35);
-  border: 1px solid rgba(255,255,255,0.10);
-  color: white;
-}
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: linear-gradient(135deg, #0e2446, #173867 55%, #7aa8f8 140%);
+      border: 1px solid rgba(255,255,255,0.16);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 8px 24px rgba(4,15,34,0.5);
+      font-size: 0.95rem;
+    }
 
-.hero-badge{
-  display: inline-block;
-  margin-bottom: 14px;
-  padding: 7px 14px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.10);
-  border: 1px solid rgba(255,255,255,0.14);
-  font-size: 13px;
-  letter-spacing: 0.5px;
-}
+    .brand-text small {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+    }
 
-h1{
-  margin:0 0 12px;
-  font-size:2.5rem;
-  letter-spacing:1px;
-}
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
 
-.hero-subtitle{
-  margin: 0;
-  font-size: 1.12rem;
-  opacity: 0.92;
-  line-height: 1.9;
-}
+    .nav a {
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: var(--soft);
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      font-size: 0.92rem;
+      transition: 0.25s ease;
+    }
 
-.note{
-  margin: 22px auto 0;
-  max-width: 860px;
-  font-size: 0.98rem;
-  line-height: 1.9;
-  opacity: 0.85;
-  color: #d7e6ff;
-}
+    .nav a:hover {
+      border-color: rgba(127,176,255,0.4);
+      background: rgba(127,176,255,0.10);
+      transform: translateY(-1px);
+    }
 
-.tool-grid{
-  margin-top: 28px;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-}
+    .hero {
+      padding: 72px 0 44px;
+    }
 
-.tool-card{
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 22px;
-  padding: 24px 22px;
-  box-shadow: 0 14px 30px rgba(0,0,0,0.26);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-}
+    .hero-panel {
+      position: relative;
+      overflow: hidden;
+      border-radius: 34px;
+      background:
+        linear-gradient(145deg, rgba(14, 28, 52, 0.95), rgba(8, 13, 22, 0.98)),
+        #0d1522;
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: var(--shadow);
+      padding: 56px;
+    }
 
-.tool-card:hover{
-  transform: translateY(-4px);
-  box-shadow: 0 18px 36px rgba(0,0,0,0.34);
-  border-color: rgba(120, 180, 255, 0.35);
-}
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: auto -80px -90px auto;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(127,176,255,0.25), transparent 65%);
+      pointer-events: none;
+    }
 
-.tool-top{
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 14px;
-  margin-bottom: 12px;
-}
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 36px;
+      align-items: end;
+    }
 
-.tool-title{
-  margin: 0;
-  font-size: 1.18rem;
-  line-height: 1.45;
-  color: #f4f8ff;
-}
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      color: var(--accent-2);
+      font-size: 0.86rem;
+      margin-bottom: 20px;
+    }
 
-.tool-tag{
-  flex-shrink: 0;
-  font-size: 12px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(91,124,255,0.18);
-  border: 1px solid rgba(143,173,255,0.22);
-  color: #dce8ff;
-}
+    h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 4.5vw, 4.2rem);
+      line-height: 1.12;
+      letter-spacing: 0.03em;
+    }
 
-.tool-desc{
-  margin: 0 0 18px;
-  color: #d3e0f7;
-  font-size: 0.96rem;
-  line-height: 1.85;
-  min-height: 118px;
-}
+    .hero p {
+      margin: 20px 0 0;
+      max-width: 780px;
+      color: var(--muted);
+      font-size: 1.03rem;
+    }
 
-.tool-link{
-  display: inline-block;
-  padding: 12px 20px;
-  font-size: 0.98rem;
-  font-weight: bold;
-  background: linear-gradient(135deg,#00c6ff,#0072ff);
-  color: white;
-  border: none;
-  border-radius: 999px;
-  cursor: pointer;
-  text-decoration: none;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-  transition: 0.25s;
-}
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 28px;
+    }
 
-.tool-link:hover{
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.36);
-}
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 50px;
+      padding: 0 20px;
+      border-radius: 14px;
+      font-weight: 700;
+      transition: 0.25s ease;
+    }
 
-.footer-tip{
-  margin-top: 28px;
-  text-align: center;
-  color: #c8d9f4;
-  font-size: 0.94rem;
-  line-height: 1.8;
-  opacity: 0.9;
-}
+    .btn-primary {
+      background: linear-gradient(135deg, #102a50, #1f4b86 70%, #8ab6ff 180%);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 14px 32px rgba(11, 35, 69, 0.34);
+    }
 
-@media (max-width: 900px){
-  .tool-grid{
-    grid-template-columns: 1fr;
-  }
+    .btn-secondary {
+      background: rgba(255,255,255,0.04);
+      color: var(--soft);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
 
-  .tool-desc{
-    min-height: auto;
-  }
-}
+    .btn:hover {
+      transform: translateY(-2px);
+    }
 
-@media (max-width: 600px){
-  .page-wrap{
-    padding: 34px 16px 64px;
-  }
+    .hero-side {
+      display: grid;
+      gap: 16px;
+    }
 
-  h1{
-    font-size: 1.9rem;
-  }
+    .stat-card {
+      border-radius: 20px;
+      padding: 22px 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.12);
+    }
 
-  .hero-card{
-    padding: 32px 20px;
-  }
+    .stat-card strong {
+      display: block;
+      font-size: 2rem;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
 
-  .tool-top{
-    flex-direction: column;
-    align-items: flex-start;
-  }
+    .stat-card span {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
 
-  .tool-link{
-    width: 100%;
-    text-align: center;
-  }
-}
-</style>
+    section {
+      padding: 26px 0 12px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: end;
+      margin-bottom: 20px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(1.5rem, 2.4vw, 2.2rem);
+      line-height: 1.2;
+    }
+
+    .section-head p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      max-width: 720px;
+    }
+
+    .category-tag {
+      color: var(--accent-2);
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 240px;
+      padding: 24px;
+      border-radius: var(--radius-xl);
+      background:
+        linear-gradient(180deg, rgba(17, 24, 37, 0.92), rgba(8, 12, 19, 0.98));
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      transition: 0.28s ease;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: auto -50px -80px auto;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(90, 143, 240, 0.14), transparent 68%);
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(127,176,255,0.28);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      color: var(--accent-2);
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(127,176,255,0.08);
+      border: 1px solid rgba(127,176,255,0.16);
+    }
+
+    .file-id {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.56);
+      letter-spacing: 0.08em;
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 1.34rem;
+      line-height: 1.3;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.97rem;
+      flex: 1;
+    }
+
+    .card-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .meta {
+      color: rgba(255,255,255,0.55);
+      font-size: 0.88rem;
+    }
+
+    .enter {
+      color: var(--text);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .overview {
+      margin-top: 18px;
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(10,16,26,0.95), rgba(7,10,16,0.98));
+      border: 1px solid rgba(255,255,255,0.10);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 18px 20px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--accent-2);
+      font-weight: 700;
+      background: rgba(255,255,255,0.03);
+    }
+
+    td {
+      color: var(--soft);
+    }
+
+    .footer {
+      padding: 54px 0 70px;
+    }
+
+    .footer-panel {
+      border-radius: 30px;
+      padding: 28px;
+      background: linear-gradient(180deg, rgba(14,20,30,0.98), rgba(6,8,12,0.98));
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .footer h3 {
+      margin: 0 0 8px;
+      font-size: 1.2rem;
+    }
+
+    .footer p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .footer .btn {
+      min-width: 170px;
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-panel {
+        padding: 34px 24px;
+      }
+
+      .section-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .wrap {
+        width: min(calc(100% - 24px), var(--max));
+      }
+
+      .topbar-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav {
+        width: 100%;
+      }
+
+      .nav a {
+        font-size: 0.88rem;
+      }
+
+      .card,
+      .footer-panel {
+        border-radius: 22px;
+      }
+
+      th, td {
+        padding: 14px 14px;
+        font-size: 0.94rem;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="#top">
+        <div class="brand-mark">AI</div>
+        <div class="brand-text">
+          WEBAI
+          <small>Writing · Research · Creativity</small>
+        </div>
+      </a>
 
-<div class="bubble"></div>
-<div class="bubble"></div>
-<div class="bubble"></div>
-<div class="bubble"></div>
-
-<div class="page-wrap">
-
-  <div class="hero-card">
-    <div class="hero-badge">WEBAI Prompt Tools</div>
-    <h1>Prompt Engineering</h1>
-    <p class="hero-subtitle">AI 提示詞工具首頁</p>
-
-    <div class="note">
-      提示工程（Prompt Engineering）是透過設計、優化與精煉輸入給大型語言模型（LLM）的指令，以引導 AI 生成更精確、更穩定、也更符合目的的輸出。你可以依照不同用途，直接進入下列工具頁使用。
+      <nav class="nav">
+        <a href="#literature">文學創作</a>
+        <a href="#research">研究轉譯</a>
+        <a href="#marketing">行銷應用</a>
+        <a href="#classical">古文傳統</a>
+        <a href="#overview">總覽</a>
+      </nav>
     </div>
-  </div>
+  </header>
 
-  <div class="tool-grid">
-
-    <div class="tool-card">
-      <div class="tool-top">
-        <h2 class="tool-title">writing_01 文學寫作提示詞生成器（文學風格）</h2>
-        <span class="tool-tag">文學</span>
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <div class="hero-panel">
+          <div class="hero-grid">
+            <div>
+              <div class="eyebrow">AI 寫作與研究提示詞工具集合</div>
+              <h1>WEBAI 工具首頁</h1>
+              <p>
+                收整文學創作、研究轉譯、行銷文案、古文書寫、繪本與現代新詩等多種 AI 提示詞工具。
+                以深藍、黑色、白色為主體分層，讓首頁視覺更穩、更大方，也方便直接進入各個工具頁面。
+              </p>
+              <div class="hero-actions">
+                <a class="btn btn-primary" href="#overview">查看全部工具</a>
+                <a class="btn btn-secondary" href="https://berneting.github.io/WEBAI/" target="_blank" rel="noopener">開啟 GitHub Pages</a>
+              </div>
+            </div>
+            <div class="hero-side">
+              <div class="stat-card">
+                <strong>12</strong>
+                <span>已整理工具頁數量</span>
+              </div>
+              <div class="stat-card">
+                <strong>4</strong>
+                <span>主分類：文學、研究、行銷、古文</span>
+              </div>
+              <div class="stat-card">
+                <strong>Direct Link</strong>
+                <span>每張卡片皆可直接連到對應網頁</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <p class="tool-desc">
-        將原始文章、摘要、段落或主題貼入上方，透過文體、情緒、敘事視角、意象密度與句子張力等設定，自動生成更具文學層次與改寫方向的 AI 提示詞，支援多種文學風格選配。
-      </p>
-      <a class="tool-link" href="./writing_01.html">進入工具</a>
-    </div>
+    </section>
 
-    <div class="tool-card">
-      <div class="tool-top">
-        <h2 class="tool-title">writing_02 行銷用文宣生成器（商用術語）</h2>
-        <span class="tool-tag">商用</span>
+    <section id="literature">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="category-tag">Literature & Creativity</div>
+            <h2>文學與創作類</h2>
+            <p>從文學改寫、名家風格、作詩、童話，到繪本與現代新詩，集中成一組清楚可進入的創作入口。</p>
+          </div>
+        </div>
+
+        <div class="grid">
+          <a class="card" href="https://berneting.github.io/WEBAI/writing_01.html" target="_blank" rel="noopener">
+            <div class="card-top">
+              <span class="pill">文學風格</span>
+              <span class="file-id">writing_01</span>
+            </div>
+            <h3>文學寫作提示詞生成器</h3>
+            <p>可輸入原始文本、摘要或主題，搭配情緒、意象、視角與句子張力設定，生成更細膩的文學式提示詞。</p>
+            <div class="card-bottom">
+              <span class="meta">文學改寫・風格控制</span>
+              <span class="enter">進入工具 ↗</span>
+            </div>
+          </a>
+
+          <a class="card" href="https://berneting.github.io/WEBAI/writing_05.html" target="_blank" rel="noopener">
+            <div class="card-top">
+              <span class="pill">名家風格</span>
+              <span class="file-id">writing_05</span>
+            </div>
+            <h3>創作動機轉名家風格文章</h3>
+            <p>將創作動機或核心構想，轉為不同名家筆調的提示方向，協助快速建立語氣與敘事感。</p>
+            <div class="card-bottom">
+              <span class="meta">風格導向・語氣建立</span>
+              <span class="enter">進入工具 ↗</span>
+            </div>
+          </a>
+
+          <a class="card" href="https://berneting.github.io/WEBAI/writing_06.html" target="_blank" rel="noopener">
+            <div class="card-top">
+              <span class="pill">詩歌創作</span>
+              <span class="file-id">writing_06</span>
+            </div>
+            <h3>作詩提示詞工具</h3>
+            <p>透過主題、節奏、意象與情緒設定，產生可直接餵給 AI 的詩歌創作提示句。</p>
+            <div class="card-bottom">
+              <span class="meta">詩意設定・節奏控制</span>
+              <span class="enter">進入工具 ↗</span>
+            </div>
+          </a>
+
+          <a class="card" href="https://berneting.github.io/WEBAI/writing_09.html" target="_blank" rel="noopener">
+            <div class="card-top">
+              <span class="pill">童話敘事</span>
+              <span class="file-id">writing_09</span>
+            </div>
+            <h3>童話故事提示工具</h3>
+            <p>支援角色、情節、寓意與敘事風格設定，適合童話、寓言與帶象徵性的故事發想。</p>
+            <div class="card-bottom">
+              <span class="meta">角色設計・寓意主題</span>
+              <span class="enter">進入工具 ↗</span>
+            </div>
+          </a>
+
+          <a class="card" href="https://berneting.github.io/WEBAI/writing_10.html" target="_blank" rel="noopener">
+            <div class="card-top">
+              <span class="pill">繪本創作</span>
+              <span class="file-id">writing_10</span>
+            </div>
+            <h3>繪本生成器</h3>
+            <p>可安排角色、場景、情節推進與寓意方向，協助形成繪本式敘事與圖文內容發想。</p>
+            <div class="card-bottom">
+              <span class="meta">兒童繪本・圖文敘事</span>
+              <span class="enter">進入工具 ↗</span>
+            </div>
+          </a>
+
+          <a class="card" href="https://berneting.github.io/WEBAI/writing_12.html" target="_blank" rel="noopener">
+            <div class="card-top">
+              <span class="pill">現代新詩</span>
+              <span class="file-id">writing_12</span>
+            </div>
+            <h3>現代新詩提示詞生成器</h3>
+            <p>支援主題傾向、視角、結構、節奏與收尾方式設定，用來生成更完整的新詩創作提示詞。</p>
+            <div class="card-bottom">
+              <span class="meta">自由詩・詩感控制</span>
+              <span class="enter">進入工具 ↗</span>
+            </div>
+          </a>
+        </div>
       </div>
-      <p class="tool-desc">
-        輸入要推廣的產品或服務，例如海產、文具、老齡健康顧問或課程，選擇文案風格後即可生成內容。上方可參考文宣句，下方可直接複製 AI 提示句貼回 ChatGPT 或其他 AI 工具，員工不需要自行思考提示語。
-      </p>
-      <a class="tool-link" href="./writing_02.html">進入工具</a>
-    </div>
+    </section>
 
-    <div class="tool-card">
-      <div class="tool-top">
-        <h2 class="tool-title">writing_03 研究摘要轉社媒推廣提示句生成器（短文）</h2>
-        <span class="tool-tag">短文</span>
+    <section id="research">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="category-tag">Research & Translation</div>
+            <h2>研究與內容轉譯類</h2>
+            <p>聚焦研究摘要改寫、社群轉譯與學術寫作提示，適合研究推廣與期刊式輸出。</p>
+          </div>
+        </div>
+
+        <div class="grid">
+          <a class="card" href="https://berneting.github.io/WEBAI/writing_03.html" target="_blank" rel="noopener">
+            <div class="card-top">
+              <span class="pill">社群轉譯</span>
+              <span class="file-id">writing_03</span>
+            </div>
+            <h3>研究摘要轉社媒推廣提示句</h3>
+            <p>將研究摘要與討論拆開輸入，協助 AI 抽出真正值得被看見的核心觀點，寫成更有主軸的短文。</p>
+            <div class="card-bottom">
+              <span class="meta">研究推廣・短文模式</span>
+              <span class="enter">進入工具 ↗</span>
+            </div>
+          </a>
+
+          <a class="card" href="https://berneting.github.io/WEBAI/writing_04.html" target="_blank" rel="noopener">
+            <div class="card-top">
+              <span class="pill">中長文轉譯</span>
+              <span class="file-id">writing_04</span>
+            </div>
+            <h3>摘要轉 AI 提示句生成器</h3>
+            <p>把摘要、導言或課堂整理轉為中長文提示句，並加入避免只像在評論摘要的限制，使文章更像社論或評論。</p>
+            <div class="card-bottom">
+              <span class="meta">評論導向・結構生成</span>
+              <span class="enter">進入工具 ↗</span>
+            </div>
+          </a>
+
+          <a class="card" href="https://berneting.github.io/WEBAI/writing_11.html" target="_blank" rel="noopener">
+            <div class="card-top">
+              <span class="pill">學術寫作</span>
+              <span class="file-id">writing_11</span>
+            </div>
+            <h3>研究寫作提示句工具</h3>
+            <p>針對前言、討論等研究章節設計，可依研究方法與結果生成醫學、生物醫學與期刊導向的寫作提示。</p>
+            <div class="card-bottom">
+              <span class="meta">論文章節・期刊風格</span>
+              <span class="enter">進入工具 ↗</span>
+            </div>
+          </a>
+        </div>
       </div>
-      <p class="tool-desc">
-        把研究摘要與研究後討論分開輸入，讓 AI 不只是安全改寫，而是能抓出真正值得被看見的核心觀點，寫出更有主軸、更有溫度，也更能讓一般讀者願意讀下去的研究推廣文字。
-      </p>
-      <a class="tool-link" href="./writing_03.html">進入工具</a>
-    </div>
+    </section>
 
-    <div class="tool-card">
-      <div class="tool-top">
-        <h2 class="tool-title">writing_04 摘要轉 AI 提示句生成器（中長文）</h2>
-        <span class="tool-tag">中長文</span>
+    <section id="marketing">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="category-tag">Marketing & Applied Use</div>
+            <h2>行銷與應用類</h2>
+            <p>提供產品、服務、課程等推廣用途的文宣生成，適合商務與實際應用場景。</p>
+          </div>
+        </div>
+
+        <div class="grid">
+          <a class="card" href="https://berneting.github.io/WEBAI/writing_02.html" target="_blank" rel="noopener">
+            <div class="card-top">
+              <span class="pill">商用文案</span>
+              <span class="file-id">writing_02</span>
+            </div>
+            <h3>行銷用文宣生成器</h3>
+            <p>輸入產品或服務，選擇文案風格後即可生成可直接使用的 AI 提示句，適合教學、店家與行銷推廣。</p>
+            <div class="card-bottom">
+              <span class="meta">商業應用・快速上手</span>
+              <span class="enter">進入工具 ↗</span>
+            </div>
+          </a>
+        </div>
       </div>
-      <p class="tool-desc">
-        把文章摘要、研究摘要、新聞導言或課堂整理貼進來，選擇結構、語氣與寫作模式，就能生成一段可直接貼回 AI 的高精度提示句。這個版本已加入避免只像在評論摘要的限制設計，讓產出的文章更接近獨立社論、雜誌專欄或公共評論文章。
-      </p>
-      <a class="tool-link" href="./writing_04.html">進入工具</a>
-    </div>
+    </section>
 
-  </div>
+    <section id="classical">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="category-tag">Classical Chinese</div>
+            <h2>古文與傳統文體類</h2>
+            <p>面向文言文、節奏古文與教育創作，保留古典氣質，同時可用 AI 快速生成提示句。</p>
+          </div>
+        </div>
 
-  <div class="footer-tip">
-  </div>
+        <div class="grid">
+          <a class="card" href="https://berneting.github.io/WEBAI/writing_07.html" target="_blank" rel="noopener">
+            <div class="card-top">
+              <span class="pill">文言轉寫</span>
+              <span class="file-id">writing_07</span>
+            </div>
+            <h3>文言文古風寫作工具</h3>
+            <p>可將白話文或混合文體轉成不同濃度與風格的文言文，並控制語氣、節奏與敘事方式。</p>
+            <div class="card-bottom">
+              <span class="meta">古風語感・語氣調整</span>
+              <span class="enter">進入工具 ↗</span>
+            </div>
+          </a>
 
-</div>
+          <a class="card" href="https://berneting.github.io/WEBAI/writing_08.html" target="_blank" rel="noopener">
+            <div class="card-top">
+              <span class="pill">節奏文體</span>
+              <span class="file-id">writing_08</span>
+            </div>
+            <h3>三字經／多字節奏文言文創作</h3>
+            <p>支援三字至七字等節奏形式，可依理解層級調整，適合教育用途與古文創作實驗。</p>
+            <div class="card-bottom">
+              <span class="meta">教學應用・節奏書寫</span>
+              <span class="enter">進入工具 ↗</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
 
+    <section id="overview">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="category-tag">Overview</div>
+            <h2>工具分類總覽</h2>
+            <p>目前網站結構與分類配置檢示。</p>
+          </div>
+        </div>
+
+        <div class="overview">
+          <table>
+            <thead>
+              <tr>
+                <th>類別</th>
+                <th>工具</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>文學創作</td>
+                <td>writing_01、writing_05、writing_06、writing_09、writing_10、writing_12</td>
+              </tr>
+              <tr>
+                <td>研究轉譯</td>
+                <td>writing_03、writing_04、writing_11</td>
+              </tr>
+              <tr>
+                <td>行銷文案</td>
+                <td>writing_02</td>
+              </tr>
+              <tr>
+                <td>古文創作</td>
+                <td>writing_07、writing_08</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="footer">
+      <div class="wrap">
+        <div class="footer-panel">
+          <div>
+            <h3>WEBAI 封面首頁</h3>
+            <p>前往 GitHub Pages 首頁、導覽頁入口。</p>
+          </div>
+          <a class="btn btn-primary" href="https://berneting.github.io/WEBAI/" target="_blank" rel="noopener">前往 WEBAI ↗</a>
+        </div>
+      </div>
+    </section>
+  </main>
 </body>
 </html>
