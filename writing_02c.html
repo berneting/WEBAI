@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI 商用文宣與專業策展提示詞生成器 Pro Max</title>
+  <title>AI 商用文宣與專業策展提示詞生成器 Pro Max SEO</title>
   <style>
     * { box-sizing: border-box; }
+
     :root {
       --bg1: #06111f;
       --bg2: #0d2237;
       --bg3: #133655;
       --card: rgba(255,255,255,0.08);
-      --card-strong: rgba(255,255,255,0.12);
       --line: rgba(255,255,255,0.14);
       --text: #eef5ff;
       --muted: rgba(238,245,255,0.76);
@@ -34,7 +34,7 @@
     }
 
     .page {
-      max-width: 1400px;
+      max-width: 1440px;
       margin: 0 auto;
     }
 
@@ -63,7 +63,22 @@
       font-size: 14px;
     }
 
-    .back-link:hover { text-decoration: underline; }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      letter-spacing: 0.5px;
+      color: #fff;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 1050px;
+    }
 
     .badge-wrap {
       display: flex;
@@ -81,22 +96,9 @@
       font-size: 13px;
     }
 
-    h1 {
-      margin: 0 0 10px;
-      font-size: 34px;
-      letter-spacing: 0.5px;
-      color: #fff;
-    }
-
-    .hero p {
-      margin: 0;
-      color: var(--muted);
-      max-width: 980px;
-    }
-
     .layout {
       display: grid;
-      grid-template-columns: minmax(360px, 0.95fr) minmax(420px, 1.05fr);
+      grid-template-columns: minmax(380px, 0.98fr) minmax(440px, 1.02fr);
       gap: 20px;
       align-items: start;
     }
@@ -243,7 +245,7 @@
       color: white;
       background: linear-gradient(135deg, #2dbdff, #1569ff);
       box-shadow: 0 10px 22px rgba(0,0,0,0.24);
-      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     button:hover {
@@ -251,8 +253,13 @@
       box-shadow: 0 14px 26px rgba(0,0,0,0.28);
     }
 
-    button.secondary { background: linear-gradient(135deg, #4b5d73, #334255); }
-    button.copy { background: linear-gradient(135deg, #00ba95, #00896f); }
+    button.secondary {
+      background: linear-gradient(135deg, #4b5d73, #334255);
+    }
+
+    button.copy {
+      background: linear-gradient(135deg, #00ba95, #00896f);
+    }
 
     .output-card {
       margin-bottom: 18px;
@@ -356,10 +363,10 @@
       <div class="hero-top">
         <a class="back-link" href="./index.html">← 回首頁</a>
       </div>
-      <h1>AI 商用文宣與專業策展提示詞生成器 Pro Max</h1>
+      <h1>AI 商用文宣與專業策展提示詞生成器 Pro Max SEO</h1>
       <p>
-        這一版不只做「推廣文案」，而是把不同層級的專業價值翻譯成市場讀得懂、願意讀、也願意相信的語言。
-        可切換大眾商業、親民信任、專業策展三種主軸，並加入專家模型、問題解構、負向限制與觀察式邏輯。
+        這一版除了專業文案與策展邏輯，也加入「搜尋可見度優化」模組。
+        不是把文字寫成內容農場，而是在不破壞專業感與文字質感的前提下，讓內容更容易被搜尋到、被理解、被留下來。
       </p>
       <div class="badge-wrap">
         <span class="badge">大眾商業版</span>
@@ -369,6 +376,7 @@
         <span class="badge">問題解構</span>
         <span class="badge">文字限制條件</span>
         <span class="badge">觀察報告邏輯</span>
+        <span class="badge">搜尋可見度優化</span>
       </div>
     </section>
 
@@ -376,12 +384,13 @@
       <section class="panel">
         <div class="panel-head">
           <h2>輸入設定</h2>
-          <p>先定義商品、受眾與專業視角，再由系統生成參考文宣與可直接複製的 AI 提示詞。</p>
+          <p>先定義商品、受眾、專業視角與搜尋友善需求，再由系統生成參考文宣與可直接複製的 AI 提示詞。</p>
         </div>
         <div class="panel-body">
+
           <div class="section">
             <h3>一、基本定位</h3>
-            <div class="hint">這裡先決定你的產品是一般推廣、溫和分享，還是走專業策展與高信任感路線。</div>
+            <div class="hint">先決定這份內容主要走大眾商業、親民信任，還是專業策展與高信任感路線。</div>
             <div class="grid-2">
               <div>
                 <label for="product">商品 / 服務 / 主題名稱</label>
@@ -416,7 +425,7 @@
 
           <div class="section">
             <h3>二、讀者卡點與核心價值</h3>
-            <div class="hint">專業感不只在於說自己多厲害，而是能夠精準指出讀者真正卡在哪裡。</div>
+            <div class="hint">專業感不只在於說自己多厲害，而在於能精準指出讀者真正卡在哪裡。</div>
             <label for="pain">讀者常見卡點 / 問題解構</label>
             <textarea id="pain" placeholder="例如：資訊過載引發的選擇困難；面對多個版本產生審美疲勞與數位焦慮；明明有專業卻不知道如何說成人話"></textarea>
 
@@ -429,7 +438,7 @@
 
           <div class="section">
             <h3>三、專家模型</h3>
-            <div class="hint">這裡不是裝懂，而是明確告訴 AI：應該用什麼專業框架來思考與說話。</div>
+            <div class="hint">不是裝懂，而是明確告訴 AI：應該用什麼專業框架來思考與說話。</div>
             <div class="grid-2">
               <div>
                 <label for="persona">專家角色設定</label>
@@ -497,7 +506,61 @@
           </div>
 
           <div class="section">
-            <h3>五、生成內容範圍</h3>
+            <h3>五、搜尋可見度優化</h3>
+            <div class="hint">這一區不是把內容寫成關鍵字堆疊，而是在保留專業感的前提下，讓文字更容易被搜尋、被理解、被找到。</div>
+
+            <div class="grid-2">
+              <div>
+                <label for="seoMode">SEO / 搜尋友善模式</label>
+                <select id="seoMode">
+                  <option value="off">不啟用</option>
+                  <option value="basic">基礎 SEO 優化</option>
+                  <option value="article">文章型 SEO 優化</option>
+                  <option value="brand">品牌型 SEO 優化</option>
+                </select>
+              </div>
+              <div>
+                <label for="searchIntent">搜尋意圖</label>
+                <select id="searchIntent">
+                  <option value="info">資訊型：想了解是什麼</option>
+                  <option value="compare">比較型：想比較差異</option>
+                  <option value="choice">選擇型：想找推薦</option>
+                  <option value="trust">信任型：想知道你是否專業</option>
+                  <option value="action">行動型：想進一步聯絡或接觸</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid-2" style="margin-top:14px;">
+              <div>
+                <label for="mainKeyword">主關鍵字</label>
+                <input id="mainKeyword" placeholder="例如：古典音樂錄音推薦、高齡健康顧問、音樂與大腦課程" />
+              </div>
+              <div>
+                <label for="keywordBlend">關鍵字融入強度</label>
+                <select id="keywordBlend">
+                  <option value="low">低：幾乎不影響文氣</option>
+                  <option value="natural">自然：優先推薦</option>
+                  <option value="medium">中：明顯但不堆砌</option>
+                </select>
+              </div>
+            </div>
+
+            <label for="subKeywords" style="margin-top:12px;">次關鍵字 / 延伸詞</label>
+            <textarea id="subKeywords" placeholder="例如：卡拉揚版本比較、古典音樂入門、聆聽焦慮、音樂治療與失智、高齡健康管理"></textarea>
+
+            <div class="checklist">
+              <label class="check-item"><input type="checkbox" id="seoTitle" checked /> 產出 SEO 標題</label>
+              <label class="check-item"><input type="checkbox" id="metaDesc" checked /> 產出 Meta description</label>
+              <label class="check-item"><input type="checkbox" id="hStructure" checked /> 產出 H1 / H2 / H3 架構</label>
+              <label class="check-item"><input type="checkbox" id="seoFaq" /> 產出 FAQ 區塊</label>
+              <label class="check-item"><input type="checkbox" id="seoSummary" checked /> 產出搜尋友善摘要</label>
+              <label class="check-item"><input type="checkbox" id="protectStyle" checked /> 優先保留原本文字質感</label>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>六、生成內容範圍</h3>
             <div class="hint">這裡控制你要 AI 一次輸出哪些版本。</div>
             <div class="checklist">
               <label class="check-item"><input type="checkbox" id="needShort" checked /> 短版文宣</label>
@@ -540,7 +603,7 @@
           </div>
 
           <div class="footer-note">
-            建議使用方式：先用「參考文宣方向」看整體調性，再把 Prompt 丟回 AI 產生完整版本。若商品知識門檻高，優先使用「專業策展版」。
+            建議使用方式：先看「參考文宣方向」確認調性，再把 Prompt 丟回 AI 產生完整版本。若你的內容同時需要被搜尋到，開啟「搜尋可見度優化」即可。
           </div>
         </div>
       </section>
@@ -641,6 +704,12 @@
         texture: document.getElementById('texture').value,
         sentence: document.getElementById('sentence').value,
         ctaStyle: document.getElementById('ctaStyle').value,
+        seoMode: document.getElementById('seoMode').value,
+        searchIntent: document.getElementById('searchIntent').value,
+        mainKeyword: document.getElementById('mainKeyword').value.trim(),
+        subKeywords: document.getElementById('subKeywords').value.trim(),
+        keywordBlend: document.getElementById('keywordBlend').value,
+        seoOutputs: collectSeoOutputs(),
         bans: collectBans(),
         outputs: collectOutputs()
       };
@@ -668,6 +737,17 @@
       return items;
     }
 
+    function collectSeoOutputs() {
+      const items = [];
+      if (document.getElementById('seoTitle').checked) items.push('SEO 標題');
+      if (document.getElementById('metaDesc').checked) items.push('Meta description');
+      if (document.getElementById('hStructure').checked) items.push('H1 / H2 / H3 架構');
+      if (document.getElementById('seoFaq').checked) items.push('FAQ 區塊');
+      if (document.getElementById('seoSummary').checked) items.push('搜尋友善摘要');
+      if (document.getElementById('protectStyle').checked) items.push('優先保留原本文字質感');
+      return items;
+    }
+
     function goalText(goal) {
       const map = {
         awareness: '建立基本認識與閱讀興趣',
@@ -689,6 +769,36 @@
       return map[style] || '收尾要自然';
     }
 
+    function seoModeText(mode) {
+      const map = {
+        off: '不啟用 SEO 模式',
+        basic: '基礎 SEO 優化',
+        article: '文章型 SEO 優化',
+        brand: '品牌型 SEO 優化'
+      };
+      return map[mode] || '不啟用 SEO 模式';
+    }
+
+    function searchIntentText(intent) {
+      const map = {
+        info: '資訊型：讀者想了解這是什麼、如何理解',
+        compare: '比較型：讀者想比較差異與版本',
+        choice: '選擇型：讀者想找推薦與判準',
+        trust: '信任型：讀者想判斷你是否值得相信',
+        action: '行動型：讀者想進一步聯絡、諮詢或接觸'
+      };
+      return map[intent] || '資訊型';
+    }
+
+    function keywordBlendText(level) {
+      const map = {
+        low: '關鍵字出現應極度自然，幾乎不影響文氣',
+        natural: '關鍵字自然嵌入，優先維持語意流暢與質感',
+        medium: '可明顯帶入關鍵字，但不得形成堆砌感'
+      };
+      return map[level] || '自然帶入';
+    }
+
     function renderTags(data) {
       const tags = [
         modeMap[data.mode].title,
@@ -697,8 +807,42 @@
         document.getElementById('sentence').selectedOptions[0].text,
         document.getElementById('ctaStyle').selectedOptions[0].text
       ];
+
+      if (data.seoMode !== 'off') {
+        tags.push(document.getElementById('seoMode').selectedOptions[0].text);
+      }
+
       const wrap = document.getElementById('previewTags');
       wrap.innerHTML = tags.map(tag => `<span class="mini-tag">${tag}</span>`).join('');
+    }
+
+    function generateSeoBlock(data) {
+      if (data.seoMode === 'off') {
+        return `【SEO / 搜尋可見度設定】
+本次不啟用 SEO 模式。請優先維持內容質感、專業判準與可讀性，不必刻意安排搜尋結構。`;
+      }
+
+      const seoOutputLine = data.seoOutputs.length
+        ? data.seoOutputs.map(item => `- ${item}`).join('\n')
+        : '- 視需要自行決定';
+
+      return `【SEO / 搜尋可見度設定】
+本次啟用：${seoModeText(data.seoMode)}
+搜尋意圖：${searchIntentText(data.searchIntent)}
+主關鍵字：${data.mainKeyword || '未提供，請依主題與搜尋意圖推定一個自然合理的主關鍵字'}
+次關鍵字 / 延伸詞：${data.subKeywords || '未提供，請自行延伸 3 到 5 個與主題高度相關的自然詞組'}
+關鍵字融入原則：${keywordBlendText(data.keywordBlend)}
+
+【SEO 寫作要求】
+- 關鍵字要自然融入，不可堆砌
+- 不可破壞原本文字質感與專業氣氛
+- 標題與小標要兼顧可讀性與搜尋可見度
+- 若內容適合，請使用問題式小標、比較式小標或知性策展式小標
+- 若勾選 FAQ，可設計 2 到 4 個與搜尋意圖高度相關的常見問題
+- 若勾選 Meta description，請控制在適合摘要的長度內，清楚、自然，不要像促銷廣告
+
+【SEO 輸出項目】
+${seoOutputLine}`;
     }
 
     function generatePrompt(data) {
@@ -706,14 +850,19 @@
       const roleText = personaMap[data.persona];
       const textureText = textureMap[data.texture];
       const sentenceText = sentenceMap[data.sentence];
-      const outputLine = data.outputs.length ? data.outputs.map((item, idx) => `${idx + 1}. ${item}`).join('\n') : '請至少輸出一種版本';
-      const banLine = data.bans.length ? data.bans.map(item => `- ${item}`).join('\n') : '- 請維持專業克制';
+      const outputLine = data.outputs.length
+        ? data.outputs.map((item, idx) => `${idx + 1}. ${item}`).join('\n')
+        : '請至少輸出一種版本';
+      const banLine = data.bans.length
+        ? data.bans.map(item => `- ${item}`).join('\n')
+        : '- 請維持專業克制';
 
-      return `請根據以下設定，為「${data.product}」撰寫一組具有專業感、邏輯厚度與可讀性的中文文案。
+      return `請根據以下設定，為「${data.product}」撰寫一組具有專業感、邏輯厚度、可讀性與搜尋友善度的中文文案。
 
 【角色設定】
 你現在不是一般行銷助手，而是 ${roleText}。
 ${data.personaDetail ? `補充背景：${data.personaDetail}。\n` : ''}${data.framework ? `請運用「${data.framework}」作為思考框架，將複雜內容轉化為可理解、可感知、但不失深度的表達。\n` : ''}
+
 【主模式】
 本次文案屬於「${modeInfo.title}」。
 核心寫作邏輯：${modeInfo.logic}
@@ -757,6 +906,8 @@ ${banLine}
 4. 不要直接說它很好，而要說它如何提供結構清晰度、辨識感、安心感、理解效率或美感秩序。
 5. 收尾請採用邀請制，而不是命令式 CTA。${ctaText(data.ctaStyle)}
 
+${generateSeoBlock(data)}
+
 【輸出內容】
 ${outputLine}
 
@@ -766,6 +917,7 @@ ${outputLine}
 - 不要製造廉價刺激感。要製造的是理解後的信任感。
 - 若有需要，可加入少量生活化對比，協助降低理解門檻。
 - 若內容涉及專業判斷，請用「觀察後的結論」語氣，不要用「設定好的推銷台詞」語氣。
+- 若啟用 SEO，請優先做到「自然可見」，而不是「刻意堆字」。
 
 【輸出形式】
 - 各段請加小標題
@@ -775,13 +927,24 @@ ${outputLine}
 - 讓整體讀起來像經過思考的專業書寫，而非套版文案`;
     }
 
+    function generatePreview(data) {
+      let seoNote = '';
+      if (data.seoMode !== 'off') {
+        seoNote = `
+
+【搜尋友善補強】
+若這份內容還需要被搜尋到，建議讓「${data.mainKeyword || '主關鍵字'}」自然地長進標題、前段與小標，但不要為了關鍵字破壞原本的專業氣氛。真正有效的 SEO，不是堆字，而是讓對的人更容易找到這份內容。`;
+      }
+      return modeMap[data.mode].preview(data) + seoNote;
+    }
+
     function generateAll() {
       const data = getData();
       if (!data.product) {
         alert('請先輸入商品、服務或主題名稱');
         return;
       }
-      document.getElementById('previewOutput').textContent = modeMap[data.mode].preview(data);
+      document.getElementById('previewOutput').textContent = generatePreview(data);
       document.getElementById('promptOutput').textContent = generatePrompt(data);
       renderTags(data);
     }
@@ -829,12 +992,21 @@ ${outputLine}
       document.getElementById('sentence').value = 'mixed';
       document.getElementById('ctaStyle').value = 'invite';
 
-      ['banExclaim','banSlogan','banOverSell','banFakeData','keepRespect','useContrast','needShort','needFull','needSocial','needOral','needTitles','needFramework']
+      document.getElementById('seoMode').value = 'off';
+      document.getElementById('searchIntent').value = 'info';
+      document.getElementById('mainKeyword').value = '';
+      document.getElementById('subKeywords').value = '';
+      document.getElementById('keywordBlend').value = 'natural';
+
+      ['banExclaim','banSlogan','banOverSell','banFakeData','keepRespect','useContrast','needShort','needFull','needSocial','needOral','needTitles','needFramework','seoTitle','metaDesc','hStructure','seoSummary','protectStyle']
         .forEach(id => document.getElementById(id).checked = true);
+
+      document.getElementById('seoFaq').checked = false;
 
       document.getElementById('previewOutput').textContent = '';
       document.getElementById('promptOutput').textContent = '';
       document.getElementById('previewTags').innerHTML = '';
+
       showToast('內容已清空');
     }
   </script>
