@@ -1,0 +1,627 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>英文文學分析提示詞生成器</title>
+  <style>
+    :root{
+      --bg:#07111f;
+      --bg2:#0d1b2f;
+      --panel:#10233d;
+      --panel2:rgba(255,255,255,0.08);
+      --line:rgba(255,255,255,0.14);
+      --text:#f4f7fb;
+      --muted:#bfd0e5;
+      --soft:#93acc8;
+      --accent:#9ed0ff;
+      --accent2:#dbeeff;
+      --shadow:0 16px 40px rgba(0,0,0,.28);
+      --radius:20px;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+      background:linear-gradient(180deg,#050b14 0%, #0a1424 30%, #0c1a2f 100%);
+      color:var(--text);
+      line-height:1.65;
+    }
+
+    .wrap{
+      max-width:1440px;
+      margin:0 auto;
+      padding:28px 20px 44px;
+    }
+
+    .hero{
+      background:
+        radial-gradient(circle at top right, rgba(158,208,255,.16), transparent 28%),
+        linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:30px 28px 24px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      color:var(--accent2);
+      font-size:13px;
+      letter-spacing:.04em;
+    }
+
+    h1{
+      margin:16px 0 10px;
+      font-size:clamp(30px,4vw,48px);
+      line-height:1.15;
+      letter-spacing:.02em;
+    }
+
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      font-size:16px;
+    }
+
+    .tag-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+
+    .tag{
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      color:var(--accent2);
+      font-size:13px;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:22px;
+      margin-top:22px;
+    }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .left,
+    .right{
+      padding:22px;
+    }
+
+    .section-title{
+      font-size:18px;
+      font-weight:700;
+      margin:0 0 14px;
+      letter-spacing:.02em;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+    }
+
+    .full{grid-column:1/-1;}
+
+    label{
+      display:block;
+      font-size:13px;
+      color:var(--accent2);
+      margin-bottom:6px;
+      letter-spacing:.03em;
+    }
+
+    input[type="text"],
+    select,
+    textarea{
+      width:100%;
+      background:rgba(7,17,31,.72);
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.13);
+      border-radius:14px;
+      padding:12px 14px;
+      font-size:15px;
+      outline:none;
+      transition:.2s ease;
+    }
+
+    textarea{
+      min-height:120px;
+      resize:vertical;
+    }
+
+    input[type="text"]:focus,
+    select:focus,
+    textarea:focus{
+      border-color:rgba(158,208,255,.55);
+      box-shadow:0 0 0 3px rgba(158,208,255,.14);
+    }
+
+    .checkbox-wrap,
+    .radio-wrap{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 12px;
+      padding:12px;
+      border:1px solid rgba(255,255,255,.11);
+      background:rgba(7,17,31,.52);
+      border-radius:14px;
+    }
+
+    .check-item,
+    .radio-item{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      font-size:14px;
+      color:var(--text);
+    }
+
+    input[type="checkbox"], input[type="radio"]{
+      accent-color:#9ed0ff;
+      transform:translateY(1px);
+    }
+
+    .btn-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:20px;
+    }
+
+    button{
+      appearance:none;
+      border:none;
+      border-radius:14px;
+      padding:13px 18px;
+      font-size:15px;
+      font-weight:700;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    .primary{
+      background:linear-gradient(135deg,#cde7ff,#8fc8ff);
+      color:#07111f;
+    }
+
+    .secondary{
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.12);
+    }
+
+    button:hover{transform:translateY(-1px);}
+
+    .output-box{
+      background:rgba(6,13,24,.8);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;
+      min-height:580px;
+      padding:18px;
+      white-space:pre-wrap;
+      font-size:15px;
+      color:#f8fbff;
+      overflow:auto;
+    }
+
+    .output-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .subnote{
+      color:var(--soft);
+      font-size:13px;
+      margin-top:6px;
+    }
+
+    .mini-card{
+      margin-top:18px;
+      padding:14px 16px;
+      border-radius:16px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.09);
+    }
+
+    .mini-card h3{
+      margin:0 0 8px;
+      font-size:15px;
+      color:var(--accent2);
+    }
+
+    .mini-card p{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    @media (max-width: 1060px){
+      .layout{grid-template-columns:1fr;}
+      .output-box{min-height:420px;}
+    }
+
+    @media (max-width: 720px){
+      .grid{grid-template-columns:1fr;}
+      .wrap{padding:16px 14px 28px;}
+      .hero{padding:22px 18px;}
+      .left,.right{padding:18px;}
+      h1{font-size:30px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">English Literature Prompt Builder</div>
+      <h1>英文文學提示詞生成器</h1>
+      <p>
+        把你想討論、閱讀、分析或書寫的英文文學主題，轉成一段有結構、可直接貼給 AI 使用的高品質提示詞。
+        核心聚焦於「時代 × 國家 × 文類 × 分析角度 × 結構意識」。
+      </p>
+      <div class="tag-row">
+        <span class="tag">英國文學</span>
+        <span class="tag">美國文學</span>
+        <span class="tag">浪漫主義</span>
+        <span class="tag">現代主義</span>
+        <span class="tag">小說／詩／戲劇</span>
+        <span class="tag">結構與主題分析</span>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="card left">
+        <h2 class="section-title">輸入設定</h2>
+
+        <div class="grid">
+          <div class="full">
+            <label for="topic">主題 / 問題意識</label>
+            <textarea id="topic" placeholder="例如：我想理解 Romanticism 為何如此重視自然、情感與個體自由，以及它和工業化時代之間的張力。"></textarea>
+          </div>
+
+          <div>
+            <label for="taskType">任務類型</label>
+            <select id="taskType">
+              <option>概念導讀</option>
+              <option>文學分析</option>
+              <option>比較文學討論</option>
+              <option>閱讀引導</option>
+              <option>作品賞析</option>
+              <option>寫作發想</option>
+              <option>課堂報告架構</option>
+              <option>論述型文章生成</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="readerLevel">讀者程度</label>
+            <select id="readerLevel">
+              <option>初學者</option>
+              <option>一般大學生</option>
+              <option>英文系學生</option>
+              <option>研究導向</option>
+              <option>跨領域讀者</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="period">文學時期</label>
+            <select id="period">
+              <option>不限定</option>
+              <option>中世紀</option>
+              <option>文藝復興</option>
+              <option>十七世紀</option>
+              <option>啟蒙時代</option>
+              <option>浪漫主義</option>
+              <option>維多利亞時代</option>
+              <option>現代主義</option>
+              <option>後現代</option>
+              <option>當代文學</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="region">國家 / 區域範圍</label>
+            <select id="region">
+              <option>不限定</option>
+              <option>英國文學</option>
+              <option>美國文學</option>
+              <option>愛爾蘭文學</option>
+              <option>加拿大文學</option>
+              <option>澳洲文學</option>
+              <option>印度英語文學</option>
+              <option>非洲英語文學</option>
+              <option>後殖民英語文學</option>
+              <option>跨國英文文學</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="genre">主要文類</label>
+            <select id="genre">
+              <option>不限定</option>
+              <option>小說</option>
+              <option>短篇小說</option>
+              <option>詩歌</option>
+              <option>戲劇</option>
+              <option>散文</option>
+              <option>文學評論</option>
+              <option>哥德文學</option>
+              <option>女性書寫</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="work">指定作品 / 作者（可不填）</label>
+            <input id="work" type="text" placeholder="例如：Wordsworth、Woolf、Jane Eyre、Hamlet" />
+          </div>
+
+          <div class="full">
+            <label>分析重點</label>
+            <div class="checkbox-wrap" id="focuses">
+              <label class="check-item"><input type="checkbox" value="時代背景與歷史脈絡" checked>時代背景與歷史脈絡</label>
+              <label class="check-item"><input type="checkbox" value="國家文化差異">國家文化差異</label>
+              <label class="check-item"><input type="checkbox" value="文類特徵">文類特徵</label>
+              <label class="check-item"><input type="checkbox" value="敘事結構與段落推進" checked>敘事結構與段落推進</label>
+              <label class="check-item"><input type="checkbox" value="人物塑造">人物塑造</label>
+              <label class="check-item"><input type="checkbox" value="意象與象徵">意象與象徵</label>
+              <label class="check-item"><input type="checkbox" value="語言風格與修辭">語言風格與修辭</label>
+              <label class="check-item"><input type="checkbox" value="主題與思想內涵" checked>主題與思想內涵</label>
+              <label class="check-item"><input type="checkbox" value="批判理論切入">批判理論切入</label>
+              <label class="check-item"><input type="checkbox" value="教育與學習價值">教育與學習價值</label>
+            </div>
+          </div>
+
+          <div class="full">
+            <label>輸出形式</label>
+            <div class="radio-wrap">
+              <label class="radio-item"><input type="radio" name="outputStyle" value="條理清楚的分析文章" checked>條理清楚的分析文章</label>
+              <label class="radio-item"><input type="radio" name="outputStyle" value="分點式學習筆記">分點式學習筆記</label>
+              <label class="radio-item"><input type="radio" name="outputStyle" value="適合口頭報告的講稿">適合口頭報告的講稿</label>
+              <label class="radio-item"><input type="radio" name="outputStyle" value="可延伸寫作的深度導讀">可延伸寫作的深度導讀</label>
+            </div>
+          </div>
+
+          <div>
+            <label for="tone">語氣風格</label>
+            <select id="tone">
+              <option>理性清晰</option>
+              <option>文學感分析</option>
+              <option>學術導向</option>
+              <option>溫和引導</option>
+              <option>深入但易懂</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="length">輸出篇幅</label>
+            <select id="length">
+              <option>短</option>
+              <option selected>中</option>
+              <option>長</option>
+              <option>延伸版</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="language">提示詞語言</label>
+            <select id="language">
+              <option>繁體中文</option>
+              <option>English</option>
+              <option>中英混合</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="headingMode">段落安排</label>
+            <select id="headingMode">
+              <option>自然分段即可</option>
+              <option>加入小標題</option>
+              <option>用明確層次分節</option>
+              <option>先總後分再收束</option>
+            </select>
+          </div>
+
+          <div class="full">
+            <label for="extra">額外要求</label>
+            <textarea id="extra" placeholder="例如：希望先說明 Romanticism 的核心精神，再比較英國與美國浪漫主義差異，最後補上對今天閱讀價值的理解。"></textarea>
+            <div class="subnote">可補充：要不要舉例、是否要避免過度術語、是否需要帶入作者或作品、是否要強調結構與情感的關係。</div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="primary" onclick="generatePrompt()">生成提示詞</button>
+          <button class="secondary" onclick="copyPrompt()">複製 AI 提示詞</button>
+          <button class="secondary" onclick="clearAllFields()">清空內容</button>
+        </div>
+
+        <div class="mini-card">
+          <h3>這版的核心</h3>
+          <p>
+            不是只叫 AI「介紹英文文學」，而是把英文文學拆成可操作的閱讀與書寫維度：時代、國家、文類、主題、結構、情感與文化背景，讓輸出更像真正的文學導讀與分析，而不是表面摘要。
+          </p>
+        </div>
+      </section>
+
+      <section class="card right">
+        <div class="output-title">
+          <h2 class="section-title" style="margin:0;">生成結果</h2>
+          <button class="secondary" onclick="copyPrompt()">複製 AI 提示詞</button>
+        </div>
+        <div id="output" class="output-box">你的英文文學提示詞會顯示在這裡。</div>
+
+        <div class="mini-card">
+          <h3>適合怎麼用</h3>
+          <p>
+            可直接貼給 ChatGPT、Gemini、Claude 等模型，用於英文文學導讀、課堂報告、作品賞析、比較文學分析、寫作前置構思與教學設計。
+          </p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    function getCheckedValues(name){
+      return Array.from(document.querySelectorAll(`#${name} input[type="checkbox"]:checked`)).map(el => el.value);
+    }
+
+    function getRadioValue(name){
+      const checked = document.querySelector(`input[name="${name}"]:checked`);
+      return checked ? checked.value : "";
+    }
+
+    function buildLanguageBlock(lang){
+      if(lang === 'English'){
+        return 'Please write the response in English.';
+      }
+      if(lang === '中英混合'){
+        return 'Please write the response mainly in Traditional Chinese, but preserve key literary terms in English when appropriate.';
+      }
+      return '請以繁體中文撰寫，必要時可保留關鍵英文文學術語。';
+    }
+
+    function generatePrompt(){
+      const topic = document.getElementById('topic').value.trim();
+      const taskType = document.getElementById('taskType').value;
+      const readerLevel = document.getElementById('readerLevel').value;
+      const period = document.getElementById('period').value;
+      const region = document.getElementById('region').value;
+      const genre = document.getElementById('genre').value;
+      const work = document.getElementById('work').value.trim();
+      const tone = document.getElementById('tone').value;
+      const length = document.getElementById('length').value;
+      const language = document.getElementById('language').value;
+      const headingMode = document.getElementById('headingMode').value;
+      const extra = document.getElementById('extra').value.trim();
+      const focuses = getCheckedValues('focuses');
+      const outputStyle = getRadioValue('outputStyle');
+
+      const focusText = focuses.length ? focuses.join('、') : '主題與思想內涵';
+      const workText = work ? work : '未指定特定作者或作品，可依主題自行選取合適例子';
+      const topicText = topic || '請依照英文文學的核心特徵，自行建立一個有深度的分析主題';
+
+      const prompt = `你是一位熟悉 English Literature 的文學分析與教學型寫作模型。
+
+請根據以下設定，產出一份具有結構意識、文化深度與可讀性的 ${taskType}。內容不要只是百科式摘要，而要真正呈現英文文學的核心：它不僅是英國文學，而是所有以英文創作的文學傳統；同時要重視時代、國家、文類、主題、語言與結構安排之間的關係。
+
+【任務主題】
+${topicText}
+
+【讀者程度】
+${readerLevel}
+
+【時代範圍】
+${period}
+
+【國家 / 區域範圍】
+${region}
+
+【主要文類】
+${genre}
+
+【指定作者 / 作品】
+${workText}
+
+【分析聚焦】
+${focusText}
+
+【輸出形式】
+${outputStyle}
+
+【語氣風格】
+${tone}
+
+【篇幅】
+${length}
+
+【段落安排】
+${headingMode}
+
+【寫作要求】
+1. 先建立清楚的核心問題意識，不要一開始就流於空泛定義。
+2. 要說明英文文學可如何從「時代」與「國家 / 區域」兩條軸線來理解。
+3. 若主題涉及特定時期（如 Romanticism、Modernism），請指出該時期的重要精神、歷史背景與文學表現。
+4. 若主題涉及特定國家（如 British Literature、American Literature、Postcolonial Literature），請說明其文化特徵與與其他英文文學傳統的差異。
+5. 請重視文學作品中的結構性，包括但不限於：敘事推進、段落安排、意象遞進、轉折、象徵位置、結尾餘韻。
+6. 除了內容介紹，也要幫助讀者理解：為什麼這些文學現象值得讀、值得分析、值得放進今天的閱讀或學習脈絡中。
+7. 文字要避免機械式條列堆砌；即使有分點，也要有流動感、過渡感與內在邏輯。
+8. 若合適，可穿插 1 至 3 個具代表性的作家或作品作為例子，但不要變成單純人物名單。
+9. 若主題本身有比較性，請呈現差異與交叉，而不是只做平行羅列。
+10. 結尾請做一個有思考深度的收束，讓讀者感受到英文文學不只是語言學習，而是文化、情感與思想的立體場域。
+
+【額外要求】
+${extra || '可視需要補充例子，並保持內容深入但易懂。'}
+
+【語言要求】
+${buildLanguageBlock(language)}`;
+
+      document.getElementById('output').textContent = prompt;
+    }
+
+    function copyPrompt(){
+      const text = document.getElementById('output').textContent;
+      if(!text || text === '你的英文文學提示詞會顯示在這裡。'){
+        alert('目前還沒有可複製的提示詞。');
+        return;
+      }
+      navigator.clipboard.writeText(text).then(() => {
+        alert('AI 提示詞已複製。');
+      }).catch(() => {
+        alert('複製失敗，請手動複製。');
+      });
+    }
+
+    function clearAllFields(){
+      document.getElementById('topic').value = '';
+      document.getElementById('work').value = '';
+      document.getElementById('extra').value = '';
+      document.getElementById('taskType').selectedIndex = 0;
+      document.getElementById('readerLevel').selectedIndex = 0;
+      document.getElementById('period').selectedIndex = 0;
+      document.getElementById('region').selectedIndex = 0;
+      document.getElementById('genre').selectedIndex = 0;
+      document.getElementById('tone').selectedIndex = 0;
+      document.getElementById('length').selectedIndex = 1;
+      document.getElementById('language').selectedIndex = 0;
+      document.getElementById('headingMode').selectedIndex = 0;
+
+      document.querySelectorAll('#focuses input[type="checkbox"]').forEach((el, i) => {
+        el.checked = [0,3,7].includes(i);
+      });
+
+      const defaultRadio = document.querySelector('input[name="outputStyle"][value="條理清楚的分析文章"]');
+      if(defaultRadio) defaultRadio.checked = true;
+
+      document.getElementById('output').textContent = '你的英文文學提示詞會顯示在這裡。';
+    }
+  </script>
+</body>
+</html>
