@@ -1,0 +1,617 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>英文文學提示詞生成器 v1</title>
+  <style>
+    :root{
+      --bg:#06111f;
+      --bg2:#0b1d33;
+      --panel:#0f2744cc;
+      --panel2:#08192dcc;
+      --line:rgba(255,255,255,.12);
+      --text:#f5f8fc;
+      --muted:#a9bbd3;
+      --accent:#7fb6ff;
+      --accent2:#d8e8ff;
+      --btn:#12345d;
+      --btn2:#1b4d88;
+      --shadow:0 20px 50px rgba(0,0,0,.35);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: "Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(127,182,255,.15), transparent 25%),
+        radial-gradient(circle at bottom right, rgba(255,255,255,.08), transparent 20%),
+        linear-gradient(160deg, #02060b 0%, #071526 38%, #0c2340 100%);
+      min-height:100vh;
+    }
+    .wrap{
+      max-width:1500px;
+      margin:0 auto;
+      padding:30px 22px 40px;
+    }
+    .hero{
+      background:linear-gradient(135deg, rgba(255,255,255,.1), rgba(255,255,255,.04));
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:28px 28px 24px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(16px);
+      margin-bottom:22px;
+    }
+    .hero h1{
+      margin:0 0 10px;
+      font-size:clamp(1.8rem, 2.4vw, 2.8rem);
+      letter-spacing:.5px;
+    }
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.8;
+      font-size:1rem;
+    }
+    .tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:16px;
+    }
+    .tag{
+      padding:8px 12px;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:999px;
+      color:var(--accent2);
+      background:rgba(255,255,255,.05);
+      font-size:.92rem;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap:22px;
+    }
+    .card{
+      background:linear-gradient(180deg, rgba(17,39,68,.88), rgba(6,21,39,.88));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(14px);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding:18px 22px 10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .card .hd h2{
+      margin:0 0 6px;
+      font-size:1.2rem;
+    }
+    .card .hd p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.7;
+      font-size:.94rem;
+    }
+    .body{
+      padding:20px 22px 24px;
+    }
+    .section-title{
+      font-size:1rem;
+      margin:24px 0 12px;
+      color:#ffffff;
+      letter-spacing:.3px;
+    }
+    .section-title:first-child{margin-top:0}
+    .row{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:14px;
+      margin-bottom:14px;
+    }
+    .row3{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:14px;
+      margin-bottom:14px;
+    }
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      min-width:0;
+    }
+    label{
+      font-size:.94rem;
+      color:#eaf2ff;
+    }
+    input[type="text"], select, textarea{
+      width:100%;
+      border:none;
+      outline:none;
+      border-radius:14px;
+      padding:12px 14px;
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.08);
+      font-size:.96rem;
+    }
+    textarea{
+      min-height:112px;
+      resize:vertical;
+      line-height:1.7;
+    }
+    input::placeholder, textarea::placeholder{
+      color:#b4c3d7;
+    }
+    select option{
+      color:#111;
+    }
+    .check-grid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:10px 12px;
+      margin-top:6px;
+    }
+    .check-grid.three{
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .check{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;
+      padding:10px 12px;
+      min-height:52px;
+    }
+    .check input{
+      margin-top:3px;
+      transform:scale(1.08);
+      accent-color:#89b8ff;
+      flex:0 0 auto;
+    }
+    .check span{
+      line-height:1.45;
+      color:#eef5ff;
+      font-size:.93rem;
+    }
+    .buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:22px;
+    }
+    button{
+      border:none;
+      border-radius:14px;
+      padding:12px 18px;
+      font-size:.98rem;
+      cursor:pointer;
+      color:#fff;
+      background:linear-gradient(135deg, var(--btn2), var(--btn));
+      box-shadow:0 10px 24px rgba(0,0,0,.25);
+      transition:transform .15s ease, opacity .15s ease;
+    }
+    button:hover{transform:translateY(-1px)}
+    button.secondary{
+      background:linear-gradient(135deg, #0d233d, #091729);
+    }
+    .output{
+      min-height:620px;
+      white-space:pre-wrap;
+      line-height:1.85;
+      background:rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:18px;
+      color:#f3f8ff;
+      font-size:.98rem;
+    }
+    .hint{
+      margin-top:12px;
+      color:var(--muted);
+      line-height:1.7;
+      font-size:.92rem;
+    }
+    .small{
+      font-size:.88rem;
+      color:var(--muted);
+      line-height:1.6;
+      margin-top:8px;
+    }
+    .footer-note{
+      margin-top:18px;
+      color:#c8d7eb;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:16px;
+      padding:14px 16px;
+      line-height:1.8;
+      font-size:.93rem;
+    }
+    @media (max-width: 1100px){
+      .grid{grid-template-columns:1fr}
+      .output{min-height:420px}
+    }
+    @media (max-width: 760px){
+      .row,.row3,.check-grid,.check-grid.three{
+        grid-template-columns:1fr;
+      }
+      .wrap{padding:18px 14px 28px}
+      .hero,.body,.card .hd{padding-left:16px;padding-right:16px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>英文文學提示詞生成器 v1</h1>
+      <p>
+        輸入你的創作動機、事件素材、角色與情緒方向，系統會自動組裝成可直接貼給 AI 的英文文學寫作提示句。
+        這版重點不是分析文學，而是把英文文學的風格、結構、敘事與主題語感轉成可操作的 prompt。
+      </p>
+      <div class="tags">
+        <span class="tag">English Literature</span>
+        <span class="tag">Children's Literature</span>
+        <span class="tag">Young Adult Fiction</span>
+        <span class="tag">Gender Themes</span>
+        <span class="tag">Structure + Tone + Style</span>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <div class="hd">
+          <h2>左側輸入設定</h2>
+          <p>把素材與偏好填進去。可多選的地方越完整，輸出的提示詞越能帶出文學質地與結構感。</p>
+        </div>
+        <div class="body">
+          <h3 class="section-title">基本內容</h3>
+          <div class="row">
+            <div class="field">
+              <label for="motivation">創作動機</label>
+              <textarea id="motivation" placeholder="例如：我想寫一篇關於成長、失落與自我理解的英文文學風文章。"></textarea>
+            </div>
+            <div class="field">
+              <label for="materials">事件／內容素材</label>
+              <textarea id="materials" placeholder="例如：一名青少年搬到新城市，在學校裡感到疏離，後來透過圖書館與一本舊書慢慢理解自己。"></textarea>
+            </div>
+          </div>
+
+          <div class="row3">
+            <div class="field">
+              <label for="genre">文類</label>
+              <select id="genre">
+                <option value="literary prose">文學散文 Literary Prose</option>
+                <option value="short story">短篇小說 Short Story</option>
+                <option value="novel excerpt">小說片段 Novel Excerpt</option>
+                <option value="children's literature">兒童文學 Children's Literature</option>
+                <option value="young adult literature">青少年文學 Young Adult Literature</option>
+                <option value="coming-of-age fiction">成長小說 Coming-of-Age Fiction</option>
+                <option value="gothic fiction">哥德小說 Gothic Fiction</option>
+                <option value="reflective essay">抒情反思散文 Reflective Essay</option>
+                <option value="poetic prose">散文詩 Poetic Prose</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="length">篇幅長度</label>
+              <select id="length">
+                <option value="short">短 Short</option>
+                <option value="medium">中 Medium</option>
+                <option value="extended">長 Extended</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="audience">目標讀者</label>
+              <select id="audience">
+                <option value="general literary readers">一般文學讀者</option>
+                <option value="children readers">兒童讀者</option>
+                <option value="young adult readers">青少年讀者</option>
+                <option value="cross-generational readers">跨世代讀者</option>
+                <option value="academic or literature-interested readers">偏文學／人文讀者</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row3">
+            <div class="field">
+              <label for="period">時代氣質</label>
+              <select id="period">
+                <option value="modern literary sensibility">現代文學感</option>
+                <option value="Romantic lyricism">浪漫主義 Romanticism</option>
+                <option value="Victorian sensibility">維多利亞時代感</option>
+                <option value="Modernist fragmentation">現代主義 Modernism</option>
+                <option value="Postmodern irony">後現代感 Postmodern</option>
+                <option value="timeless literary atmosphere">不限定時代</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="region">地域／文學傳統</label>
+              <select id="region">
+                <option value="British literary atmosphere">英國文學氣質</option>
+                <option value="American literary atmosphere">美國文學氣質</option>
+                <option value="Irish literary atmosphere">愛爾蘭文學氣質</option>
+                <option value="postcolonial English-language perspective">後殖民英語文學視角</option>
+                <option value="global English literature perspective">全球英語文學視角</option>
+                <option value="not restricted to one national tradition">不限定單一國別</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="voice">敘事視角</label>
+              <select id="voice">
+                <option value="first-person narration">第一人稱</option>
+                <option value="third-person limited narration">第三人稱有限視角</option>
+                <option value="third-person omniscient narration">第三人稱全知視角</option>
+                <option value="shifting perspectives">多重視角</option>
+                <option value="close interior voice">貼近內心獨白</option>
+              </select>
+            </div>
+          </div>
+
+          <h3 class="section-title">角色與主題</h3>
+          <div class="row">
+            <div class="field">
+              <label for="character">主角／角色設定</label>
+              <textarea id="character" placeholder="例如：一位十三歲女孩，安靜敏感，喜歡觀察別人的鞋子與說話方式。"></textarea>
+            </div>
+            <div class="field">
+              <label for="emotion">想表達的情感與核心張力</label>
+              <textarea id="emotion" placeholder="例如：想寫出孤獨、羞怯、被忽略，以及慢慢找到自我位置的轉變。"></textarea>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>主題傾向（可多選）</label>
+            <div class="check-grid three">
+              <label class="check"><input type="checkbox" class="theme" value="identity and self-discovery"><span>身份與自我發現</span></label>
+              <label class="check"><input type="checkbox" class="theme" value="coming of age"><span>成長</span></label>
+              <label class="check"><input type="checkbox" class="theme" value="memory and loss"><span>記憶與失落</span></label>
+              <label class="check"><input type="checkbox" class="theme" value="family relationships"><span>家庭關係</span></label>
+              <label class="check"><input type="checkbox" class="theme" value="friendship and belonging"><span>友誼與歸屬</span></label>
+              <label class="check"><input type="checkbox" class="theme" value="loneliness and alienation"><span>孤獨與疏離</span></label>
+              <label class="check"><input type="checkbox" class="theme" value="social class and inequality"><span>階級與不平等</span></label>
+              <label class="check"><input type="checkbox" class="theme" value="nature and inner freedom"><span>自然與內在自由</span></label>
+              <label class="check"><input type="checkbox" class="theme" value="grief and emotional healing"><span>悲傷與修復</span></label>
+              <label class="check"><input type="checkbox" class="theme" value="school life and emotional growth"><span>校園與心理成長</span></label>
+              <label class="check"><input type="checkbox" class="theme" value="gender identity or gender expectations"><span>性別認同／性別期待</span></label>
+              <label class="check"><input type="checkbox" class="theme" value="feminist or gender-conscious perspective"><span>女性主義／性別意識</span></label>
+            </div>
+            <div class="small">已加入兒童文學、青少年文學與性別議題向度，可與一般文學主題交叉使用。</div>
+          </div>
+
+          <h3 class="section-title">風格與結構</h3>
+          <div class="row3">
+            <div class="field">
+              <label for="tone">整體語氣</label>
+              <select id="tone">
+                <option value="restrained and elegant">克制優雅</option>
+                <option value="warm and gently moving">溫暖細膩</option>
+                <option value="melancholic and introspective">憂鬱內省</option>
+                <option value="sharp and ironic">冷銳反諷</option>
+                <option value="tender and hopeful">柔和帶希望</option>
+                <option value="dark and atmospheric">陰鬱氛圍</option>
+                <option value="clear and accessible for younger readers">清楚易讀，適合年輕讀者</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="structure">結構骨架</label>
+              <select id="structure">
+                <option value="linear progression">線性推進</option>
+                <option value="begin in the present and move into memory">現在切入再轉回回憶</option>
+                <option value="fragmented structure with emotional echoes">片段拼接與情感回響</option>
+                <option value="quiet buildup toward an emotional turning point">安靜累積到情感轉折</option>
+                <option value="circular structure returning to the opening image">環形結構回到開場意象</option>
+                <option value="coming-of-age arc with gradual inner change">成長弧線式結構</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="opening">開頭方式</label>
+              <select id="opening">
+                <option value="begin with a vivid scene">從具體場景切入</option>
+                <option value="begin with a subtle emotional statement">從細微情緒句開場</option>
+                <option value="begin with an object rich in symbolism">從象徵物件開場</option>
+                <option value="begin with dialogue">從對話開場</option>
+                <option value="begin with a childlike but meaningful observation">以童稚觀察切入</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row3">
+            <div class="field">
+              <label for="ending">收尾方式</label>
+              <select id="ending">
+                <option value="end with emotional resonance rather than explanation">餘韻收尾，不說破</option>
+                <option value="end with a quiet image">以安靜意象作結</option>
+                <option value="end with unresolved tenderness">未完全收束的溫柔結尾</option>
+                <option value="end with a subtle shift in self-understanding">以微妙自我理解作結</option>
+                <option value="end with hope suitable for younger readers">帶希望，適合年輕讀者</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="imagery">意象密度</label>
+              <select id="imagery">
+                <option value="moderate imagery with literary clarity">中等意象，兼顧清楚</option>
+                <option value="rich imagery and layered symbolism">高意象與象徵層次</option>
+                <option value="light imagery suitable for children or younger readers">較輕的意象，適合兒少</option>
+                <option value="minimal imagery with emotional precision">極簡意象但情緒精準</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="sentence">句子節奏</label>
+              <select id="sentence">
+                <option value="balanced literary rhythm">平衡型文學節奏</option>
+                <option value="long flowing sentences with reflective cadence">偏長句，帶反思流動感</option>
+                <option value="short and sharp with controlled tension">短句，帶控制與張力</option>
+                <option value="clear and graceful for young readers">清楚柔順，適合年輕讀者</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>寫作技巧要求（可多選）</label>
+            <div class="check-grid">
+              <label class="check"><input type="checkbox" class="craft" value="use subtle symbolism"><span>使用細緻象徵</span></label>
+              <label class="check"><input type="checkbox" class="craft" value="show emotions through gesture and detail rather than direct explanation"><span>用動作與細節呈現情緒</span></label>
+              <label class="check"><input type="checkbox" class="craft" value="build atmosphere through setting"><span>以場景建立氛圍</span></label>
+              <label class="check"><input type="checkbox" class="craft" value="avoid cliché expressions"><span>避免陳腔濫調</span></label>
+              <label class="check"><input type="checkbox" class="craft" value="maintain literary elegance without becoming obscure"><span>保持文學感但不晦澀</span></label>
+              <label class="check"><input type="checkbox" class="craft" value="make the prose emotionally accessible"><span>情感可感但不煽情</span></label>
+              <label class="check"><input type="checkbox" class="craft" value="make the language suitable for children or young adult readers when relevant"><span>必要時符合兒少閱讀層次</span></label>
+              <label class="check"><input type="checkbox" class="craft" value="treat gender-related themes with nuance and respect"><span>性別議題處理細緻且尊重</span></label>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top:14px;">
+            <label for="extra">其他要求（可選）</label>
+            <textarea id="extra" placeholder="例如：不要太學術；不要寫成說教；保留文學感但讓AI可直接寫出完整文章。"></textarea>
+          </div>
+
+          <div class="buttons">
+            <button onclick="generatePrompt()">生成提示詞</button>
+            <button onclick="copyPrompt()">複製 AI 提示詞</button>
+            <button class="secondary" onclick="clearAll()">清空內容</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="hd">
+          <h2>右側輸出結果</h2>
+          <p>這裡會生成可直接回貼給 AI 的完整 prompt。內容會以英文為主，方便驅動英文文學寫作模型。</p>
+        </div>
+        <div class="body">
+          <div id="output" class="output">請先在左側填入內容，然後按下「生成提示詞」。</div>
+          <div class="buttons">
+            <button onclick="copyPrompt()">複製 AI 提示詞</button>
+          </div>
+          <div class="hint">
+            建議用法：先在左側輸入你的創作動機與素材，生成後直接複製，再貼到你要使用的 AI 模型中，讓它依照英文文學風格寫成文章。
+          </div>
+          <div class="footer-note">
+            這版特別納入三個延伸方向：<br>
+            1. 兒童文學：語言可更清晰、具想像力與可親近性。<br>
+            2. 青少年文學：強調成長、歸屬、身份、自我拉扯與內心轉變。<br>
+            3. 性別議題：可作為主題或潛在線索，但以細膩、非說教、尊重複雜性的方式處理。
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    function getCheckedValues(className){
+      return Array.from(document.querySelectorAll('.' + className + ':checked')).map(el => el.value);
+    }
+
+    function joinOrFallback(arr, fallback){
+      return arr.length ? arr.join(', ') : fallback;
+    }
+
+    function generatePrompt(){
+      const motivation = document.getElementById('motivation').value.trim();
+      const materials = document.getElementById('materials').value.trim();
+      const genre = document.getElementById('genre').value;
+      const length = document.getElementById('length').value;
+      const audience = document.getElementById('audience').value;
+      const period = document.getElementById('period').value;
+      const region = document.getElementById('region').value;
+      const voice = document.getElementById('voice').value;
+      const character = document.getElementById('character').value.trim();
+      const emotion = document.getElementById('emotion').value.trim();
+      const tone = document.getElementById('tone').value;
+      const structure = document.getElementById('structure').value;
+      const opening = document.getElementById('opening').value;
+      const ending = document.getElementById('ending').value;
+      const imagery = document.getElementById('imagery').value;
+      const sentence = document.getElementById('sentence').value;
+      const extra = document.getElementById('extra').value.trim();
+
+      const themes = getCheckedValues('theme');
+      const crafts = getCheckedValues('craft');
+
+      const themeText = joinOrFallback(themes, 'a meaningful literary exploration');
+      const craftText = joinOrFallback(crafts, 'maintain strong literary coherence and emotional precision');
+
+      const prompt = `You are a literary writing model specializing in English literature-inspired prose.
+
+Please write a ${length} ${genre} in English.
+
+[Core Writing Goal]
+Transform the user's motivation, narrative material, emotional intention, and stylistic preferences into a fully written literary piece. The result should read like real literary writing rather than a summary, outline, explanation, school exercise, or generic AI text.
+
+[Audience]
+Write for ${audience}.
+
+[Literary Orientation]
+- Period / sensibility: ${period}
+- National or regional atmosphere: ${region}
+- Narrative voice: ${voice}
+- Tone: ${tone}
+- Structure: ${structure}
+- Opening strategy: ${opening}
+- Ending strategy: ${ending}
+- Imagery density: ${imagery}
+- Sentence rhythm: ${sentence}
+
+[User Motivation]
+${motivation || 'No additional motivation provided.'}
+
+[Story Material / Content Basis]
+${materials || 'No specific event material provided.'}
+
+[Character / Protagonist]
+${character || 'No specific character profile provided.'}
+
+[Emotional Intention / Core Tension]
+${emotion || 'No explicit emotional direction provided.'}
+
+[Thematic Focus]
+Incorporate the following themes where appropriate: ${themeText}.
+
+[Craft Requirements]
+- ${craftText}
+- Build the prose with literary control, emotional depth, and structural awareness.
+- Avoid flat exposition, mechanical transitions, and textbook-like explanation.
+- Do not turn the piece into criticism or analysis of literature.
+- Do not mention the prompt, instructions, or writing process.
+- Let the language feel shaped, intentional, and aesthetically alive.
+
+[Special Guidance]
+- If the piece involves children or young adult readers, keep the language emotionally rich but appropriately readable.
+- If gender-related issues appear, handle them with nuance, dignity, and narrative subtlety rather than slogans or didactic commentary.
+- The final piece should feel complete, immersive, and artistically coherent.
+
+[Additional Requirements]
+${extra || 'None.'}
+
+Now write the full piece directly in polished English.`;
+
+      document.getElementById('output').textContent = prompt;
+    }
+
+    function copyPrompt(){
+      const text = document.getElementById('output').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('AI 提示詞已複製。');
+      }).catch(() => {
+        alert('複製失敗，請手動選取文字。');
+      });
+    }
+
+    function clearAll(){
+      document.querySelectorAll('textarea').forEach(el => el.value = '');
+      document.querySelectorAll('input[type="text"]').forEach(el => el.value = '');
+      document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+      document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+      document.getElementById('output').textContent = '請先在左側填入內容，然後按下「生成提示詞」。';
+    }
+  </script>
+</body>
+</html>
