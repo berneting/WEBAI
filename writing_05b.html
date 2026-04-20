@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>都會文學內容生成器 Urban Writing Studio</title>
+
+<style>
+:root{
+--bg: radial-gradient(circle at top left,#17365e 0%,#0b1627 45%,#060d18 100%);
+--card: rgba(255,255,255,.08);
+--card2: rgba(255,255,255,.12);
+--line: rgba(255,255,255,.12);
+--text:#eef4ff;
+--soft:#c8d8f2;
+--muted:#98aecf;
+--accent:#8ec5ff;
+--accent2:#caa6ff;
+--green:#7ee0c6;
+--shadow:0 18px 40px rgba(0,0,0,.28);
+}
+
+*{box-sizing:border-box;}
+body{
+margin:0;
+font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;
+background:var(--bg);
+color:var(--text);
+line-height:1.75;
+}
+
+.container{
+width:min(1180px,calc(100% - 32px));
+margin:auto;
+padding:28px 0 40px;
+}
+
+.hero{
+background:linear-gradient(135deg,rgba(20,40,70,.78),rgba(9,18,33,.92));
+padding:28px;
+border-radius:26px;
+border:1px solid var(--line);
+box-shadow:var(--shadow);
+margin-bottom:24px;
+}
+
+.hero h1{
+margin:0 0 10px;
+font-size:clamp(30px,4vw,42px);
+}
+
+.hero p{
+margin:0;
+color:var(--soft);
+}
+
+.badges{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:18px;
+}
+
+.badge{
+padding:7px 12px;
+border-radius:999px;
+background:rgba(255,255,255,.08);
+border:1px solid var(--line);
+font-size:13px;
+color:var(--soft);
+}
+
+.layout{
+display:grid;
+grid-template-columns:1.1fr .9fr;
+gap:22px;
+}
+
+.panel{
+background:var(--card);
+border:1px solid var(--line);
+border-radius:24px;
+box-shadow:var(--shadow);
+overflow:hidden;
+}
+
+.header{
+padding:20px 22px 8px;
+}
+
+.header h2{
+margin:0;
+font-size:22px;
+}
+
+.header p{
+margin:8px 0 0;
+font-size:14px;
+color:var(--muted);
+}
+
+.body{
+padding:18px 22px 24px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:16px;
+}
+
+.field{
+margin-bottom:16px;
+}
+
+label{
+display:block;
+font-size:14px;
+font-weight:700;
+margin-bottom:8px;
+color:var(--soft);
+}
+
+input,select,textarea{
+width:100%;
+padding:14px;
+border-radius:14px;
+border:1px solid var(--line);
+background:rgba(255,255,255,.07);
+color:var(--text);
+font-size:15px;
+outline:none;
+}
+
+textarea{
+min-height:130px;
+resize:vertical;
+}
+
+select option{
+color:#111;
+}
+
+input:focus,select:focus,textarea:focus{
+border-color:var(--accent);
+box-shadow:0 0 0 3px rgba(142,197,255,.14);
+}
+
+.actions{
+display:flex;
+flex-wrap:wrap;
+gap:12px;
+margin-top:10px;
+}
+
+button{
+border:none;
+padding:12px 18px;
+border-radius:14px;
+cursor:pointer;
+font-weight:700;
+font-size:15px;
+}
+
+.primary{
+background:linear-gradient(135deg,var(--accent),var(--accent2));
+color:#08111c;
+}
+
+.secondary{
+background:rgba(255,255,255,.08);
+color:var(--text);
+border:1px solid var(--line);
+}
+
+.ghost{
+background:transparent;
+color:var(--soft);
+border:1px dashed var(--line);
+}
+
+.card{
+background:var(--card2);
+padding:16px;
+border-radius:18px;
+border:1px solid var(--line);
+margin-bottom:18px;
+}
+
+.card h3{
+margin:0 0 6px;
+font-size:18px;
+}
+
+.card p{
+margin:6px 0;
+font-size:14px;
+color:var(--soft);
+}
+
+.output{
+background:rgba(5,12,24,.35);
+padding:16px;
+border-radius:18px;
+border:1px solid var(--line);
+margin-bottom:16px;
+}
+
+.output h3{
+margin:0 0 10px;
+color:var(--accent);
+font-size:17px;
+}
+
+.output textarea{
+min-height:250px;
+line-height:1.8;
+}
+
+.tip{
+padding:14px;
+border-radius:16px;
+background:rgba(126,224,198,.08);
+border:1px solid rgba(126,224,198,.18);
+color:#d9fff4;
+font-size:14px;
+}
+
+@media(max-width:980px){
+.layout{grid-template-columns:1fr;}
+.grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="hero">
+<h1>都會文學內容生成器</h1>
+<p>擺脫巷口、張嫂、胡同模板。專為現代城市情感書寫打造，生成具有都會感、孤獨感、現代關係張力的高質感提示句。</p>
+
+<div class="badges">
+<div class="badge">捷運・咖啡館・電梯・夜街</div>
+<div class="badge">情感關係・城市孤獨</div>
+<div class="badge">成熟文學感</div>
+<div class="badge">直接貼給 AI 使用</div>
+</div>
+</div>
+
+<div class="layout">
+
+<div class="panel">
+<div class="header">
+<h2>輸入內容</h2>
+<p>描述你想寫的情感、關係、事件或心理狀態。</p>
+</div>
+
+<div class="body">
+
+<div class="field">
+<label>創作動機</label>
+<textarea id="motivation" placeholder="例如：我想寫一篇關於成年人愛情裡的疲憊與清醒。"></textarea>
+</div>
+
+<div class="field">
+<label>事件描述</label>
+<textarea id="event" placeholder="例如：她在捷運站等了一小時，只收到一句『今天很忙』。"></textarea>
+</div>
+
+<div class="grid">
+
+<div class="field">
+<label>都會風格</label>
+<select id="style">
+<option>台北都會感｜成熟冷靜</option>
+<option>張愛玲進化版｜關係權力感</option>
+<option>村上系都市感｜孤獨留白</option>
+<option>白先勇系｜高級城市感</option>
+<option>社群世代感｜現代愛情觀察</option>
+</select>
+</div>
+
+<div class="field">
+<label>文章類型</label>
+<select id="genre">
+<option>散文</option>
+<option>短篇小說片段</option>
+<option>敘事散文</option>
+<option>情感評論散文</option>
+</select>
+</div>
+
+<div class="field">
+<label>語氣</label>
+<select id="tone">
+<option>冷靜克制</option>
+<option>成熟清醒</option>
+<option>諷刺批判</option>
+<option>壓抑爆發</option>
+<option>溫柔哀傷</option>
+</select>
+</div>
+
+<div class="field">
+<label>篇幅</label>
+<select id="length">
+<option>約 800 字</option>
+<option>約 1200 字</option>
+<option>約 1500 字</option>
+</select>
+</div>
+
+</div>
+
+<div class="field">
+<label>額外要求</label>
+<textarea id="extra" placeholder="例如：結尾要有頓悟感，不要雞湯。"></textarea>
+</div>
+
+<div class="actions">
+<button class="primary" onclick="generate()">生成提示句</button>
+<button class="secondary" onclick="copyText()">複製提示句</button>
+<button class="ghost" onclick="clearAll()">清空內容</button>
+</div>
+
+</div>
+</div>
+
+<div class="panel">
+<div class="header">
+<h2>輸出結果</h2>
+<p>生成後直接貼回 ChatGPT / Gemini / Claude 使用。</p>
+</div>
+
+<div class="body">
+
+<div class="card">
+<h3>都會文學核心</h3>
+<p>現代場景、情感權力關係、孤獨與成熟感、克制語言、高級留白。</p>
+<p>自動避開：巷口、張嫂、老街坊、胡同式懷舊模板。</p>
+</div>
+
+<div class="output">
+<h3>AI 提示句</h3>
+<textarea id="result"></textarea>
+</div>
+
+<div class="tip">
+建議追加一句：「請用成熟作家的語感書寫，而不是網路感語錄文。」
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
+
+<script>
+function stylePrompt(style){
+const map = {
+"台北都會感｜成熟冷靜":"現代台北城市文學風格，成熟、冷靜、清醒，擅長描寫捷運、公寓、街道、便利商店、夜色中的情感關係。",
+"張愛玲進化版｜關係權力感":"細膩描寫男女關係中的權力差、情感拉扯與心理暗流，文字高級冷感。",
+"村上系都市感｜孤獨留白":"都市孤獨感、咖啡館、深夜、安靜疏離，帶留白與內在思考。",
+"白先勇系｜高級城市感":"都會階層感、精緻場景、成熟人物關係與城市命運感。",
+"社群世代感｜現代愛情觀察":"現代訊息文化、已讀不回、社群疏離、快速關係中的空虛與真實。"
+};
+return map[style];
+}
+
+function generate(){
+let m = document.getElementById("motivation").value.trim();
+let e = document.getElementById("event").value.trim();
+let s = document.getElementById("style").value;
+let g = document.getElementById("genre").value;
+let t = document.getElementById("tone").value;
+let l = document.getElementById("length").value;
+let x = document.getElementById("extra").value.trim();
+
+let txt = `請根據以下素材寫成一篇具有文學性的${g}。
+
+【創作動機】
+${m}
+
+【事件描述】
+${e}
+
+【風格設定】
+${stylePrompt(s)}
+
+【場景限定】
+請使用現代都市場景，例如：捷運站、咖啡館、公寓電梯、辦公室、便利商店、夜晚街道、手機訊息互動。
+
+【禁止元素】
+避免巷口、張嫂、老街坊、胡同感、懷舊模板化人物。
+
+【文章要求】
+1. 語氣：${t}
+2. 長度：${l}
+3. 具文學感與畫面感
+4. 情緒透過細節與互動呈現
+5. 關係張力需真實自然
+6. 不要雞湯語錄感
+7. 不要分析說理過多
+8. 結尾需有餘韻
+
+${x ? "【額外要求】\n"+x : ""}
+
+請直接輸出完整文章。`;
+
+document.getElementById("result").value = txt;
+}
+
+function copyText(){
+let t = document.getElementById("result");
+t.select();
+document.execCommand("copy");
+alert("已複製提示句");
+}
+
+function clearAll(){
+document.getElementById("motivation").value="";
+document.getElementById("event").value="";
+document.getElementById("extra").value="";
+document.getElementById("result").value="";
+}
+</script>
+
+</body>
+</html>
