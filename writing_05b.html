@@ -473,14 +473,87 @@
             </div>
 
             <div class="field">
-              <label for="perspective">敘事視角</label>
-              <select id="perspective">
-                <option value="第一人稱">第一人稱</option>
-                <option value="第三人稱有限視角">第三人稱有限視角</option>
-                <option value="第三人稱全知視角">第三人稱全知視角</option>
-                <option value="自由切換但保持自然">自由切換但保持自然</option>
-                <option value="雙視角對照">雙視角對照</option>
-              </select>
+               <label for="perspective">敘事視角（專業版視角系統）</label>
+               <select id="perspective">
+    
+              <optgroup label="基礎穩定型">
+              <option value="第一人稱｜沉浸主體視角">
+        第一人稱｜沉浸主體視角
+      </option>
+      <option value="第三人稱有限｜小說感穩定視角">
+        第三人稱有限｜小說感穩定視角
+      </option>
+      <option value="第三人稱全知｜多人物心理視角">
+        第三人稱全知｜多人物心理視角
+      </option>
+    </optgroup>
+
+    <optgroup label="第二人稱進階型">
+      <option value="第二人稱｜對特定對象說話">
+        第二人稱｜對特定對象說話
+      </option>
+      <option value="第二人稱｜自我分身式書寫">
+        第二人稱｜自我分身式書寫
+      </option>
+      <option value="第二人稱｜泛讀者共感型">
+        第二人稱｜泛讀者共感型
+      </option>
+    </optgroup>
+
+    <optgroup label="自由切換專業型">
+      <option value="自由切換｜穩定版（第一人稱主體＋局部第二人稱）" selected>
+        自由切換｜穩定版（第一人稱主體＋局部第二人稱）
+      </option>
+      <option value="自由切換｜文學版（第一／第二／第三自然流動）">
+        自由切換｜文學版（第一／第二／第三自然流動）
+      </option>
+      <option value="自由切換｜高級版（依情緒推進無痕切換）">
+        自由切換｜高級版（依情緒推進無痕切換）
+      </option>
+    </optgroup>
+
+    <optgroup label="特殊效果型">
+      <option value="雙視角對照｜男女雙方心理並行">
+        雙視角對照｜男女雙方心理並行
+      </option>
+      <option value="旁觀者視角｜城市觀察式敘事">
+        旁觀者視角｜城市觀察式敘事
+      </option>
+      <option value="鏡像視角｜現在與過去的自己對話">
+        鏡像視角｜現在與過去的自己對話
+      </option>
+    </optgroup>
+
+  </select>
+
+  <small id="perspectiveHint">
+    建議：成人情感／都會文學題材，優先使用「自由切換｜穩定版」。
+  </small>
+</div>
+
+<script>
+/* 加到原本 JS 裡即可 */
+
+const perspectiveHintMap = {
+"第一人稱｜沉浸主體視角":"最直接真實，適合情感經驗、自白式散文。",
+"第三人稱有限｜小說感穩定視角":"成熟穩定，較具小說與文學感。",
+"第三人稱全知｜多人物心理視角":"可同時描寫雙方心理與誤解。",
+"第二人稱｜對特定對象說話":"適合思念、告別、未完成關係。",
+"第二人稱｜自我分身式書寫":"高級寫法，適合清醒、自我審視、情感覺醒。",
+"第二人稱｜泛讀者共感型":"適合觀察式散文，但避免過度語錄化。",
+"自由切換｜穩定版（第一人稱主體＋局部第二人稱）":"最推薦。穩定又有文學張力。",
+"自由切換｜文學版（第一／第二／第三自然流動）":"層次高，適合成熟作品。",
+"自由切換｜高級版（依情緒推進無痕切換）":"投稿級寫法，需高完成度。",
+"雙視角對照｜男女雙方心理並行":"適合關係衝突、誤會與對照。",
+"旁觀者視角｜城市觀察式敘事":"適合都會群像、人情觀察。",
+"鏡像視角｜現在與過去的自己對話":"適合成長、遺憾、人生回望。"
+};
+
+document.getElementById("perspective").addEventListener("change", function(){
+  document.getElementById("perspectiveHint").innerText =
+    perspectiveHintMap[this.value] || "請選擇敘事視角。";
+});
+</script>
             </div>
 
             <div class="field">
