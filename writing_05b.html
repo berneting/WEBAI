@@ -1,430 +1,923 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>都會文學內容生成器 Urban Writing Studio</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>都會文學內容生成器 v2 Pro</title>
+  <style>
+    :root {
+      --bg-main: radial-gradient(circle at top left, #163153 0%, #0b1726 45%, #07111d 100%);
+      --hero-bg: linear-gradient(135deg, rgba(20, 40, 70, 0.78), rgba(9, 18, 33, 0.9));
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-bg-strong: rgba(255, 255, 255, 0.12);
+      --card-border: rgba(255, 255, 255, 0.14);
+      --line: rgba(255, 255, 255, 0.14);
+      --text-main: #eef4ff;
+      --text-soft: #c9d7ee;
+      --text-muted: #9fb3d1;
+      --accent: #8ec5ff;
+      --accent-2: #caa6ff;
+      --accent-3: #7ee0c6;
+      --danger: #ffb4c4;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+    }
 
-<style>
-:root{
---bg: radial-gradient(circle at top left,#17365e 0%,#0b1627 45%,#060d18 100%);
---card: rgba(255,255,255,.08);
---card2: rgba(255,255,255,.12);
---line: rgba(255,255,255,.12);
---text:#eef4ff;
---soft:#c8d8f2;
---muted:#98aecf;
---accent:#8ec5ff;
---accent2:#caa6ff;
---green:#7ee0c6;
---shadow:0 18px 40px rgba(0,0,0,.28);
-}
+    * {
+      box-sizing: border-box;
+    }
 
-*{box-sizing:border-box;}
-body{
-margin:0;
-font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;
-background:var(--bg);
-color:var(--text);
-line-height:1.75;
-}
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+      background: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.75;
+    }
 
-.container{
-width:min(1180px,calc(100% - 32px));
-margin:auto;
-padding:28px 0 40px;
-}
+    .container {
+      width: min(1240px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 42px;
+    }
 
-.hero{
-background:linear-gradient(135deg,rgba(20,40,70,.78),rgba(9,18,33,.92));
-padding:28px;
-border-radius:26px;
-border:1px solid var(--line);
-box-shadow:var(--shadow);
-margin-bottom:24px;
-}
+    .hero {
+      background: var(--hero-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      padding: 30px 28px 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      margin-bottom: 24px;
+    }
 
-.hero h1{
-margin:0 0 10px;
-font-size:clamp(30px,4vw,42px);
-}
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: clamp(30px, 4vw, 42px);
+      line-height: 1.2;
+      letter-spacing: 0.4px;
+    }
 
-.hero p{
-margin:0;
-color:var(--soft);
-}
+    .hero p {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 16px;
+      max-width: 980px;
+    }
 
-.badges{
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-margin-top:18px;
-}
+    .hero .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
 
-.badge{
-padding:7px 12px;
-border-radius:999px;
-background:rgba(255,255,255,.08);
-border:1px solid var(--line);
-font-size:13px;
-color:var(--soft);
-}
+    .badge {
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+      color: var(--text-soft);
+      font-size: 13px;
+    }
 
-.layout{
-display:grid;
-grid-template-columns:1.1fr .9fr;
-gap:22px;
-}
+    .layout {
+      display: grid;
+      grid-template-columns: 1.14fr 0.86fr;
+      gap: 22px;
+    }
 
-.panel{
-background:var(--card);
-border:1px solid var(--line);
-border-radius:24px;
-box-shadow:var(--shadow);
-overflow:hidden;
-}
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+    }
 
-.header{
-padding:20px 22px 8px;
-}
+    .panel-header {
+      padding: 20px 22px 8px;
+    }
 
-.header h2{
-margin:0;
-font-size:22px;
-}
+    .panel-header h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.3;
+    }
 
-.header p{
-margin:8px 0 0;
-font-size:14px;
-color:var(--muted);
-}
+    .panel-header p {
+      margin: 8px 0 0;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
 
-.body{
-padding:18px 22px 24px;
-}
+    .panel-body {
+      padding: 18px 22px 24px;
+    }
 
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:16px;
-}
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      margin-bottom: 14px;
+    }
 
-.field{
-margin-bottom:16px;
-}
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
 
-label{
-display:block;
-font-size:14px;
-font-weight:700;
-margin-bottom:8px;
-color:var(--soft);
-}
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
 
-input,select,textarea{
-width:100%;
-padding:14px;
-border-radius:14px;
-border:1px solid var(--line);
-background:rgba(255,255,255,.07);
-color:var(--text);
-font-size:15px;
-outline:none;
-}
+    .field {
+      margin-bottom: 16px;
+    }
 
-textarea{
-min-height:130px;
-resize:vertical;
-}
+    .field label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-soft);
+    }
 
-select option{
-color:#111;
-}
+    .field small {
+      display: block;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-size: 12px;
+    }
 
-input:focus,select:focus,textarea:focus{
-border-color:var(--accent);
-box-shadow:0 0 0 3px rgba(142,197,255,.14);
-}
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+      color: var(--text-main);
+      border-radius: 14px;
+      padding: 14px 15px;
+      font-size: 15px;
+      outline: none;
+      transition: 0.2s ease;
+    }
 
-.actions{
-display:flex;
-flex-wrap:wrap;
-gap:12px;
-margin-top:10px;
-}
+    input[type="text"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(142, 197, 255, 0.7);
+      box-shadow: 0 0 0 3px rgba(142, 197, 255, 0.14);
+      background: rgba(255,255,255,0.1);
+    }
 
-button{
-border:none;
-padding:12px 18px;
-border-radius:14px;
-cursor:pointer;
-font-weight:700;
-font-size:15px;
-}
+    textarea {
+      min-height: 132px;
+      resize: vertical;
+    }
 
-.primary{
-background:linear-gradient(135deg,var(--accent),var(--accent2));
-color:#08111c;
-}
+    select option {
+      color: #111;
+    }
 
-.secondary{
-background:rgba(255,255,255,.08);
-color:var(--text);
-border:1px solid var(--line);
-}
+    .divider {
+      height: 1px;
+      background: var(--line);
+      margin: 20px 0;
+    }
 
-.ghost{
-background:transparent;
-color:var(--soft);
-border:1px dashed var(--line);
-}
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
 
-.card{
-background:var(--card2);
-padding:16px;
-border-radius:18px;
-border:1px solid var(--line);
-margin-bottom:18px;
-}
+    button {
+      border: none;
+      cursor: pointer;
+      border-radius: 14px;
+      padding: 12px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      transition: transform 0.15s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+    }
 
-.card h3{
-margin:0 0 6px;
-font-size:18px;
-}
+    button:hover {
+      transform: translateY(-1px);
+    }
 
-.card p{
-margin:6px 0;
-font-size:14px;
-color:var(--soft);
-}
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #08111c;
+      box-shadow: 0 10px 24px rgba(142, 197, 255, 0.2);
+    }
 
-.output{
-background:rgba(5,12,24,.35);
-padding:16px;
-border-radius:18px;
-border:1px solid var(--line);
-margin-bottom:16px;
-}
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: var(--text-main);
+      border: 1px solid rgba(255,255,255,0.14);
+    }
 
-.output h3{
-margin:0 0 10px;
-color:var(--accent);
-font-size:17px;
-}
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-soft);
+      border: 1px dashed rgba(255,255,255,0.18);
+    }
 
-.output textarea{
-min-height:250px;
-line-height:1.8;
-}
+    .style-card {
+      background: var(--card-bg-strong);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 16px 16px 14px;
+      margin-bottom: 18px;
+    }
 
-.tip{
-padding:14px;
-border-radius:16px;
-background:rgba(126,224,198,.08);
-border:1px solid rgba(126,224,198,.18);
-color:#d9fff4;
-font-size:14px;
-}
+    .style-card h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      line-height: 1.35;
+    }
 
-@media(max-width:980px){
-.layout{grid-template-columns:1fr;}
-.grid{grid-template-columns:1fr;}
-}
-</style>
+    .style-card .sub {
+      color: var(--accent);
+      font-size: 13px;
+      margin-bottom: 8px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+    }
+
+    .style-card p {
+      margin: 0 0 8px;
+      color: var(--text-soft);
+      font-size: 14px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      font-size: 12px;
+      color: #d8e7ff;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+
+    .toggle-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .toggle-item {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .toggle-item span {
+      font-size: 14px;
+      color: var(--text-soft);
+      line-height: 1.5;
+    }
+
+    .toggle-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #8ec5ff;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .output-wrap {
+      display: grid;
+      gap: 16px;
+    }
+
+    .output-box {
+      background: rgba(5, 12, 24, 0.35);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .output-box h3 {
+      margin: 0 0 10px;
+      font-size: 17px;
+      color: var(--accent);
+    }
+
+    .output-box textarea {
+      min-height: 260px;
+      background: rgba(255,255,255,0.04);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.8;
+    }
+
+    .tip-box {
+      border-radius: 18px;
+      border: 1px solid rgba(126, 224, 198, 0.18);
+      background: rgba(126, 224, 198, 0.08);
+      padding: 14px 16px;
+      color: #dcfff5;
+      font-size: 14px;
+      margin-top: 18px;
+    }
+
+    .danger-box {
+      border-radius: 18px;
+      border: 1px solid rgba(255, 180, 196, 0.22);
+      background: rgba(255, 180, 196, 0.08);
+      padding: 14px 16px;
+      color: #ffe4ec;
+      font-size: 14px;
+      margin-top: 18px;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      color: var(--text-muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 1100px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .grid,
+      .grid-3,
+      .toggle-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
-
 <body>
-<div class="container">
+  <div class="container">
+    <section class="hero">
+      <h1>都會文學內容生成器 v2 Pro</h1>
+      <p>
+        專為現代都市情感書寫設計。保留你原本喜歡的深藍科技玻璃卡風格，加入完整控制欄位，
+        包含敘事視角、句子張力、情感濃度、留白程度、都市場景強度、禁止元素與額外要求，
+        用來生成更成熟、更不模板化的都會文學提示句。
+      </p>
+      <div class="badge-row">
+        <span class="badge">適用：都會散文、短篇小說片段、情感書寫、人物關係</span>
+        <span class="badge">避免：巷口、張嫂、老街坊、胡同模板化場景</span>
+        <span class="badge">支援：兩種輸出版本</span>
+        <span class="badge">定位：Creative Writing Console</span>
+      </div>
+    </section>
 
-<div class="hero">
-<h1>都會文學內容生成器</h1>
-<p>擺脫巷口、張嫂、胡同模板。專為現代城市情感書寫打造，生成具有都會感、孤獨感、現代關係張力的高質感提示句。</p>
+    <div class="layout">
+      <section class="panel">
+        <div class="panel-header">
+          <h2>輸入創作素材</h2>
+          <p>先輸入核心內容，再用進階控制把都會感、心理密度與語感收束出來。</p>
+        </div>
+        <div class="panel-body">
 
-<div class="badges">
-<div class="badge">捷運・咖啡館・電梯・夜街</div>
-<div class="badge">情感關係・城市孤獨</div>
-<div class="badge">成熟文學感</div>
-<div class="badge">直接貼給 AI 使用</div>
-</div>
-</div>
+          <div class="section-label">基礎素材</div>
 
-<div class="layout">
+          <div class="field">
+            <label for="motivation">創作動機</label>
+            <textarea id="motivation" placeholder="例如：我想寫一篇關於成年人在感情裡逐漸清醒的文章。不是要寫灑狗血，而是想呈現一種被慢慢消耗後的成熟自覺。"></textarea>
+            <small>可寫下這篇文章想處理的情感主題、內在問題、關係困境或心理狀態。</small>
+          </div>
 
-<div class="panel">
-<div class="header">
-<h2>輸入內容</h2>
-<p>描述你想寫的情感、關係、事件或心理狀態。</p>
-</div>
+          <div class="field">
+            <label for="eventDesc">事件描述</label>
+            <textarea id="eventDesc" placeholder="例如：她在捷運站等了一個晚上，只等到一句『今天很忙』。回家後電梯鏡面照出她疲倦的樣子，她忽然發現自己最近總在替別人的冷淡找理由。"></textarea>
+            <small>可寫具體情節、人物互動、對話、訊息紀錄、場景線索、情緒轉折等。</small>
+          </div>
 
-<div class="body">
+          <div class="grid">
+            <div class="field">
+              <label for="urbanStyle">都會風格主模式</label>
+              <select id="urbanStyle"></select>
+            </div>
 
-<div class="field">
-<label>創作動機</label>
-<textarea id="motivation" placeholder="例如：我想寫一篇關於成年人愛情裡的疲憊與清醒。"></textarea>
-</div>
+            <div class="field">
+              <label for="genre">文章類型</label>
+              <select id="genre">
+                <option value="散文">散文</option>
+                <option value="敘事散文">敘事散文</option>
+                <option value="抒情散文">抒情散文</option>
+                <option value="短篇小說片段">短篇小說片段</option>
+                <option value="都會情感散文">都會情感散文</option>
+                <option value="關係觀察式散文">關係觀察式散文</option>
+                <option value="文學評論感書寫">文學評論感書寫</option>
+              </select>
+            </div>
+          </div>
 
-<div class="field">
-<label>事件描述</label>
-<textarea id="event" placeholder="例如：她在捷運站等了一小時，只收到一句『今天很忙』。"></textarea>
-</div>
+          <div class="divider"></div>
 
-<div class="grid">
+          <div class="section-label">進階控制</div>
 
-<div class="field">
-<label>都會風格</label>
-<select id="style">
-<option>台北都會感｜成熟冷靜</option>
-<option>張愛玲進化版｜關係權力感</option>
-<option>村上系都市感｜孤獨留白</option>
-<option>白先勇系｜高級城市感</option>
-<option>社群世代感｜現代愛情觀察</option>
-</select>
-</div>
+          <div class="grid-3">
+            <div class="field">
+              <label for="tone">文章語氣</label>
+              <select id="tone">
+                <option value="成熟清醒">成熟清醒</option>
+                <option value="冷靜克制">冷靜克制</option>
+                <option value="諷刺批判">諷刺批判</option>
+                <option value="溫柔哀傷">溫柔哀傷</option>
+                <option value="沉靜內斂">沉靜內斂</option>
+                <option value="壓抑爆發">壓抑爆發</option>
+                <option value="疏離冷感">疏離冷感</option>
+                <option value="高級都會感">高級都會感</option>
+              </select>
+            </div>
 
-<div class="field">
-<label>文章類型</label>
-<select id="genre">
-<option>散文</option>
-<option>短篇小說片段</option>
-<option>敘事散文</option>
-<option>情感評論散文</option>
-</select>
-</div>
+            <div class="field">
+              <label for="length">文章長度</label>
+              <select id="length">
+                <option value="約 500 字">約 500 字</option>
+                <option value="約 800 字">約 800 字</option>
+                <option value="約 1200 字">約 1200 字</option>
+                <option value="約 1500 字">約 1500 字</option>
+                <option value="約 2000 字">約 2000 字</option>
+              </select>
+            </div>
 
-<div class="field">
-<label>語氣</label>
-<select id="tone">
-<option>冷靜克制</option>
-<option>成熟清醒</option>
-<option>諷刺批判</option>
-<option>壓抑爆發</option>
-<option>溫柔哀傷</option>
-</select>
-</div>
+            <div class="field">
+              <label for="perspective">敘事視角</label>
+              <select id="perspective">
+                <option value="第一人稱">第一人稱</option>
+                <option value="第三人稱有限視角">第三人稱有限視角</option>
+                <option value="第三人稱全知視角">第三人稱全知視角</option>
+                <option value="自由切換但保持自然">自由切換但保持自然</option>
+                <option value="雙視角對照">雙視角對照</option>
+              </select>
+            </div>
 
-<div class="field">
-<label>篇幅</label>
-<select id="length">
-<option>約 800 字</option>
-<option>約 1200 字</option>
-<option>約 1500 字</option>
-</select>
-</div>
+            <div class="field">
+              <label for="tension">句子張力</label>
+              <select id="tension">
+                <option value="低，偏平穩敘述">低，偏平穩敘述</option>
+                <option value="中，偶有起伏">中，偶有起伏</option>
+                <option value="高，層層推進">高，層層推進</option>
+                <option value="高，帶壓抑與爆發感">高，帶壓抑與爆發感</option>
+                <option value="冷靜克制下暗潮洶湧">冷靜克制下暗潮洶湧</option>
+              </select>
+            </div>
 
-</div>
+            <div class="field">
+              <label for="emotionDensity">情感濃度</label>
+              <select id="emotionDensity">
+                <option value="低，偏理性節制">低，偏理性節制</option>
+                <option value="中，情緒逐步滲出">中，情緒逐步滲出</option>
+                <option value="中高，情感持續積累">中高，情感持續積累</option>
+                <option value="高，但仍保持文學節制">高，但仍保持文學節制</option>
+              </select>
+            </div>
 
-<div class="field">
-<label>額外要求</label>
-<textarea id="extra" placeholder="例如：結尾要有頓悟感，不要雞湯。"></textarea>
-</div>
+            <div class="field">
+              <label for="blankness">留白程度</label>
+              <select id="blankness">
+                <option value="低，敘事較完整清楚">低，敘事較完整清楚</option>
+                <option value="中，保留部分暗示">中，保留部分暗示</option>
+                <option value="中高，重視餘韻與未說之意">中高，重視餘韻與未說之意</option>
+                <option value="高，結尾需有明顯留白感">高，結尾需有明顯留白感</option>
+              </select>
+            </div>
 
-<div class="actions">
-<button class="primary" onclick="generate()">生成提示句</button>
-<button class="secondary" onclick="copyText()">複製提示句</button>
-<button class="ghost" onclick="clearAll()">清空內容</button>
-</div>
+            <div class="field">
+              <label for="sceneStrength">都市場景強度</label>
+              <select id="sceneStrength">
+                <option value="低，只作為背景點綴">低，只作為背景點綴</option>
+                <option value="中，場景與情緒並行">中，場景與情緒並行</option>
+                <option value="中高，城市細節需明顯參與敘事">中高，城市細節需明顯參與敘事</option>
+                <option value="高，城市本身需成為情緒載體">高，城市本身需成為情緒載體</option>
+              </select>
+            </div>
 
-</div>
-</div>
+            <div class="field">
+              <label for="dialogueDensity">對話密度</label>
+              <select id="dialogueDensity">
+                <option value="低，以敘事與心理流動為主">低，以敘事與心理流動為主</option>
+                <option value="中，穿插自然對話">中，穿插自然對話</option>
+                <option value="中高，人物互動需較鮮明">中高，人物互動需較鮮明</option>
+                <option value="高，以對話推進關係張力">高，以對話推進關係張力</option>
+              </select>
+            </div>
 
-<div class="panel">
-<div class="header">
-<h2>輸出結果</h2>
-<p>生成後直接貼回 ChatGPT / Gemini / Claude 使用。</p>
-</div>
+            <div class="field">
+              <label for="timeTexture">時間感質地</label>
+              <select id="timeTexture">
+                <option value="即時當下感">即時當下感</option>
+                <option value="一晚或一日之內的濃縮敘事">一晚或一日之內的濃縮敘事</option>
+                <option value="現在與過去交錯">現在與過去交錯</option>
+                <option value="帶回望感的成熟敘述">帶回望感的成熟敘述</option>
+              </select>
+            </div>
+          </div>
 
-<div class="body">
+          <div class="divider"></div>
 
-<div class="card">
-<h3>都會文學核心</h3>
-<p>現代場景、情感權力關係、孤獨與成熟感、克制語言、高級留白。</p>
-<p>自動避開：巷口、張嫂、老街坊、胡同式懷舊模板。</p>
-</div>
+          <div class="section-label">專業控制</div>
 
-<div class="output">
-<h3>AI 提示句</h3>
-<textarea id="result"></textarea>
-</div>
+          <div class="field">
+            <label for="sceneLimit">場景限定（可選）</label>
+            <textarea id="sceneLimit" placeholder="例如：請使用捷運站、辦公室茶水間、深夜便利商店、公寓電梯、雨夜街道、手機訊息互動。">請使用現代都市場景，例如：捷運站、咖啡館、公寓電梯、辦公室、便利商店、夜晚街道、手機訊息互動。</textarea>
+            <small>可自行指定這篇文章希望出現的都會空間。</small>
+          </div>
 
-<div class="tip">
-建議追加一句：「請用成熟作家的語感書寫，而不是網路感語錄文。」
-</div>
+          <div class="field">
+            <label for="forbiddenElements">禁止元素（可選）</label>
+            <textarea id="forbiddenElements" placeholder="例如：避免巷口、張嫂、老街坊、胡同感、過度懷舊庶民模板、網路語錄感。">避免巷口、張嫂、老街坊、胡同感、懷舊模板化人物。</textarea>
+            <small>用來阻止 AI 滑回你不想要的敘事套路。</small>
+          </div>
 
-</div>
-</div>
+          <div class="field">
+            <label for="extraReq">額外要求（可選）</label>
+            <textarea id="extraReq" placeholder="例如：結尾要有清醒感但不要直接總結；要像成熟作家書寫，不要像社群感慨文；增加關係權力落差的感受。"></textarea>
+            <small>這欄很重要，可用來加上你真正要的風格控制細節。</small>
+          </div>
 
-</div>
-</div>
+          <div class="toggle-grid">
+            <div class="toggle-item">
+              <span>避免 AI 味 / 避免社群語錄感</span>
+              <input type="checkbox" id="avoidAi" checked />
+            </div>
+            <div class="toggle-item">
+              <span>提高文學獎感 / 提升作品完成度</span>
+              <input type="checkbox" id="awardFeel" />
+            </div>
+            <div class="toggle-item">
+              <span>強化關係權力差 / 情感不對等</span>
+              <input type="checkbox" id="powerGap" />
+            </div>
+            <div class="toggle-item">
+              <span>保留成熟都市孤獨感</span>
+              <input type="checkbox" id="urbanLonely" checked />
+            </div>
+          </div>
 
-<script>
-function stylePrompt(style){
-const map = {
-"台北都會感｜成熟冷靜":"現代台北城市文學風格，成熟、冷靜、清醒，擅長描寫捷運、公寓、街道、便利商店、夜色中的情感關係。",
-"張愛玲進化版｜關係權力感":"細膩描寫男女關係中的權力差、情感拉扯與心理暗流，文字高級冷感。",
-"村上系都市感｜孤獨留白":"都市孤獨感、咖啡館、深夜、安靜疏離，帶留白與內在思考。",
-"白先勇系｜高級城市感":"都會階層感、精緻場景、成熟人物關係與城市命運感。",
-"社群世代感｜現代愛情觀察":"現代訊息文化、已讀不回、社群疏離、快速關係中的空虛與真實。"
-};
-return map[style];
-}
+          <div class="divider"></div>
 
-function generate(){
-let m = document.getElementById("motivation").value.trim();
-let e = document.getElementById("event").value.trim();
-let s = document.getElementById("style").value;
-let g = document.getElementById("genre").value;
-let t = document.getElementById("tone").value;
-let l = document.getElementById("length").value;
-let x = document.getElementById("extra").value.trim();
+          <div class="button-row">
+            <button class="btn-primary" onclick="generatePrompt()">生成提示句</button>
+            <button class="btn-secondary" onclick="copyPrompt()">複製提示句</button>
+            <button class="btn-secondary" onclick="copyArticlePrompt()">複製文章生成指令</button>
+            <button class="btn-ghost" onclick="clearAllFields()">清空內容</button>
+          </div>
+        </div>
+      </section>
 
-let txt = `請根據以下素材寫成一篇具有文學性的${g}。
+      <section class="panel">
+        <div class="panel-header">
+          <h2>風格摘要與輸出結果</h2>
+          <p>這一區會顯示都會主模式摘要，並輸出兩種可直接貼回 AI 的完整提示句。</p>
+        </div>
+        <div class="panel-body">
+          <div class="style-card" id="styleCard">
+            <h3>請先選擇都會風格主模式</h3>
+            <div class="sub">URBAN STYLE PROFILE</div>
+            <p>選擇後，這裡會顯示該模式的場景氣質、關係感、語感與避免模板方向。</p>
+            <div class="chips">
+              <span class="chip">都市場景</span>
+              <span class="chip">關係張力</span>
+              <span class="chip">語感控制</span>
+              <span class="chip">去模板化</span>
+            </div>
+          </div>
+
+          <div class="output-wrap">
+            <div class="output-box">
+              <h3>AI 提示句</h3>
+              <textarea id="promptOutput" placeholder="按下「生成提示句」後，這裡會出現完整提示句。"></textarea>
+            </div>
+
+            <div class="output-box">
+              <h3>可直接生成文章的完整指令</h3>
+              <textarea id="articleOutput" placeholder="這裡會產出偏向直接要求 AI 寫成成品文章的版本。"></textarea>
+            </div>
+          </div>
+
+          <div class="tip-box">
+            使用建議：如果想再提高都會質感，可在外部 AI 工具再追加一句：
+            「請讓城市空間不只是背景，而是情緒與關係的載體。」
+          </div>
+
+          <div class="danger-box">
+            去模板提醒：若輸出仍出現你不想要的固有符號，請把它們明確加進「禁止元素」，
+            例如：不要鄰居阿姨、不要麵攤、不要老派庶民角色名、不要懷舊北方街坊感。
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer-note">
+      都會文學內容生成器 v2 Pro
+    </div>
+  </div>
+
+  <script>
+    const styleData = {
+      "台北都會感｜成熟冷靜": {
+        subtitle: "成熟、冷靜、清醒，透過台北都會空間映照成年人關係與內在消耗",
+        features: ["成熟清醒", "都會孤獨", "現代場景真實", "克制中有情緒流動"],
+        structure: "城市日常場景 → 人物互動 → 情緒暗流 → 現代關係現形 → 留白收束",
+        rhythm: "語言乾淨、節制，不過度抒情，帶微冷感與成熟判斷力",
+        suitable: "成年人愛情、已讀不回、界線、疲憊、關係清醒",
+        avoid: "避免庶民懷舊套路、避免過度鄉土化、避免模板化鄰里角色"
+      },
+      "張愛玲進化版｜關係權力感": {
+        subtitle: "保留細膩與權力流動感，但轉化為當代都市關係與現代心理距離",
+        features: ["關係權力差", "心理流動細膩", "情緒節制", "冷感中的細部觀察"],
+        structure: "場景鋪陳 → 關係對視 → 微妙失衡 → 心理暗示擴大 → 冷靜餘韻",
+        rhythm: "細密、冷靜、帶高級感，不華麗堆砌而重在心理層次",
+        suitable: "曖昧、拉扯、被動冷淡、情感不對等、情緒勞動",
+        avoid: "避免直接模仿舊上海感、避免仿作腔、避免古典懷舊裝飾"
+      },
+      "村上系都市感｜孤獨留白": {
+        subtitle: "現代城市裡的疏離、安靜、夜晚、空氣感與成年人未說出口的孤單",
+        features: ["孤獨留白", "深夜感", "疏離節奏", "場景空氣感強"],
+        structure: "夜晚或日常切片 → 少量對話 → 內在感受浮出 → 城市空景回應 → 留白結尾",
+        rhythm: "句子平穩流動，偏安靜疏離，讓情緒在留白處擴散",
+        suitable: "深夜訊息、錯過、空虛、兩人之間的安靜裂縫、都市疲憊",
+        avoid: "避免過度日系符號拼貼、避免裝冷、避免模板化咖啡店獨白"
+      },
+      "白先勇系｜高級城市感": {
+        subtitle: "更重視階層感、城市質地、人物姿態與情感裡的體面與裂痕",
+        features: ["高級城市感", "人物姿態鮮明", "空間質感細緻", "體面與崩裂並存"],
+        structure: "精緻場景 → 人物登場 → 言行映照階層與關係 → 內在裂縫顯現 → 克制收尾",
+        rhythm: "穩健、細膩、帶品味與壓抑感，適合較高完成度書寫",
+        suitable: "中產感情、體面關係、城市表象與內在崩解、失衡的優雅",
+        avoid: "避免老派戲劇腔、避免過度華美形容詞堆疊"
+      },
+      "社群世代感｜現代愛情觀察": {
+        subtitle: "針對已讀不回、社群疏離、快速關係與成人情感疲乏的當代觀察",
+        features: ["訊息文化", "節奏快但情感空", "關係觀察清醒", "現代社交細節強"],
+        structure: "訊息互動／約會場景 → 冷熱變化 → 情緒自我消耗 → 當代關係揭露 → 清醒收束",
+        rhythm: "現代、俐落、具觀察感，不寫成網路感慨文",
+        suitable: "被動冷淡、消失、現代曖昧、快速相遇快速耗損、成人情感問題",
+        avoid: "避免社群貼文口吻、避免雞湯、避免廉價共鳴句"
+      }
+    };
+
+    const urbanStyleSelect = document.getElementById("urbanStyle");
+    const styleCard = document.getElementById("styleCard");
+
+    function initStyles() {
+      urbanStyleSelect.innerHTML = "";
+      Object.keys(styleData).forEach(name => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        urbanStyleSelect.appendChild(option);
+      });
+      updateStyleCard();
+    }
+
+    function updateStyleCard() {
+      const selected = urbanStyleSelect.value;
+      const data = styleData[selected];
+      if (!data) return;
+
+      styleCard.innerHTML = `
+        <h3>${selected}</h3>
+        <div class="sub">${data.subtitle}</div>
+        <p><strong>核心特徵：</strong>${data.features.join("、")}</p>
+        <p><strong>敘事邏輯：</strong>${data.structure}</p>
+        <p><strong>語感節奏：</strong>${data.rhythm}</p>
+        <p><strong>適合主題：</strong>${data.suitable}</p>
+        <p><strong>去模板提醒：</strong>${data.avoid}</p>
+        <div class="chips">
+          ${data.features.map(item => `<span class="chip">${item}</span>`).join("")}
+        </div>
+      `;
+    }
+
+    urbanStyleSelect.addEventListener("change", updateStyleCard);
+
+    function getToggleInstructions() {
+      const lines = [];
+      if (document.getElementById("avoidAi").checked) {
+        lines.push("請避免 AI 味、避免社群語錄感、避免看似有共鳴但缺乏文學密度的句型。");
+      }
+      if (document.getElementById("awardFeel").checked) {
+        lines.push("請提高作品完成度與文學獎感，讓段落之間有更成熟的推進與質地。");
+      }
+      if (document.getElementById("powerGap").checked) {
+        lines.push("請適度強化關係中的權力差、情感不對等與心理耗損。");
+      }
+      if (document.getElementById("urbanLonely").checked) {
+        lines.push("請保留成熟都市孤獨感，使城市空間與人物心理彼此映照。");
+      }
+      return lines;
+    }
+
+    function generatePrompt() {
+      const motivation = document.getElementById("motivation").value.trim();
+      const eventDesc = document.getElementById("eventDesc").value.trim();
+      const urbanStyle = document.getElementById("urbanStyle").value;
+      const genre = document.getElementById("genre").value;
+      const tone = document.getElementById("tone").value;
+      const length = document.getElementById("length").value;
+      const perspective = document.getElementById("perspective").value;
+      const tension = document.getElementById("tension").value;
+      const emotionDensity = document.getElementById("emotionDensity").value;
+      const blankness = document.getElementById("blankness").value;
+      const sceneStrength = document.getElementById("sceneStrength").value;
+      const dialogueDensity = document.getElementById("dialogueDensity").value;
+      const timeTexture = document.getElementById("timeTexture").value;
+      const sceneLimit = document.getElementById("sceneLimit").value.trim();
+      const forbiddenElements = document.getElementById("forbiddenElements").value.trim();
+      const extraReq = document.getElementById("extraReq").value.trim();
+
+      const style = styleData[urbanStyle];
+      const toggleInstructions = getToggleInstructions();
+
+      const prompt = `請根據以下素材寫成一篇具有文學性的${genre}。
 
 【創作動機】
-${m}
+${motivation || "請根據事件本身合理推導創作動機。"}
 
 【事件描述】
-${e}
+${eventDesc || "請根據創作動機自行補足一個合理、具畫面感與都會感的事件場景。"}
 
 【風格設定】
-${stylePrompt(s)}
+請採用「${urbanStyle}」的都會文學方向，但不要變成模板化仿作。
+風格重點如下：
+- ${style.subtitle}
+- 核心特徵：${style.features.join("、")}
+- 敘事結構：${style.structure}
+- 語感節奏：${style.rhythm}
+- 適合主題：${style.suitable}
+- 去模板提醒：${style.avoid}
 
 【場景限定】
-請使用現代都市場景，例如：捷運站、咖啡館、公寓電梯、辦公室、便利商店、夜晚街道、手機訊息互動。
+${sceneLimit || "請使用現代都市場景，例如：捷運站、咖啡館、公寓電梯、辦公室、便利商店、夜晚街道、手機訊息互動。"}
 
 【禁止元素】
-避免巷口、張嫂、老街坊、胡同感、懷舊模板化人物。
+${forbiddenElements || "避免庶民懷舊套路與模板化鄰里角色。"}
 
 【文章要求】
-1. 語氣：${t}
-2. 長度：${l}
-3. 具文學感與畫面感
-4. 情緒透過細節與互動呈現
-5. 關係張力需真實自然
-6. 不要雞湯語錄感
-7. 不要分析說理過多
-8. 結尾需有餘韻
+1. 文章類型：${genre}
+2. 文章語氣：${tone}
+3. 敘事視角：${perspective}
+4. 句子張力：${tension}
+5. 情感濃度：${emotionDensity}
+6. 留白程度：${blankness}
+7. 都市場景強度：${sceneStrength}
+8. 對話密度：${dialogueDensity}
+9. 時間感質地：${timeTexture}
+10. 文章長度：${length}
+11. 文字需具有文學感、層次感與畫面感，不要寫成一般社群貼文或口號式抒情。
+12. 情緒要透過場景、細節、動作、物件、對話或心理流動自然呈現，不要只用抽象詞直接說明。
+13. 請讓文章具備完整起伏，即使篇幅不長，也要有清楚的情緒推進或意義轉折。
+14. 城市空間不只是背景，而要成為人物情緒與關係狀態的載體。
+15. 可視需要補入合理細節，使文章更完整，但不得偏離原本的創作核心。
+16. 請避免過度說教、過度雞湯、過度網路感句型。`;
 
-${x ? "【額外要求】\n"+x : ""}
+      const extraLines = [];
+      if (toggleInstructions.length > 0) {
+        extraLines.push("【附加風格控制】");
+        toggleInstructions.forEach(line => extraLines.push(line));
+      }
+      if (extraReq) {
+        extraLines.push("【額外要求】");
+        extraLines.push(extraReq);
+      }
 
+      const finalPrompt = `${prompt}
+
+${extraLines.length ? extraLines.join("\n") + "\n\n" : ""}請直接輸出完整文章，不要解說寫作方法，不要列點，不要分析。`;
+
+      const articlePrompt = `你現在是一位擅長現代都會文學書寫的寫作者。請將以下素材直接寫成成品文章。
+
+創作動機：
+${motivation || "請依事件脈絡自行推定。"}
+
+事件描述：
+${eventDesc || "請依創作動機延伸出合理事件。"}
+
+請採用「${urbanStyle}」的筆法方向，重點是：${style.subtitle}
+請呈現以下特徵：${style.features.join("、")}
+敘事可依此邏輯展開：${style.structure}
+語感節奏請保持：${style.rhythm}
+
+場景限定：
+${sceneLimit || "請使用現代都市場景，例如：捷運站、咖啡館、公寓電梯、辦公室、便利商店、夜晚街道、手機訊息互動。"}
+
+禁止元素：
+${forbiddenElements || "避免庶民懷舊套路與模板化鄰里角色。"}
+
+文章條件如下：
+- 類型：${genre}
+- 語氣：${tone}
+- 視角：${perspective}
+- 張力：${tension}
+- 情感濃度：${emotionDensity}
+- 留白程度：${blankness}
+- 都市場景強度：${sceneStrength}
+- 對話密度：${dialogueDensity}
+- 時間感質地：${timeTexture}
+- 長度：${length}
+
+基本要求：
+- 要有文學感，但不要過度堆砌辭藻
+- 要有具體畫面，不要只有抽象情緒
+- 要有關係中的真實消耗、拉扯或心理距離
+- 要讓城市空間參與情緒建構
+- 不要分析，不要解釋創作手法，直接寫成文章
+- 不要寫成社群貼文、心靈雞湯或網路語錄文`;
+
+      const articleExtras = [];
+      if (toggleInstructions.length > 0) {
+        articleExtras.push("附加控制：");
+        toggleInstructions.forEach(line => articleExtras.push(`- ${line}`));
+      }
+      if (extraReq) {
+        articleExtras.push(`- 補充要求：${extraReq}`);
+      }
+
+      const finalArticlePrompt = `${articlePrompt}
+${articleExtras.length ? articleExtras.join("\n") + "\n" : ""}
 請直接輸出完整文章。`;
 
-document.getElementById("result").value = txt;
-}
+      document.getElementById("promptOutput").value = finalPrompt;
+      document.getElementById("articleOutput").value = finalArticlePrompt;
+    }
 
-function copyText(){
-let t = document.getElementById("result");
-t.select();
-document.execCommand("copy");
-alert("已複製提示句");
-}
+    function copyPrompt() {
+      const target = document.getElementById("promptOutput");
+      target.select();
+      target.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      alert("AI 提示句已複製");
+    }
 
-function clearAll(){
-document.getElementById("motivation").value="";
-document.getElementById("event").value="";
-document.getElementById("extra").value="";
-document.getElementById("result").value="";
-}
-</script>
+    function copyArticlePrompt() {
+      const target = document.getElementById("articleOutput");
+      target.select();
+      target.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      alert("文章生成指令已複製");
+    }
 
+    function clearAllFields() {
+      document.getElementById("motivation").value = "";
+      document.getElementById("eventDesc").value = "";
+      document.getElementById("sceneLimit").value = "請使用現代都市場景，例如：捷運站、咖啡館、公寓電梯、辦公室、便利商店、夜晚街道、手機訊息互動。";
+      document.getElementById("forbiddenElements").value = "避免巷口、張嫂、老街坊、胡同感、懷舊模板化人物。";
+      document.getElementById("extraReq").value = "";
+      document.getElementById("promptOutput").value = "";
+      document.getElementById("articleOutput").value = "";
+
+      document.getElementById("genre").selectedIndex = 0;
+      document.getElementById("tone").selectedIndex = 0;
+      document.getElementById("length").selectedIndex = 1;
+      document.getElementById("perspective").selectedIndex = 0;
+      document.getElementById("tension").selectedIndex = 2;
+      document.getElementById("emotionDensity").selectedIndex = 2;
+      document.getElementById("blankness").selectedIndex = 2;
+      document.getElementById("sceneStrength").selectedIndex = 2;
+      document.getElementById("dialogueDensity").selectedIndex = 1;
+      document.getElementById("timeTexture").selectedIndex = 0;
+      document.getElementById("avoidAi").checked = true;
+      document.getElementById("awardFeel").checked = false;
+      document.getElementById("powerGap").checked = false;
+      document.getElementById("urbanLonely").checked = true;
+      urbanStyleSelect.selectedIndex = 0;
+      updateStyleCard();
+    }
+
+    initStyles();
+  </script>
 </body>
 </html>
