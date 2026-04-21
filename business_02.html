@@ -1,0 +1,1386 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>McKinsey AI Solver v2 Pro</title>
+  <style>
+    :root {
+      --bg-1: #050d1d;
+      --bg-2: #0a1830;
+      --bg-3: #102347;
+      --panel: rgba(255,255,255,0.08);
+      --panel-strong: rgba(255,255,255,0.12);
+      --panel-soft: rgba(255,255,255,0.05);
+      --border: rgba(255,255,255,0.15);
+      --text: #eef4ff;
+      --muted: #b7c7e4;
+      --accent: #8ecaff;
+      --accent-2: #70e7d8;
+      --accent-3: #b5c9ff;
+      --warn: #ffd58a;
+      --shadow: 0 20px 60px rgba(0,0,0,0.34);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(90, 163, 255, 0.18), transparent 28%),
+        radial-gradient(circle at 100% 10%, rgba(112, 231, 216, 0.16), transparent 25%),
+        linear-gradient(145deg, var(--bg-1), var(--bg-2) 42%, #081325 70%, #030913 100%);
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(1540px, calc(100% - 32px));
+      margin: 22px auto 40px;
+    }
+
+    .hero {
+      position: relative;
+      padding: 30px 32px;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.05));
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero::before {
+      width: 260px;
+      height: 260px;
+      top: -100px;
+      right: -40px;
+      background: radial-gradient(circle, rgba(142,202,255,0.18), transparent 70%);
+    }
+
+    .hero::after {
+      width: 300px;
+      height: 300px;
+      bottom: -130px;
+      left: -60px;
+      background: radial-gradient(circle, rgba(112,231,216,0.10), transparent 72%);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      letter-spacing: .04em;
+      color: var(--accent);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    h1 {
+      margin: 14px 0 10px;
+      font-size: clamp(30px, 4.1vw, 48px);
+      line-height: 1.12;
+      letter-spacing: .01em;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 1020px;
+      color: var(--muted);
+      line-height: 1.85;
+      font-size: 15.5px;
+    }
+
+    .top-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .top-badges span {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.11);
+      font-size: 13px;
+      color: #e3edff;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 0.98fr 1.24fr;
+      gap: 22px;
+      margin-top: 22px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 22px;
+    }
+
+    .panel .sub {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .section-title {
+      margin: 22px 0 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .grid-2, .grid-3 {
+      display: grid;
+      gap: 14px;
+    }
+
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #f5f8ff;
+    }
+
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(6, 15, 31, 0.72);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease, transform .15s ease;
+    }
+
+    input[type="text"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(142,202,255,0.82);
+      box-shadow: 0 0 0 4px rgba(142,202,255,0.11);
+      transform: translateY(-1px);
+    }
+
+    textarea {
+      min-height: 96px;
+      resize: vertical;
+      line-height: 1.7;
+    }
+
+    .small-note {
+      margin-top: 6px;
+      color: #9fb2d5;
+      font-size: 12.5px;
+      line-height: 1.65;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #dce8ff;
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .chip input { accent-color: var(--accent-2); }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    button {
+      appearance: none;
+      border: none;
+      cursor: pointer;
+      border-radius: 14px;
+      padding: 13px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      transition: transform .15s ease, box-shadow .2s ease, opacity .2s ease;
+    }
+
+    button:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      color: #05111f;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 12px 24px rgba(112,231,216,0.18);
+    }
+
+    .btn-secondary {
+      color: var(--text);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .btn-ghost {
+      color: #d9e7ff;
+      background: rgba(9, 20, 42, 0.88);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .status-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .status-pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      color: #dfe9ff;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .progress-wrap {
+      margin-bottom: 16px;
+    }
+
+    .progress-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 9px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .progress-bar {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width .35s ease;
+    }
+
+    .tab-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .tab-btn {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #d7e7ff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(142,202,255,0.18), rgba(112,231,216,0.16));
+      color: #ffffff;
+      border-color: rgba(142,202,255,0.38);
+    }
+
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    .result-card {
+      background: var(--panel-soft);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 18px;
+      padding: 16px 16px 15px;
+      margin-bottom: 14px;
+    }
+
+    .result-card h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+      color: #f2f7ff;
+    }
+
+    .result-card p,
+    .result-card li {
+      color: #d7e4fb;
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
+    .result-card ul,
+    .result-card ol {
+      margin: 8px 0 0 20px;
+      padding: 0;
+    }
+
+    .logic-tree {
+      display: grid;
+      gap: 14px;
+    }
+
+    .tree-root {
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(142,202,255,0.12), rgba(112,231,216,0.08));
+      border: 1px solid rgba(142,202,255,0.18);
+      font-weight: 700;
+      color: #f8fbff;
+    }
+
+    .tree-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .tree-branch {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .tree-branch strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #eef5ff;
+      font-size: 14px;
+    }
+
+    .tree-branch ul {
+      margin: 0 0 0 18px;
+      padding: 0;
+      color: #d6e4fb;
+      font-size: 13.5px;
+      line-height: 1.75;
+    }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 14px;
+    }
+
+    .score-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .score-item {
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 14px;
+    }
+
+    .score-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      font-size: 13.5px;
+      color: #eef5ff;
+      font-weight: 700;
+    }
+
+    .mini-bar {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+
+    .mini-bar span {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .data-box {
+      padding: 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 16px;
+    }
+
+    .data-box h4 {
+      margin: 0 0 7px;
+      font-size: 14px;
+      color: #f4f8ff;
+    }
+
+    .data-box p {
+      margin: 0;
+      color: #d3e0f8;
+      line-height: 1.7;
+      font-size: 13.5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    th, td {
+      padding: 12px 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      vertical-align: top;
+      font-size: 13.5px;
+      line-height: 1.65;
+    }
+
+    th {
+      color: #f5f9ff;
+      background: rgba(255,255,255,0.07);
+      font-size: 13px;
+      letter-spacing: .02em;
+    }
+
+    td { color: #d5e3fb; }
+
+    tr:last-child td { border-bottom: none; }
+
+    .plan-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .plan-box {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .plan-box h4 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: #f6f9ff;
+    }
+
+    .plan-box ul {
+      margin: 0 0 0 18px;
+      padding: 0;
+      color: #d6e2f9;
+      line-height: 1.8;
+      font-size: 13.5px;
+    }
+
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .kpi-box {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .kpi-box .kpi-label {
+      display: block;
+      font-size: 12.5px;
+      color: #a9bddf;
+      margin-bottom: 6px;
+    }
+
+    .kpi-box .kpi-value {
+      font-size: 24px;
+      font-weight: 800;
+      color: #f7fbff;
+      line-height: 1.1;
+    }
+
+    .output-area {
+      width: 100%;
+      min-height: 420px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(5, 12, 26, 0.76);
+      color: #edf4ff;
+      padding: 16px;
+      font-size: 14px;
+      line-height: 1.8;
+      resize: vertical;
+      outline: none;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      color: #cddcf7;
+      line-height: 1.8;
+      font-size: 13px;
+    }
+
+    @media (max-width: 1180px) {
+      .workspace, .split-grid { grid-template-columns: 1fr; }
+      .kpi-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 880px) {
+      .grid-2, .grid-3, .tree-grid, .data-grid, .plan-grid { grid-template-columns: 1fr; }
+      .kpi-row { grid-template-columns: 1fr; }
+      .container { width: min(100% - 20px, 1540px); }
+      .hero, .panel { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <div class="eyebrow">McKinsey AI Solver v2 Pro</div>
+      <h1>顧問式問題拆解工作台</h1>
+      <p>
+        將模糊問題轉為可執行方案。此介面以 Fact-based、Hypothesis-driven、Structured Problem Solving 為核心，整合 Problem Framing、MECE、Issue Tree、7S、ROI 比較、行動計畫與高層摘要，讓需求者能以顧問方法論進行分析與實務落地。
+      </p>
+      <div class="top-badges">
+        <span>Problem Framing</span>
+        <span>MECE 分解</span>
+        <span>Hypothesis-driven</span>
+        <span>Issue Tree</span>
+        <span>McKinsey 7S</span>
+        <span>ROI 比較</span>
+        <span>30 / 90 天計畫</span>
+        <span>高層簡報摘要</span>
+      </div>
+    </section>
+
+    <div class="workspace">
+      <section class="panel">
+        <h2>案件建立區</h2>
+        <p class="sub">先定義問題，再定義分析方式。這不是單純聊天框，而是把一個議題當成顧問專案來處理。</p>
+
+        <div class="section-title">案件核心</div>
+        <div>
+          <label for="problemStatement">你現在要解決的問題</label>
+          <textarea id="problemStatement" placeholder="例如：我們是一家中型診所，近六個月營收下滑，但不確定是患者流失、定價、競爭者還是流程效率問題。"></textarea>
+          <div class="small-note">請盡量描述背景、症狀、你目前的判斷與你最想解決的核心痛點。</div>
+        </div>
+
+        <div class="grid-2" style="margin-top:14px;">
+          <div>
+            <label for="caseType">問題類型</label>
+            <select id="caseType">
+              <option>商業成長</option>
+              <option>行銷與客戶</option>
+              <option>組織與管理</option>
+              <option>營運流程</option>
+              <option>醫療與服務流程</option>
+              <option>教育與招生</option>
+              <option>學術與研究策略</option>
+              <option>個人生涯與轉型</option>
+              <option>自訂議題</option>
+            </select>
+          </div>
+          <div>
+            <label for="goalType">本次主要目標</label>
+            <select id="goalType">
+              <option>找根因</option>
+              <option>形成決策</option>
+              <option>比較方案</option>
+              <option>建立行動計畫</option>
+              <option>向高層報告</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-top:14px;">
+          <div>
+            <label for="urgency">緊急程度</label>
+            <select id="urgency">
+              <option>高</option>
+              <option selected>中</option>
+              <option>低</option>
+            </select>
+          </div>
+          <div>
+            <label for="horizon">分析時間尺度</label>
+            <select id="horizon">
+              <option>30 天內</option>
+              <option selected>90 天內</option>
+              <option>6 個月</option>
+              <option>1 年以上</option>
+            </select>
+          </div>
+          <div>
+            <label for="decisionMaker">主要決策者</label>
+            <input id="decisionMaker" type="text" placeholder="例如：院長、部門主管、創辦人、自己" />
+          </div>
+        </div>
+
+        <div class="section-title">顧問分析選項</div>
+        <label>啟用模組</label>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" class="module-check" value="MECE" checked> MECE 分解</label>
+          <label class="chip"><input type="checkbox" class="module-check" value="Issue Tree" checked> Issue Tree</label>
+          <label class="chip"><input type="checkbox" class="module-check" value="Hypothesis" checked> 假設思考</label>
+          <label class="chip"><input type="checkbox" class="module-check" value="Fact-based" checked> Fact-based 驗證</label>
+          <label class="chip"><input type="checkbox" class="module-check" value="7S" checked> 7S 模型</label>
+          <label class="chip"><input type="checkbox" class="module-check" value="ROI" checked> ROI 比較</label>
+          <label class="chip"><input type="checkbox" class="module-check" value="Stakeholder" checked> 利害關係人</label>
+          <label class="chip"><input type="checkbox" class="module-check" value="Executive" checked> 高層摘要</label>
+        </div>
+
+        <div class="section-title">已知條件與限制</div>
+        <div class="grid-2">
+          <div>
+            <label for="knownFacts">已知事實 / 數據</label>
+            <textarea id="knownFacts" placeholder="例如：近六個月營收下降 18%、新客下降 12%、回診率下降 7%、競品新開兩家、客服抱怨增加。"></textarea>
+          </div>
+          <div>
+            <label for="constraints">限制條件 / 風險</label>
+            <textarea id="constraints" placeholder="例如：預算有限、不可大幅增聘人力、三個月內需看到改善、主管不想全面改系統。"></textarea>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top:14px;">
+          <div>
+            <label for="industry">產業 / 場域</label>
+            <input id="industry" type="text" placeholder="例如：醫療、教育、零售、研究、服務業" />
+          </div>
+          <div>
+            <label for="successMetric">成功指標</label>
+            <input id="successMetric" type="text" placeholder="例如：營收回升、等待時間下降、招生提升、研究主題聚焦" />
+          </div>
+        </div>
+
+        <div class="section-title">資料需求偏好</div>
+        <div class="grid-2">
+          <div>
+            <label for="dataAvailability">目前資料充足度</label>
+            <select id="dataAvailability">
+              <option>資料很少，需要替代估算</option>
+              <option selected>有部分資料，可先做方向判斷</option>
+              <option>資料充足，可做深入分析</option>
+            </select>
+          </div>
+          <div>
+            <label for="analysisTone">輸出語氣</label>
+            <select id="analysisTone">
+              <option selected>專業顧問式</option>
+              <option>高層簡報式</option>
+              <option>教學引導式</option>
+              <option>研究分析式</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="generateBtn">生成 v2 Pro 分析</button>
+          <button class="btn-secondary" id="copyPromptBtn">複製 AI 提示詞</button>
+          <button class="btn-secondary" id="copyReportBtn">複製完整分析</button>
+          <button class="btn-ghost" id="clearBtn">清空內容</button>
+        </div>
+
+        <div class="footer-note">
+          建議用途：商業問題、醫療流程診斷、學校招生分析、研究方向聚焦、個人生涯決策、組織變革溝通等。這版更接近「顧問戰情室」而非單一提示句生成器。
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="toolbar">
+          <div>
+            <h2 style="margin:0 0 6px;">顧問分析戰情室</h2>
+            <div class="sub" style="margin:0;">右側輸出不是一次塞滿，而是依照顧問流程逐步展開。</div>
+          </div>
+          <div class="status-box">
+            <span class="status-pill" id="statusLabel">尚未生成</span>
+            <span class="status-pill" id="focusLabel">等待案件輸入</span>
+          </div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-head">
+            <span>顧問分析進度</span>
+            <span id="progressText">0% 完成</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-box">
+            <span class="kpi-label">問題清晰度</span>
+            <span class="kpi-value" id="kpiClarity">0</span>
+          </div>
+          <div class="kpi-box">
+            <span class="kpi-label">假設聚焦度</span>
+            <span class="kpi-value" id="kpiHypothesis">0</span>
+          </div>
+          <div class="kpi-box">
+            <span class="kpi-label">可執行性</span>
+            <span class="kpi-value" id="kpiAction">0</span>
+          </div>
+          <div class="kpi-box">
+            <span class="kpi-label">資料成熟度</span>
+            <span class="kpi-value" id="kpiData">0</span>
+          </div>
+        </div>
+
+        <div class="tab-nav" style="margin-top:16px;">
+          <button class="tab-btn active" data-tab="tab-framing">問題定義</button>
+          <button class="tab-btn" data-tab="tab-structure">結構拆解</button>
+          <button class="tab-btn" data-tab="tab-7s">7S / Stakeholder</button>
+          <button class="tab-btn" data-tab="tab-strategy">策略與 ROI</button>
+          <button class="tab-btn" data-tab="tab-exec">高層摘要</button>
+          <button class="tab-btn" data-tab="tab-prompt">AI Prompt</button>
+        </div>
+
+        <div class="tab-pane active" id="tab-framing">
+          <div class="result-card">
+            <h3>問題重構</h3>
+            <div id="framingOutput">請在左側輸入案件後，點擊「生成 v2 Pro 分析」。</div>
+          </div>
+          <div class="result-card">
+            <h3>初步根因假設</h3>
+            <div id="hypothesisOutput">系統將在此建立最可能的問題方向與驗證順序。</div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="tab-structure">
+          <div class="result-card">
+            <h3>MECE 拆解與 Issue Tree</h3>
+            <div id="treeOutput" class="logic-tree"></div>
+          </div>
+          <div class="split-grid">
+            <div class="result-card" style="margin-bottom:0;">
+              <h3>優先驗證清單</h3>
+              <div id="priorityOutput"></div>
+            </div>
+            <div class="result-card" style="margin-bottom:0;">
+              <h3>Fact-based 資料需求</h3>
+              <div id="factOutput"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="tab-7s">
+          <div class="split-grid">
+            <div class="result-card" style="margin-bottom:0;">
+              <h3>McKinsey 7S 診斷</h3>
+              <div id="s7Output"></div>
+            </div>
+            <div class="result-card" style="margin-bottom:0;">
+              <h3>利害關係人分析</h3>
+              <div id="stakeholderOutput"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="tab-strategy">
+          <div class="result-card">
+            <h3>策略方案與 ROI 比較</h3>
+            <div id="strategyOutput"></div>
+          </div>
+          <div class="result-card" style="margin-bottom:0;">
+            <h3>30 / 90 天行動計畫</h3>
+            <div id="planOutput"></div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="tab-exec">
+          <div class="result-card" style="margin-bottom:0;">
+            <h3>Executive Summary</h3>
+            <div id="execOutput"></div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="tab-prompt">
+          <div class="result-card" style="margin-bottom:0;">
+            <h3>可直接回貼給 AI 的顧問式提示詞</h3>
+            <textarea id="promptOutput" class="output-area" placeholder="生成後會出現在這裡"></textarea>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabButtons.forEach(b => b.classList.remove('active'));
+        tabPanes.forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        $(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    function getModules() {
+      return [...document.querySelectorAll('.module-check:checked')].map(el => el.value);
+    }
+
+    function scoreFromText(text) {
+      const len = (text || '').trim().length;
+      if (!len) return 0;
+      if (len < 30) return 28;
+      if (len < 80) return 52;
+      if (len < 150) return 74;
+      return 88;
+    }
+
+    function inferCaseBuckets(caseType) {
+      const map = {
+        '商業成長': ['營收與獲利', '客戶與市場', '產品與定價', '執行與資源'],
+        '行銷與客戶': ['流量來源', '轉換漏斗', '客戶體驗', '留存與口碑'],
+        '組織與管理': ['策略與角色', '流程與協作', '人才與能力', '文化與領導'],
+        '營運流程': ['流程瓶頸', '時間與成本', '品質與錯誤', '資源配置'],
+        '醫療與服務流程': ['就醫流程', '服務體驗', '資源配置', '品質與風險'],
+        '教育與招生': ['品牌與觸達', '招生漏斗', '課程競爭力', '行政與支持系統'],
+        '學術與研究策略': ['問題界定', '文獻與證據', '研究設計', '資源與產出路徑'],
+        '個人生涯與轉型': ['目標與定位', '能力與缺口', '選項與風險', '執行與支持系統'],
+        '自訂議題': ['外部環境', '內部因素', '資源限制', '決策選項']
+      };
+      return map[caseType] || map['自訂議題'];
+    }
+
+    function inferRootCauses(caseType) {
+      const map = {
+        '商業成長': ['需求減弱', '獲客效率下降', '客單價不足', '回購或留存變差'],
+        '行銷與客戶': ['觸及不足', '訊息不準', '轉換設計有問題', '體驗導致流失'],
+        '組織與管理': ['角色不清', '流程失衡', '人才缺口', '文化阻力'],
+        '營運流程': ['流程過長', '交接失真', '系統支援不足', '責任邊界模糊'],
+        '醫療與服務流程': ['等待時間過長', '流程不連續', '服務感受下降', '資源配置不當'],
+        '教育與招生': ['招生來源弱化', '課程吸引力不足', '轉換率偏低', '支持系統不足'],
+        '學術與研究策略': ['研究問題不夠聚焦', '證據鏈不足', '方法與資源不匹配', '產出路徑不清'],
+        '個人生涯與轉型': ['方向模糊', '風險評估不足', '能力缺口', '執行拖延'],
+        '自訂議題': ['需求判斷不清', '資料不足', '結構拆解不足', '執行資源不符']
+      };
+      return map[caseType] || map['自訂議題'];
+    }
+
+    function buildFraming(problem, goalType, industry, successMetric) {
+      return `
+        <p>目前表面問題可描述為：<strong>${problem || '尚未填寫案件描述'}</strong>。</p>
+        <p>但從顧問角度，真正要處理的未必只是表面症狀，而是它背後的「可被決策與介入的核心問題」。本案可先重構為：</p>
+        <ol>
+          <li>先確認這是一個「症狀」還是「根因」。</li>
+          <li>將議題從模糊抱怨轉成可驗證的管理問題。</li>
+          <li>以<strong>${goalType}</strong>作為本次分析的終點，而非只停在描述現象。</li>
+        </ol>
+        <p>若以 ${industry || '目前場域'} 的角度來看，本案建議最終要對齊的成功指標是：<strong>${successMetric || '建立明確且可量化的結果指標'}</strong>。</p>
+      `;
+    }
+
+    function buildHypothesis(caseType, knownFacts, constraints) {
+      const causes = inferRootCauses(caseType);
+      const factHint = knownFacts ? '已知事實顯示目前已有可用訊號，可優先驗證最具影響力的原因。' : '目前資料仍偏少，建議先以少量高價值資料做方向性判斷。';
+      const constraintHint = constraints ? `限制條件提醒：${constraints}` : '目前未明示重大限制，預設可先做低成本快速驗證。';
+      return `
+        <div class="score-list">
+          ${causes.map((cause, index) => {
+            const score = [82, 68, 56, 44][index] || 40;
+            return `
+              <div class="score-item">
+                <div class="score-head"><span>假設 ${index + 1}：${cause}</span><span>${score}%</span></div>
+                <div class="mini-bar"><span style="width:${score}%;"></span></div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+        <p style="margin-top:12px;">${factHint}</p>
+        <p>${constraintHint}</p>
+      `;
+    }
+
+    function buildTree(problem, caseType) {
+      const buckets = inferCaseBuckets(caseType);
+      const subMap = {
+        '營收與獲利': ['新客數', '客單價', '回購率', '產品組合'],
+        '客戶與市場': ['目標客群', '競品動態', '通路觸及', '客戶流失'],
+        '產品與定價': ['價格定位', '服務內容', '差異化', '價值感'],
+        '執行與資源': ['人力配置', '流程效率', '數位工具', '跨部門協作'],
+        '流量來源': ['自然流量', '廣告流量', '合作導流', '轉介紹'],
+        '轉換漏斗': ['點擊', '詢問', '成交', '續用'],
+        '客戶體驗': ['回應速度', '服務一致性', '流程清晰度', '售後支持'],
+        '留存與口碑': ['回購', '滿意度', 'NPS', '社群評價'],
+        '策略與角色': ['策略優先序', '權責清晰', '決策節奏', '溝通機制'],
+        '流程與協作': ['流程斷點', '交接品質', '標準化', '例外處理'],
+        '人才與能力': ['能力缺口', '培訓', '招募', '績效機制'],
+        '文化與領導': ['領導風格', '變革接受度', '心理安全', '共享價值'],
+        '流程瓶頸': ['等待時間', '重工', '審核層級', '資訊延遲'],
+        '時間與成本': ['工時浪費', '資源配置', '成本外溢', '交期不穩'],
+        '品質與錯誤': ['錯誤率', '返工率', '顧客抱怨', '品質控制'],
+        '資源配置': ['人力', '設備', '排程', '預算'],
+        '就醫流程': ['預約', '報到', '候診', '檢查/回診'],
+        '服務體驗': ['說明清楚度', '等待感受', '人員互動', '抱怨處理'],
+        '品質與風險': ['安全性', '一致性', '紀錄與追蹤', '風險通報'],
+        '品牌與觸達': ['曝光', '定位', '口碑', '宣傳內容'],
+        '招生漏斗': ['詢問數', '報名率', '到課率', '續讀率'],
+        '課程競爭力': ['內容設計', '差異化', '師資', '成果感'],
+        '行政與支持系統': ['報名流程', '客服支援', '資訊整合', '追蹤機制'],
+        '問題界定': ['研究問題', 'PICO', '範圍界線', '操作定義'],
+        '文獻與證據': ['文獻飽和度', '證據強度', '關鍵缺口', '可比較性'],
+        '研究設計': ['方法可行性', '資料來源', '變項設計', '分析路徑'],
+        '資源與產出路徑': ['時間', '工具', '合作', '投稿或產出'],
+        '目標與定位': ['長期方向', '短期選擇', '價值排序', '身份定位'],
+        '能力與缺口': ['已有優勢', '需補能力', '可轉移技能', '外部資源'],
+        '選項與風險': ['方案比較', '失敗成本', '機會成本', '試錯空間'],
+        '執行與支持系統': ['節奏管理', '支持網絡', '資源盤點', '里程碑'],
+        '外部環境': ['市場/情勢', '競品/同儕', '制度限制', '需求變動'],
+        '內部因素': ['能力', '流程', '決策', '資源'],
+        '資源限制': ['時間', '預算', '人力', '工具'],
+        '決策選項': ['保守方案', '中度方案', '激進方案', '觀望方案']
+      };
+
+      return `
+        <div class="tree-root">核心議題：${problem || '尚未填寫案件問題'}</div>
+        <div class="tree-grid">
+          ${buckets.map(bucket => `
+            <div class="tree-branch">
+              <strong>${bucket}</strong>
+              <ul>
+                ${(subMap[bucket] || ['子問題一', '子問題二', '子問題三', '子問題四']).map(item => `<li>${item}</li>`).join('')}
+              </ul>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function buildPriority(caseType, urgency) {
+      const causes = inferRootCauses(caseType);
+      const priorityText = urgency === '高' ? '先找最大影響且可快速介入者' : urgency === '中' ? '先找最大影響且可驗證者' : '先做全局盤點，再進入驗證';
+      return `
+        <ol>
+          <li><strong>${causes[0]}</strong>：最高優先，因為它通常最直接影響結果。</li>
+          <li><strong>${causes[1]}</strong>：第二優先，常與第一項交互作用。</li>
+          <li><strong>${causes[2]}</strong>：第三優先，作為補充驗證方向。</li>
+          <li><strong>${causes[3]}</strong>：第四優先，用來排除誤判或建立完整性。</li>
+        </ol>
+        <p>本案的排序原則：${priorityText}。</p>
+      `;
+    }
+
+    function buildFacts(caseType, dataAvailability) {
+      const suggestions = {
+        '商業成長': ['月營收與毛利', '新客數 / 回購率', '客單價', '競品價格或活動'],
+        '行銷與客戶': ['流量來源', '轉換率', '詢問到成交比', '客戶抱怨與流失原因'],
+        '組織與管理': ['決策流程圖', '角色權責表', '會議節奏', '員工訪談'],
+        '營運流程': ['流程時間點', '每步驟耗時', '重工率', '例外案件'],
+        '醫療與服務流程': ['候診時間', '報到到離院流程', '病患反饋', '人力與班表'],
+        '教育與招生': ['詢問來源', '報名率', '到課率', '退選或流失原因'],
+        '學術與研究策略': ['核心文獻', '研究缺口', '可取得資料', '時間與投稿限制'],
+        '個人生涯與轉型': ['選項清單', '收入需求', '能力盤點', '風險承受界線'],
+        '自訂議題': ['核心指標', '比較基準', '流程資料', '利害關係人意見']
+      };
+      const items = suggestions[caseType] || suggestions['自訂議題'];
+      const hint = dataAvailability === '資料很少，需要替代估算' ? '目前適合先收集少量高價值資料，例如關鍵指標與一線訪談，避免一開始就陷入龐大資料蒐集。' : dataAvailability === '資料充足，可做深入分析' ? '可進一步建立因果假設與分群比較，將分析提升到決策模擬層。' : '可先做方向性分析，再決定是否補做第二輪資料驗證。';
+      return `
+        <div class="data-grid">
+          ${items.map(item => `
+            <div class="data-box">
+              <h4>${item}</h4>
+              <p>此項資料可用來驗證主要假設，並協助區分是外部問題、內部執行問題，或是價值主張問題。</p>
+            </div>
+          `).join('')}
+        </div>
+        <p style="margin-top:12px;">${hint}</p>
+      `;
+    }
+
+    function build7S(caseType) {
+      return `
+        <div class="data-grid">
+          <div class="data-box"><h4>Strategy</h4><p>目前策略是否真的對準核心問題，還是只處理表面症狀。</p></div>
+          <div class="data-box"><h4>Structure</h4><p>權責與組織分工是否清楚，是否有人真正負責推動。</p></div>
+          <div class="data-box"><h4>Systems</h4><p>流程、工具、制度是否支援目標，而不是反向拖慢執行。</p></div>
+          <div class="data-box"><h4>Style</h4><p>領導與管理風格是否鼓勵透明、追蹤與快速修正。</p></div>
+          <div class="data-box"><h4>Staff</h4><p>人力配置是否與當前目標一致，是否有關鍵角色空缺。</p></div>
+          <div class="data-box"><h4>Skills</h4><p>團隊是否具備解決 ${caseType} 所需的核心能力。</p></div>
+          <div class="data-box" style="grid-column: 1 / -1;"><h4>Shared Values</h4><p>共同價值是否支持改變。若文化上不相信數據、不願跨部門合作，再好的策略也很難落地。</p></div>
+        </div>
+      `;
+    }
+
+    function buildStakeholder(decisionMaker, caseType) {
+      const leader = decisionMaker || '主要決策者';
+      return `
+        <table>
+          <thead>
+            <tr>
+              <th>角色</th>
+              <th>可能立場</th>
+              <th>需要的說服點</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>${leader}</td>
+              <td>關注結果、速度與風險</td>
+              <td>先講結論，再講關鍵依據與執行影響</td>
+            </tr>
+            <tr>
+              <td>第一線執行者</td>
+              <td>關注工作量與可行性</td>
+              <td>要讓他們看到流程改善而非增加負擔</td>
+            </tr>
+            <tr>
+              <td>跨部門合作方</td>
+              <td>可能支持，也可能抗拒</td>
+              <td>需要釐清責任邊界與對他們的好處</td>
+            </tr>
+            <tr>
+              <td>受影響對象</td>
+              <td>例如顧客、病患、學生、研究團隊</td>
+              <td>要用他們實際感受到的改善來驗證方案價值</td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+    }
+
+    function buildStrategy(successMetric, constraints) {
+      const metric = successMetric || '核心績效改善';
+      const risk = constraints || '需兼顧現有資源與時間限制';
+      return `
+        <table>
+          <thead>
+            <tr>
+              <th>方案</th>
+              <th>核心作法</th>
+              <th>成本</th>
+              <th>速度</th>
+              <th>風險</th>
+              <th>預期影響</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>保守方案</td>
+              <td>先修正最明顯的流程或訊號斷點</td>
+              <td>低</td>
+              <td>快</td>
+              <td>低</td>
+              <td>可作為短期止血，快速改善 ${metric}</td>
+            </tr>
+            <tr>
+              <td>成長方案</td>
+              <td>在核心問題上做中度調整，搭配數據追蹤</td>
+              <td>中</td>
+              <td>中</td>
+              <td>中</td>
+              <td>兼顧短期改善與中期成長</td>
+            </tr>
+            <tr>
+              <td>轉型方案</td>
+              <td>重新定義流程、定位或資源配置方式</td>
+              <td>高</td>
+              <td>慢</td>
+              <td>高</td>
+              <td>若成功，可能帶來最大幅度的結構性改善</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="margin-top:12px;">限制提醒：${risk}</p>
+      `;
+    }
+
+    function buildPlan(goalType) {
+      return `
+        <div class="plan-grid">
+          <div class="plan-box">
+            <h4>前 30 天</h4>
+            <ul>
+              <li>明確定義問題與成功指標。</li>
+              <li>蒐集少量高價值資料，先驗證最大假設。</li>
+              <li>召開一次對齊會議，確認誰負責與何時回報。</li>
+              <li>建立第一版 quick win 行動，對應 ${goalType}。</li>
+            </ul>
+          </div>
+          <div class="plan-box">
+            <h4>31–90 天</h4>
+            <ul>
+              <li>根據驗證結果調整策略，不執著原假設。</li>
+              <li>將有效做法制度化，擴大到更多場景。</li>
+              <li>建立追蹤儀表板與例行回顧節奏。</li>
+              <li>向高層簡報最終結論、資源需求與下一步。</li>
+            </ul>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildExecutiveSummary(problem, caseType, goalType, successMetric, urgency) {
+      return `
+        <p><strong>一句話結論：</strong>本案不應只停留在「${problem || '表面問題'}」的描述，而要重構為一個可被驗證、可被排序、可被執行的 ${caseType} 決策問題。</p>
+        <ol>
+          <li><strong>目前最重要的事：</strong>先用 MECE 與 Issue Tree 找出真正影響結果的 2–3 個核心變數。</li>
+          <li><strong>分析原則：</strong>以 ${goalType} 為終點，以事實驗證假設，而非用資料堆疊取代判斷。</li>
+          <li><strong>執行重點：</strong>優先做高影響、低阻力、可快速驗證的行動，特別在 ${urgency} 緊急程度下更要避免過度分析。</li>
+          <li><strong>預期成果：</strong>將議題轉為可交付的方案，並讓 ${successMetric || '關鍵結果'} 成為真正可追蹤的管理指標。</li>
+        </ol>
+      `;
+    }
+
+    function buildPrompt(data) {
+      const modules = data.modules.join('、') || 'MECE、Issue Tree、Hypothesis-driven、Fact-based、7S、ROI、Executive Summary';
+      return `你現在是一位具備 McKinsey 式問題解決能力的策略顧問。請針對以下案件，以 Fact-based、Hypothesis-driven、Structured Problem Solving 為核心進行分析。
+
+【案件描述】
+${data.problem || '尚未提供'}
+
+【問題類型】
+${data.caseType}
+
+【主要目標】
+${data.goalType}
+
+【緊急程度】
+${data.urgency}
+
+【分析時間尺度】
+${data.horizon}
+
+【產業 / 場域】
+${data.industry || '未提供'}
+
+【主要決策者】
+${data.decisionMaker || '未提供'}
+
+【已知事實 / 數據】
+${data.knownFacts || '目前尚未提供明確數據，請根據情境提出最需要的驗證資料。'}
+
+【限制條件 / 風險】
+${data.constraints || '未明示'}
+
+【成功指標】
+${data.successMetric || '請協助定義'}
+
+【資料充足度】
+${data.dataAvailability}
+
+【需啟用模組】
+${modules}
+
+【請依序輸出】
+1. 問題重構：指出表面問題與真正管理問題的差異。
+2. MECE 拆解：將問題拆成相互獨立、完全窮盡的主要面向。
+3. Issue Tree：建立邏輯樹，列出第一層與第二層子問題。
+4. 假設思考：提出 3-4 個最可能的假設，並說明優先驗證順序。
+5. Fact-based 驗證：列出需要蒐集的關鍵數據與訪談資訊，說明各自驗證哪個假設。
+6. 7S 模型診斷：若適用，說明 Strategy、Structure、Systems、Style、Staff、Skills、Shared Values 的可能問題。
+7. 利害關係人分析：指出誰會支持、誰可能抵制、應如何說服。
+8. 策略方案：至少提出保守、中度、轉型三種方案。
+9. ROI 或優先排序：比較成本、速度、風險、預期影響。
+10. 30 / 90 天行動計畫：列出具體執行步驟。
+11. Executive Summary：用高層簡報語氣，先講結論，再講三到四點支撐理由。
+
+【輸出要求】
+- 採用專業顧問式語氣
+- 結構清楚，避免空泛
+- 不只描述現象，要形成可執行建議
+- 優先聚焦真正影響結果的少數關鍵變數`;
+    }
+
+    function generate() {
+      const data = {
+        problem: $('problemStatement').value.trim(),
+        caseType: $('caseType').value,
+        goalType: $('goalType').value,
+        urgency: $('urgency').value,
+        horizon: $('horizon').value,
+        decisionMaker: $('decisionMaker').value.trim(),
+        knownFacts: $('knownFacts').value.trim(),
+        constraints: $('constraints').value.trim(),
+        industry: $('industry').value.trim(),
+        successMetric: $('successMetric').value.trim(),
+        dataAvailability: $('dataAvailability').value,
+        analysisTone: $('analysisTone').value,
+        modules: getModules()
+      };
+
+      $('framingOutput').innerHTML = buildFraming(data.problem, data.goalType, data.industry, data.successMetric);
+      $('hypothesisOutput').innerHTML = buildHypothesis(data.caseType, data.knownFacts, data.constraints);
+      $('treeOutput').innerHTML = buildTree(data.problem, data.caseType);
+      $('priorityOutput').innerHTML = buildPriority(data.caseType, data.urgency);
+      $('factOutput').innerHTML = buildFacts(data.caseType, data.dataAvailability);
+      $('s7Output').innerHTML = build7S(data.caseType);
+      $('stakeholderOutput').innerHTML = buildStakeholder(data.decisionMaker, data.caseType);
+      $('strategyOutput').innerHTML = buildStrategy(data.successMetric, data.constraints);
+      $('planOutput').innerHTML = buildPlan(data.goalType);
+      $('execOutput').innerHTML = buildExecutiveSummary(data.problem, data.caseType, data.goalType, data.successMetric, data.urgency);
+      $('promptOutput').value = buildPrompt(data);
+
+      const clarity = Math.min(100, scoreFromText(data.problem) + (data.successMetric ? 10 : 0));
+      const hypothesis = Math.min(100, 52 + data.modules.length * 5 + (data.knownFacts ? 12 : 0));
+      const action = Math.min(100, 50 + (data.constraints ? 10 : 0) + (data.goalType ? 16 : 0));
+      const dataMaturity = data.dataAvailability === '資料充足，可做深入分析' ? 88 : data.dataAvailability === '有部分資料，可先做方向判斷' ? 64 : 36;
+
+      $('kpiClarity').textContent = clarity;
+      $('kpiHypothesis').textContent = hypothesis;
+      $('kpiAction').textContent = action;
+      $('kpiData').textContent = dataMaturity;
+
+      $('statusLabel').textContent = '已完成 v2 Pro 分析';
+      $('focusLabel').textContent = `${data.caseType} · ${data.goalType}`;
+      $('progressFill').style.width = '100%';
+      $('progressText').textContent = '100% 完成';
+    }
+
+    function collectFullReport() {
+      const textSections = [
+        '【問題重構】\n' + $('framingOutput').innerText,
+        '【初步根因假設】\n' + $('hypothesisOutput').innerText,
+        '【MECE / Issue Tree】\n' + $('treeOutput').innerText,
+        '【優先驗證清單】\n' + $('priorityOutput').innerText,
+        '【Fact-based 資料需求】\n' + $('factOutput').innerText,
+        '【7S 模型】\n' + $('s7Output').innerText,
+        '【利害關係人分析】\n' + $('stakeholderOutput').innerText,
+        '【策略與 ROI】\n' + $('strategyOutput').innerText,
+        '【30 / 90 天計畫】\n' + $('planOutput').innerText,
+        '【Executive Summary】\n' + $('execOutput').innerText
+      ];
+      return textSections.join('\n\n');
+    }
+
+    $('generateBtn').addEventListener('click', generate);
+
+    $('copyPromptBtn').addEventListener('click', async () => {
+      const text = $('promptOutput').value.trim();
+      if (!text) {
+        alert('請先生成分析內容。');
+        return;
+      }
+      await navigator.clipboard.writeText(text);
+      alert('已複製 AI 提示詞。');
+    });
+
+    $('copyReportBtn').addEventListener('click', async () => {
+      const text = collectFullReport().trim();
+      if (!text || text === '【問題重構】\n請在左側輸入案件後，點擊「生成 v2 Pro 分析」。') {
+        alert('請先生成分析內容。');
+        return;
+      }
+      await navigator.clipboard.writeText(text);
+      alert('已複製完整分析內容。');
+    });
+
+    $('clearBtn').addEventListener('click', () => {
+      ['problemStatement','decisionMaker','knownFacts','constraints','industry','successMetric','promptOutput'].forEach(id => $(id).value = '');
+      $('caseType').selectedIndex = 0;
+      $('goalType').selectedIndex = 0;
+      $('urgency').selectedIndex = 1;
+      $('horizon').selectedIndex = 1;
+      $('dataAvailability').selectedIndex = 1;
+      $('analysisTone').selectedIndex = 0;
+      document.querySelectorAll('.module-check').forEach(el => el.checked = true);
+
+      $('framingOutput').innerHTML = '請在左側輸入案件後，點擊「生成 v2 Pro 分析」。';
+      $('hypothesisOutput').innerHTML = '系統將在此建立最可能的問題方向與驗證順序。';
+      $('treeOutput').innerHTML = '';
+      $('priorityOutput').innerHTML = '';
+      $('factOutput').innerHTML = '';
+      $('s7Output').innerHTML = '';
+      $('stakeholderOutput').innerHTML = '';
+      $('strategyOutput').innerHTML = '';
+      $('planOutput').innerHTML = '';
+      $('execOutput').innerHTML = '';
+      $('statusLabel').textContent = '尚未生成';
+      $('focusLabel').textContent = '等待案件輸入';
+      $('progressFill').style.width = '0%';
+      $('progressText').textContent = '0% 完成';
+      $('kpiClarity').textContent = '0';
+      $('kpiHypothesis').textContent = '0';
+      $('kpiAction').textContent = '0';
+      $('kpiData').textContent = '0';
+      document.querySelector('.tab-btn[data-tab="tab-framing"]').click();
+    });
+  </script>
+</body>
+</html>
