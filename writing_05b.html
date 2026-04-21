@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>都會文學內容生成器 v2 Pro</title>
+  <title>都會文學內容生成器 v2 Pro＋專業版視角系統</title>
   <style>
     :root {
       --bg-main: radial-gradient(circle at top left, #163153 0%, #0b1726 45%, #07111d 100%);
@@ -191,7 +191,7 @@
       resize: vertical;
     }
 
-    select option {
+    select option, optgroup {
       color: #111;
     }
 
@@ -316,6 +316,17 @@
       flex-shrink: 0;
     }
 
+    .hint-box {
+      margin-top: 6px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      padding: 10px 12px;
+      color: var(--text-muted);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
     .output-wrap {
       display: grid;
       gap: 16px;
@@ -386,16 +397,16 @@
 <body>
   <div class="container">
     <section class="hero">
-      <h1>都會文學內容生成器 v2 Pro</h1>
+      <h1>都會文學內容生成器 v2 Pro＋專業版視角系統</h1>
       <p>
-        專為現代都市情感書寫設計。保留你原本喜歡的深藍科技玻璃卡風格，加入完整控制欄位，
-        包含敘事視角、句子張力、情感濃度、留白程度、都市場景強度、禁止元素與額外要求，
-        用來生成更成熟、更不模板化的都會文學提示句。
+        專為現代都市情感書寫設計。保留深藍科技玻璃卡風格，並升級敘事視角控制，
+        加入第二人稱細分類、自由切換專業模式、鏡像視角與旁觀者視角，
+        讓你在都會文學、成人情感與成熟散文題材中，能更細緻地控制作品層次。
       </p>
       <div class="badge-row">
         <span class="badge">適用：都會散文、短篇小說片段、情感書寫、人物關係</span>
+        <span class="badge">升級：第二人稱與自由切換專業版</span>
         <span class="badge">避免：巷口、張嫂、老街坊、胡同模板化場景</span>
-        <span class="badge">支援：兩種輸出版本</span>
         <span class="badge">定位：Creative Writing Console</span>
       </div>
     </section>
@@ -465,7 +476,7 @@
               <label for="length">文章長度</label>
               <select id="length">
                 <option value="約 500 字">約 500 字</option>
-                <option value="約 800 字">約 800 字</option>
+                <option value="約 800 字" selected>約 800 字</option>
                 <option value="約 1200 字">約 1200 字</option>
                 <option value="約 1500 字">約 1500 字</option>
                 <option value="約 2000 字">約 2000 字</option>
@@ -473,87 +484,35 @@
             </div>
 
             <div class="field">
-               <label for="perspective">敘事視角（專業版視角系統）</label>
-               <select id="perspective">
-    
-              <optgroup label="基礎穩定型">
-              <option value="第一人稱｜沉浸主體視角">
-        第一人稱｜沉浸主體視角
-      </option>
-      <option value="第三人稱有限｜小說感穩定視角">
-        第三人稱有限｜小說感穩定視角
-      </option>
-      <option value="第三人稱全知｜多人物心理視角">
-        第三人稱全知｜多人物心理視角
-      </option>
-    </optgroup>
+              <label for="perspective">敘事視角（專業版視角系統）</label>
+              <select id="perspective">
+                <optgroup label="基礎穩定型">
+                  <option value="第一人稱｜沉浸主體視角">第一人稱｜沉浸主體視角</option>
+                  <option value="第三人稱有限｜小說感穩定視角">第三人稱有限｜小說感穩定視角</option>
+                  <option value="第三人稱全知｜多人物心理視角">第三人稱全知｜多人物心理視角</option>
+                </optgroup>
 
-    <optgroup label="第二人稱進階型">
-      <option value="第二人稱｜對特定對象說話">
-        第二人稱｜對特定對象說話
-      </option>
-      <option value="第二人稱｜自我分身式書寫">
-        第二人稱｜自我分身式書寫
-      </option>
-      <option value="第二人稱｜泛讀者共感型">
-        第二人稱｜泛讀者共感型
-      </option>
-    </optgroup>
+                <optgroup label="第二人稱進階型">
+                  <option value="第二人稱｜對特定對象說話">第二人稱｜對特定對象說話</option>
+                  <option value="第二人稱｜自我分身式書寫">第二人稱｜自我分身式書寫</option>
+                  <option value="第二人稱｜泛讀者共感型">第二人稱｜泛讀者共感型</option>
+                </optgroup>
 
-    <optgroup label="自由切換專業型">
-      <option value="自由切換｜穩定版（第一人稱主體＋局部第二人稱）" selected>
-        自由切換｜穩定版（第一人稱主體＋局部第二人稱）
-      </option>
-      <option value="自由切換｜文學版（第一／第二／第三自然流動）">
-        自由切換｜文學版（第一／第二／第三自然流動）
-      </option>
-      <option value="自由切換｜高級版（依情緒推進無痕切換）">
-        自由切換｜高級版（依情緒推進無痕切換）
-      </option>
-    </optgroup>
+                <optgroup label="自由切換專業型">
+                  <option value="自由切換｜穩定版（第一人稱主體＋局部第二人稱）" selected>自由切換｜穩定版（第一人稱主體＋局部第二人稱）</option>
+                  <option value="自由切換｜文學版（第一／第二／第三自然流動）">自由切換｜文學版（第一／第二／第三自然流動）</option>
+                  <option value="自由切換｜高級版（依情緒推進無痕切換）">自由切換｜高級版（依情緒推進無痕切換）</option>
+                </optgroup>
 
-    <optgroup label="特殊效果型">
-      <option value="雙視角對照｜男女雙方心理並行">
-        雙視角對照｜男女雙方心理並行
-      </option>
-      <option value="旁觀者視角｜城市觀察式敘事">
-        旁觀者視角｜城市觀察式敘事
-      </option>
-      <option value="鏡像視角｜現在與過去的自己對話">
-        鏡像視角｜現在與過去的自己對話
-      </option>
-    </optgroup>
-
-  </select>
-
-  <small id="perspectiveHint">
-    建議：成人情感／都會文學題材，優先使用「自由切換｜穩定版」。
-  </small>
-</div>
-
-<script>
-/* 加到原本 JS 裡即可 */
-
-const perspectiveHintMap = {
-"第一人稱｜沉浸主體視角":"最直接真實，適合情感經驗、自白式散文。",
-"第三人稱有限｜小說感穩定視角":"成熟穩定，較具小說與文學感。",
-"第三人稱全知｜多人物心理視角":"可同時描寫雙方心理與誤解。",
-"第二人稱｜對特定對象說話":"適合思念、告別、未完成關係。",
-"第二人稱｜自我分身式書寫":"高級寫法，適合清醒、自我審視、情感覺醒。",
-"第二人稱｜泛讀者共感型":"適合觀察式散文，但避免過度語錄化。",
-"自由切換｜穩定版（第一人稱主體＋局部第二人稱）":"最推薦。穩定又有文學張力。",
-"自由切換｜文學版（第一／第二／第三自然流動）":"層次高，適合成熟作品。",
-"自由切換｜高級版（依情緒推進無痕切換）":"投稿級寫法，需高完成度。",
-"雙視角對照｜男女雙方心理並行":"適合關係衝突、誤會與對照。",
-"旁觀者視角｜城市觀察式敘事":"適合都會群像、人情觀察。",
-"鏡像視角｜現在與過去的自己對話":"適合成長、遺憾、人生回望。"
-};
-
-document.getElementById("perspective").addEventListener("change", function(){
-  document.getElementById("perspectiveHint").innerText =
-    perspectiveHintMap[this.value] || "請選擇敘事視角。";
-});
-</script>
+                <optgroup label="特殊效果型">
+                  <option value="雙視角對照｜男女雙方心理並行">雙視角對照｜男女雙方心理並行</option>
+                  <option value="旁觀者視角｜城市觀察式敘事">旁觀者視角｜城市觀察式敘事</option>
+                  <option value="鏡像視角｜現在與過去的自己對話">鏡像視角｜現在與過去的自己對話</option>
+                </optgroup>
+              </select>
+              <div class="hint-box" id="perspectiveHint">
+                建議：成人情感／都會文學題材，優先使用「自由切換｜穩定版（第一人稱主體＋局部第二人稱）」。
+              </div>
             </div>
 
             <div class="field">
@@ -561,7 +520,7 @@ document.getElementById("perspective").addEventListener("change", function(){
               <select id="tension">
                 <option value="低，偏平穩敘述">低，偏平穩敘述</option>
                 <option value="中，偶有起伏">中，偶有起伏</option>
-                <option value="高，層層推進">高，層層推進</option>
+                <option value="高，層層推進" selected>高，層層推進</option>
                 <option value="高，帶壓抑與爆發感">高，帶壓抑與爆發感</option>
                 <option value="冷靜克制下暗潮洶湧">冷靜克制下暗潮洶湧</option>
               </select>
@@ -572,7 +531,7 @@ document.getElementById("perspective").addEventListener("change", function(){
               <select id="emotionDensity">
                 <option value="低，偏理性節制">低，偏理性節制</option>
                 <option value="中，情緒逐步滲出">中，情緒逐步滲出</option>
-                <option value="中高，情感持續積累">中高，情感持續積累</option>
+                <option value="中高，情感持續積累" selected>中高，情感持續積累</option>
                 <option value="高，但仍保持文學節制">高，但仍保持文學節制</option>
               </select>
             </div>
@@ -582,7 +541,7 @@ document.getElementById("perspective").addEventListener("change", function(){
               <select id="blankness">
                 <option value="低，敘事較完整清楚">低，敘事較完整清楚</option>
                 <option value="中，保留部分暗示">中，保留部分暗示</option>
-                <option value="中高，重視餘韻與未說之意">中高，重視餘韻與未說之意</option>
+                <option value="中高，重視餘韻與未說之意" selected>中高，重視餘韻與未說之意</option>
                 <option value="高，結尾需有明顯留白感">高，結尾需有明顯留白感</option>
               </select>
             </div>
@@ -592,7 +551,7 @@ document.getElementById("perspective").addEventListener("change", function(){
               <select id="sceneStrength">
                 <option value="低，只作為背景點綴">低，只作為背景點綴</option>
                 <option value="中，場景與情緒並行">中，場景與情緒並行</option>
-                <option value="中高，城市細節需明顯參與敘事">中高，城市細節需明顯參與敘事</option>
+                <option value="中高，城市細節需明顯參與敘事" selected>中高，城市細節需明顯參與敘事</option>
                 <option value="高，城市本身需成為情緒載體">高，城市本身需成為情緒載體</option>
               </select>
             </div>
@@ -601,7 +560,7 @@ document.getElementById("perspective").addEventListener("change", function(){
               <label for="dialogueDensity">對話密度</label>
               <select id="dialogueDensity">
                 <option value="低，以敘事與心理流動為主">低，以敘事與心理流動為主</option>
-                <option value="中，穿插自然對話">中，穿插自然對話</option>
+                <option value="中，穿插自然對話" selected>中，穿插自然對話</option>
                 <option value="中高，人物互動需較鮮明">中高，人物互動需較鮮明</option>
                 <option value="高，以對話推進關係張力">高，以對話推進關係張力</option>
               </select>
@@ -610,7 +569,7 @@ document.getElementById("perspective").addEventListener("change", function(){
             <div class="field">
               <label for="timeTexture">時間感質地</label>
               <select id="timeTexture">
-                <option value="即時當下感">即時當下感</option>
+                <option value="即時當下感" selected>即時當下感</option>
                 <option value="一晚或一日之內的濃縮敘事">一晚或一日之內的濃縮敘事</option>
                 <option value="現在與過去交錯">現在與過去交錯</option>
                 <option value="帶回望感的成熟敘述">帶回望感的成熟敘述</option>
@@ -714,7 +673,7 @@ document.getElementById("perspective").addEventListener("change", function(){
     </div>
 
     <div class="footer-note">
-      都會文學內容生成器 v2 Pro
+      都會文學內容生成器 v2 Pro＋專業版視角系統
     </div>
   </div>
 
@@ -762,8 +721,25 @@ document.getElementById("perspective").addEventListener("change", function(){
       }
     };
 
+    const perspectiveHintMap = {
+      "第一人稱｜沉浸主體視角": "最直接真實，適合情感經驗、自白式散文。",
+      "第三人稱有限｜小說感穩定視角": "成熟穩定，較具小說與文學感。",
+      "第三人稱全知｜多人物心理視角": "可同時描寫雙方心理與誤解。",
+      "第二人稱｜對特定對象說話": "適合思念、告別、未完成關係。",
+      "第二人稱｜自我分身式書寫": "高級寫法，適合清醒、自我審視、情感覺醒。",
+      "第二人稱｜泛讀者共感型": "適合觀察式散文，但避免過度語錄化。",
+      "自由切換｜穩定版（第一人稱主體＋局部第二人稱）": "最推薦。穩定又有文學張力。",
+      "自由切換｜文學版（第一／第二／第三自然流動）": "層次高，適合成熟作品。",
+      "自由切換｜高級版（依情緒推進無痕切換）": "投稿級寫法，需高完成度。",
+      "雙視角對照｜男女雙方心理並行": "適合關係衝突、誤會與對照。",
+      "旁觀者視角｜城市觀察式敘事": "適合都會群像、人情觀察。",
+      "鏡像視角｜現在與過去的自己對話": "適合成長、遺憾、人生回望。"
+    };
+
     const urbanStyleSelect = document.getElementById("urbanStyle");
     const styleCard = document.getElementById("styleCard");
+    const perspectiveSelect = document.getElementById("perspective");
+    const perspectiveHint = document.getElementById("perspectiveHint");
 
     function initStyles() {
       urbanStyleSelect.innerHTML = "";
@@ -774,6 +750,7 @@ document.getElementById("perspective").addEventListener("change", function(){
         urbanStyleSelect.appendChild(option);
       });
       updateStyleCard();
+      updatePerspectiveHint();
     }
 
     function updateStyleCard() {
@@ -795,7 +772,30 @@ document.getElementById("perspective").addEventListener("change", function(){
       `;
     }
 
+    function updatePerspectiveHint() {
+      perspectiveHint.textContent = perspectiveHintMap[perspectiveSelect.value] || "請選擇敘事視角。";
+    }
+
     urbanStyleSelect.addEventListener("change", updateStyleCard);
+    perspectiveSelect.addEventListener("change", updatePerspectiveHint);
+
+    function getPerspectiveInstruction(perspective) {
+      const map = {
+        "第一人稱｜沉浸主體視角": "請以第一人稱為主，強化主體經驗、感受與記憶的貼身性，使讀者能直接進入人物內在。",
+        "第三人稱有限｜小說感穩定視角": "請以第三人稱有限視角書寫，穩定跟隨核心人物感受，保持成熟小說感與觀察距離。",
+        "第三人稱全知｜多人物心理視角": "請以第三人稱全知視角書寫，必要時可描寫多位人物的心理狀態與誤解交錯。",
+        "第二人稱｜對特定對象說話": "請以第二人稱對特定對象說話，使文字帶有召喚、告白、質問或未完成關係的張力。",
+        "第二人稱｜自我分身式書寫": "請以第二人稱作為自我分身書寫，形成自我旁觀、自我審視與清醒感。",
+        "第二人稱｜泛讀者共感型": "請以第二人稱作為泛指讀者的共感入口，但避免寫成語錄體或廉價共鳴句。",
+        "自由切換｜穩定版（第一人稱主體＋局部第二人稱）": "請以第一人稱為主體敘事，在情緒高潮或自我覺察段落，自然轉入第二人稱；整體切換需流暢不突兀。",
+        "自由切換｜文學版（第一／第二／第三自然流動）": "請讓第一、第二、第三人稱依敘事情境自然流動，但保持清晰與穩定，不可混亂。",
+        "自由切換｜高級版（依情緒推進無痕切換）": "請依情緒推進與敘事需要無痕切換視角，使讀者幾乎察覺不到轉換痕跡。",
+        "雙視角對照｜男女雙方心理並行": "請以雙視角方式書寫，讓雙方心理、誤解、期待或落差形成對照。",
+        "旁觀者視角｜城市觀察式敘事": "請以旁觀者或觀察者角度切入，使人物關係成為城市生活的縮影。",
+        "鏡像視角｜現在與過去的自己對話": "請讓現在的自己與過去的自己形成鏡像或對話，呈現成長、遺憾與回望感。"
+      };
+      return map[perspective] || `請採用「${perspective}」的敘事視角。`;
+    }
 
     function getToggleInstructions() {
       const lines = [];
@@ -833,6 +833,7 @@ document.getElementById("perspective").addEventListener("change", function(){
       const extraReq = document.getElementById("extraReq").value.trim();
 
       const style = styleData[urbanStyle];
+      const perspectiveInstruction = getPerspectiveInstruction(perspective);
       const toggleInstructions = getToggleInstructions();
 
       const prompt = `請根據以下素材寫成一篇具有文學性的${genre}。
@@ -863,19 +864,20 @@ ${forbiddenElements || "避免庶民懷舊套路與模板化鄰里角色。"}
 1. 文章類型：${genre}
 2. 文章語氣：${tone}
 3. 敘事視角：${perspective}
-4. 句子張力：${tension}
-5. 情感濃度：${emotionDensity}
-6. 留白程度：${blankness}
-7. 都市場景強度：${sceneStrength}
-8. 對話密度：${dialogueDensity}
-9. 時間感質地：${timeTexture}
-10. 文章長度：${length}
-11. 文字需具有文學感、層次感與畫面感，不要寫成一般社群貼文或口號式抒情。
-12. 情緒要透過場景、細節、動作、物件、對話或心理流動自然呈現，不要只用抽象詞直接說明。
-13. 請讓文章具備完整起伏，即使篇幅不長，也要有清楚的情緒推進或意義轉折。
-14. 城市空間不只是背景，而要成為人物情緒與關係狀態的載體。
-15. 可視需要補入合理細節，使文章更完整，但不得偏離原本的創作核心。
-16. 請避免過度說教、過度雞湯、過度網路感句型。`;
+4. 視角控制補充：${perspectiveInstruction}
+5. 句子張力：${tension}
+6. 情感濃度：${emotionDensity}
+7. 留白程度：${blankness}
+8. 都市場景強度：${sceneStrength}
+9. 對話密度：${dialogueDensity}
+10. 時間感質地：${timeTexture}
+11. 文章長度：${length}
+12. 文字需具有文學感、層次感與畫面感，不要寫成一般社群貼文或口號式抒情。
+13. 情緒要透過場景、細節、動作、物件、對話或心理流動自然呈現，不要只用抽象詞直接說明。
+14. 請讓文章具備完整起伏，即使篇幅不長，也要有清楚的情緒推進或意義轉折。
+15. 城市空間不只是背景，而要成為人物情緒與關係狀態的載體。
+16. 可視需要補入合理細節，使文章更完整，但不得偏離原本的創作核心。
+17. 請避免過度說教、過度雞湯、過度網路感句型。`;
 
       const extraLines = [];
       if (toggleInstructions.length > 0) {
@@ -914,6 +916,7 @@ ${forbiddenElements || "避免庶民懷舊套路與模板化鄰里角色。"}
 - 類型：${genre}
 - 語氣：${tone}
 - 視角：${perspective}
+- 視角控制補充：${perspectiveInstruction}
 - 張力：${tension}
 - 情感濃度：${emotionDensity}
 - 留白程度：${blankness}
@@ -975,7 +978,7 @@ ${articleExtras.length ? articleExtras.join("\n") + "\n" : ""}
       document.getElementById("genre").selectedIndex = 0;
       document.getElementById("tone").selectedIndex = 0;
       document.getElementById("length").selectedIndex = 1;
-      document.getElementById("perspective").selectedIndex = 0;
+      document.getElementById("perspective").value = "自由切換｜穩定版（第一人稱主體＋局部第二人稱）";
       document.getElementById("tension").selectedIndex = 2;
       document.getElementById("emotionDensity").selectedIndex = 2;
       document.getElementById("blankness").selectedIndex = 2;
@@ -988,6 +991,7 @@ ${articleExtras.length ? articleExtras.join("\n") + "\n" : ""}
       document.getElementById("urbanLonely").checked = true;
       urbanStyleSelect.selectedIndex = 0;
       updateStyleCard();
+      updatePerspectiveHint();
     }
 
     initStyles();
