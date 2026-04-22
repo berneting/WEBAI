@@ -1,0 +1,583 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>銀髮運動圖像提示詞生成器 Pro</title>
+  <style>
+    :root{
+      --bg1:#07111f;
+      --bg2:#0d1f38;
+      --panel:rgba(255,255,255,0.10);
+      --panel-2:rgba(255,255,255,0.08);
+      --line:rgba(255,255,255,0.16);
+      --text:#eef4ff;
+      --muted:#b8c7e6;
+      --accent:#7fc4ff;
+      --accent-2:#9be7ff;
+      --shadow:0 18px 50px rgba(0,0,0,0.28);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(90,150,255,0.18), transparent 28%),
+        radial-gradient(circle at 85% 15%, rgba(90,255,220,0.10), transparent 22%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+    }
+    .wrap{
+      max-width:1440px;
+      margin:0 auto;
+      padding:28px 20px 40px;
+    }
+    .hero{
+      padding:28px 30px;
+      border:1px solid var(--line);
+      border-radius:28px;
+      background:linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
+      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+      box-shadow:var(--shadow);
+      margin-bottom:22px;
+    }
+    .hero h1{
+      margin:0 0 10px;
+      font-size:clamp(28px, 4vw, 42px);
+      letter-spacing:.5px;
+    }
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.8;
+      font-size:15px;
+    }
+    .badge-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:16px;
+    }
+    .badge{
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.12);
+      color:#dfeaff;
+      font-size:13px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap:22px;
+    }
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:var(--panel);
+      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .card-head{
+      padding:18px 22px;
+      border-bottom:1px solid rgba(255,255,255,0.10);
+      background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+    }
+    .card-head h2{
+      margin:0;
+      font-size:20px;
+    }
+    .card-head p{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.7;
+    }
+    .card-body{
+      padding:22px;
+    }
+    .section-title{
+      font-size:15px;
+      margin:0 0 10px;
+      color:#ffffff;
+      letter-spacing:.3px;
+    }
+    .group{
+      margin-bottom:18px;
+    }
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+    label{
+      display:block;
+      font-size:13px;
+      color:#dbe8ff;
+      margin-bottom:7px;
+    }
+    input[type="text"], select, textarea{
+      width:100%;
+      border:none;
+      outline:none;
+      border-radius:16px;
+      background:var(--panel-2);
+      color:var(--text);
+      padding:14px 14px;
+      border:1px solid rgba(255,255,255,0.10);
+      font-size:14px;
+      line-height:1.6;
+    }
+    textarea{
+      resize:vertical;
+      min-height:90px;
+    }
+    input::placeholder, textarea::placeholder{
+      color:#9ab0d8;
+    }
+    .check-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:10px;
+      margin-top:6px;
+    }
+    .check{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 12px;
+      border-radius:14px;
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.10);
+      min-height:50px;
+    }
+    .check label{
+      margin:0;
+      font-size:14px;
+      color:var(--text);
+    }
+    .check input{
+      transform:scale(1.1);
+      accent-color:#92d4ff;
+    }
+    .buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:22px;
+    }
+    button{
+      border:none;
+      outline:none;
+      cursor:pointer;
+      border-radius:16px;
+      padding:14px 18px;
+      font-size:14px;
+      font-weight:700;
+      transition:.2s ease;
+    }
+    .btn-primary{
+      background:linear-gradient(135deg, var(--accent), var(--accent-2));
+      color:#06203f;
+    }
+    .btn-secondary{
+      background:rgba(255,255,255,0.10);
+      color:var(--text);
+      border:1px solid rgba(255,255,255,0.12);
+    }
+    .btn-primary:hover, .btn-secondary:hover{
+      transform:translateY(-1px);
+      filter:brightness(1.04);
+    }
+    .output-block{
+      margin-bottom:18px;
+    }
+    .output-block h3{
+      margin:0 0 10px;
+      font-size:15px;
+      color:#fff;
+    }
+    .output{
+      width:100%;
+      min-height:170px;
+      border-radius:18px;
+      background:rgba(8,16,28,0.45);
+      color:#edf5ff;
+      border:1px solid rgba(255,255,255,0.10);
+      padding:16px;
+      line-height:1.8;
+      font-size:14px;
+      white-space:pre-wrap;
+      overflow-wrap:anywhere;
+    }
+    .small-output{
+      min-height:62px;
+    }
+    .tip{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.7;
+    }
+    .footer-note{
+      margin-top:22px;
+      font-size:13px;
+      color:#c9d7f2;
+      line-height:1.8;
+      padding:14px 16px;
+      border-radius:16px;
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.10);
+    }
+    @media (max-width: 1040px){
+      .grid{grid-template-columns:1fr}
+    }
+    @media (max-width: 720px){
+      .row,.check-grid{grid-template-columns:1fr}
+      .hero{padding:22px}
+      .card-body{padding:18px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>銀髮運動圖像提示詞生成器 Pro</h1>
+      <p>
+        依照你的網站素材需求，將動作分類、人物設定、風格、背景與構圖組合成可直接貼回 AI 使用的英文提示詞。
+        設計重點放在「一張一動作、風格一致、適合網站卡片、方便量產」。
+      </p>
+      <div class="badge-row">
+        <span class="badge">銀髮運動網站</span>
+        <span class="badge">一張一動作</span>
+        <span class="badge">英文 Prompt 自動生成</span>
+        <span class="badge">可搭配 a01 / b01 / c01 編號</span>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <div class="card-head">
+          <h2>左側設定區</h2>
+          <p>先選基本動作與畫面條件，再補充細節。工具會自動組合成較穩定、可重複使用的圖像提示詞。</p>
+        </div>
+        <div class="card-body">
+          <div class="group">
+            <h3 class="section-title">基本分類</h3>
+            <div class="row">
+              <div>
+                <label for="category">動作分類</label>
+                <select id="category">
+                  <option>暖身運動</option>
+                  <option selected>肌力訓練</option>
+                  <option>專注力訓練</option>
+                  <option>統合訓練</option>
+                  <option>拉筋伸展</option>
+                  <option>平衡訓練</option>
+                </select>
+              </div>
+              <div>
+                <label for="bodyPart">身體部位</label>
+                <select id="bodyPart">
+                  <option>肩部</option>
+                  <option>手臂</option>
+                  <option>背部</option>
+                  <option>核心</option>
+                  <option selected>大腿</option>
+                  <option>小腿</option>
+                  <option>腳踝</option>
+                  <option>全身</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="group">
+            <div class="row">
+              <div>
+                <label for="motionName">動作名稱</label>
+                <input id="motionName" type="text" value="坐姿抬腿" placeholder="例如：坐姿抬腿、坐姿轉體、站姿側抬腿" />
+              </div>
+              <div>
+                <label for="motionDetail">動作細節（中文）</label>
+                <input id="motionDetail" type="text" value="坐在椅子上，單側腿向前伸直抬起" placeholder="例如：雙手平舉，身體保持穩定，單腳向外抬起" />
+              </div>
+            </div>
+          </div>
+
+          <div class="group">
+            <h3 class="section-title">人物與場景</h3>
+            <div class="row">
+              <div>
+                <label for="character">人物設定</label>
+                <select id="character">
+                  <option selected>亞洲長者女性</option>
+                  <option>亞洲長者男性</option>
+                  <option>中性長者</option>
+                  <option>復健教練</option>
+                  <option>團體多人版</option>
+                </select>
+              </div>
+              <div>
+                <label for="poseView">構圖角度</label>
+                <select id="poseView">
+                  <option selected>全身正面</option>
+                  <option>全身側面</option>
+                  <option>三分之二角度</option>
+                  <option>微側面示範</option>
+                  <option>局部重點特寫</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="style">插畫風格</label>
+                <select id="style">
+                  <option selected>醫療復健插畫風</option>
+                  <option>日系健康手冊風</option>
+                  <option>高級網站扁平風</option>
+                  <option>寫實照片風</option>
+                  <option>Q版親和風</option>
+                </select>
+              </div>
+              <div>
+                <label for="background">背景</label>
+                <select id="background">
+                  <option selected>白底</option>
+                  <option>淺色居家客廳</option>
+                  <option>教室</option>
+                  <option>復健空間</option>
+                  <option>健身房</option>
+                  <option>公園步道</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="group">
+            <h3 class="section-title">畫質與品牌一致性</h3>
+            <div class="row">
+              <div>
+                <label for="quality">畫質層級</label>
+                <select id="quality">
+                  <option>standard</option>
+                  <option selected>high detail</option>
+                  <option>ultra detail 4k</option>
+                </select>
+              </div>
+              <div>
+                <label for="filenamePrefix">檔名前綴</label>
+                <input id="filenamePrefix" type="text" value="a01" placeholder="例如：a01、b03、c12、z01" />
+              </div>
+            </div>
+
+            <div class="check-grid">
+              <div class="check">
+                <input id="webCard" type="checkbox" checked />
+                <label for="webCard">網站卡片模式</label>
+              </div>
+              <div class="check">
+                <input id="sameCharacter" type="checkbox" checked />
+                <label for="sameCharacter">固定同一角色風格</label>
+              </div>
+              <div class="check">
+                <input id="simpleProp" type="checkbox" checked />
+                <label for="simpleProp">器材與道具簡潔</label>
+              </div>
+              <div class="check">
+                <input id="safePose" type="checkbox" checked />
+                <label for="safePose">動作清楚、安全、穩定</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="group">
+            <label for="extra">額外要求（可選）</label>
+            <textarea id="extra" placeholder="例如：白色 T-shirt、深藍長褲、灰色運動鞋、木椅、臉部自然微笑、適合銀髮族網站"></textarea>
+          </div>
+
+          <div class="buttons">
+            <button class="btn-primary" onclick="generatePrompt()">生成提示詞</button>
+            <button class="btn-secondary" onclick="copyPrompt()">複製英文 Prompt</button>
+            <button class="btn-secondary" onclick="copyChinese()">複製中文描述</button>
+            <button class="btn-secondary" onclick="clearAll()">清空內容</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>右側輸出區</h2>
+          <p>生成後可直接把英文 Prompt 貼到 AI 圖像工具。下方同時附上中文描述與建議檔名，方便你整理素材庫。</p>
+        </div>
+        <div class="card-body">
+          <div class="output-block">
+            <h3>英文專業 Prompt</h3>
+            <div class="output" id="englishOutput"></div>
+            <div class="tip">建議用於圖片生成工具時，保持同一角色、同一服裝與同一風格，整個網站會更一致。</div>
+          </div>
+
+          <div class="output-block">
+            <h3>中文描述</h3>
+            <div class="output small-output" id="chineseOutput"></div>
+          </div>
+
+          <div class="output-block">
+            <h3>建議檔名</h3>
+            <div class="output small-output" id="filenameOutput"></div>
+          </div>
+
+          <div class="footer-note">
+            小技巧：如果你要大量做圖，建議只更換「動作名稱／動作細節／檔名前綴」，其餘風格維持一致。這樣 a01、a02、a03… 會像同一套專業運動圖庫。
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const characterMap = {
+      "亞洲長者女性":"an older Asian woman",
+      "亞洲長者男性":"an older Asian man",
+      "中性長者":"an older adult",
+      "復健教練":"a rehabilitation coach",
+      "團體多人版":"a small group of older adults"
+    };
+
+    const styleMap = {
+      "醫療復健插畫風":"clean professional rehabilitation illustration, medical wellness style, educational fitness poster style",
+      "日系健康手冊風":"warm Japanese health booklet illustration, soft line art, friendly healthcare guide style",
+      "高級網站扁平風":"modern premium flat website illustration, elegant healthcare branding style, clean vector-like design",
+      "寫實照片風":"realistic health fitness photo style, natural lighting, professional senior wellness photography",
+      "Q版親和風":"friendly soft cartoon illustration, approachable senior wellness guide style, cute but clean"
+    };
+
+    const viewMap = {
+      "全身正面":"full body, front view",
+      "全身側面":"full body, side view",
+      "三分之二角度":"full body, three-quarter view",
+      "微側面示範":"full body, slightly angled demonstration view",
+      "局部重點特寫":"focused composition highlighting the key body movement"
+    };
+
+    const backgroundMap = {
+      "白底":"white background",
+      "淺色居家客廳":"light home living room background",
+      "教室":"simple classroom background",
+      "復健空間":"clean rehabilitation room background",
+      "健身房":"bright fitness studio background",
+      "公園步道":"soft outdoor park walkway background"
+    };
+
+    function toSlug(text){
+      return text
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "_")
+        .replace(/[^a-z0-9_\-\u4e00-\u9fff]/g, "")
+        .replace(/_+/g, "_");
+    }
+
+    function buildActionEnglish(name, detail){
+      const custom = detail.trim();
+      if(custom){
+        return custom;
+      }
+      return name.trim();
+    }
+
+    function generatePrompt(){
+      const category = document.getElementById("category").value;
+      const bodyPart = document.getElementById("bodyPart").value;
+      const motionName = document.getElementById("motionName").value.trim();
+      const motionDetail = document.getElementById("motionDetail").value.trim();
+      const character = document.getElementById("character").value;
+      const style = document.getElementById("style").value;
+      const background = document.getElementById("background").value;
+      const poseView = document.getElementById("poseView").value;
+      const quality = document.getElementById("quality").value;
+      const filenamePrefix = document.getElementById("filenamePrefix").value.trim();
+      const extra = document.getElementById("extra").value.trim();
+
+      const webCard = document.getElementById("webCard").checked;
+      const sameCharacter = document.getElementById("sameCharacter").checked;
+      const simpleProp = document.getElementById("simpleProp").checked;
+      const safePose = document.getElementById("safePose").checked;
+
+      const parts = [];
+
+      parts.push(`A ${styleMap[style]} of ${characterMap[character]} performing a senior exercise movement`);
+      parts.push(viewMap[poseView]);
+      parts.push(backgroundMap[background]);
+      parts.push(`for ${category}`);
+      parts.push(`focused on ${bodyPart}`);
+      parts.push(`the movement is ${buildActionEnglish(motionName, motionDetail)}`);
+      parts.push(`clear body posture`);
+      parts.push(`natural smile`);
+      parts.push(`comfortable exercise clothing`);
+
+      if(simpleProp){
+        parts.push(`simple chair or minimal props only when needed`);
+      }
+      if(safePose){
+        parts.push(`safe, stable, easy-to-understand posture for older adults`);
+      }
+      if(webCard){
+        parts.push(`centered composition, suitable for website card design, clean layout, isolated subject`);
+      }
+      if(sameCharacter){
+        parts.push(`keep the same character design, same clothing colors, and same illustration style across the series`);
+      }
+
+      parts.push(quality);
+
+      if(extra){
+        parts.push(extra);
+      }
+
+      const english = parts.join(", ") + ".";
+
+      const chinese = `以${character}為主角，製作「${motionName}」的${style}圖片，分類為${category}，重點部位為${bodyPart}，背景採${background}，構圖為${poseView}。畫面需清楚呈現「${motionDetail || motionName}」，整體風格適合銀髮運動網站使用。`;
+
+      const safeName = toSlug(motionName || "exercise");
+      const filename = `${filenamePrefix || "a01"}_${safeName}.png`;
+
+      document.getElementById("englishOutput").textContent = english;
+      document.getElementById("chineseOutput").textContent = chinese;
+      document.getElementById("filenameOutput").textContent = filename;
+    }
+
+    function copyPrompt(){
+      const text = document.getElementById("englishOutput").textContent.trim();
+      if(!text){ alert("請先生成提示詞"); return; }
+      navigator.clipboard.writeText(text).then(()=>alert("英文 Prompt 已複製"));
+    }
+
+    function copyChinese(){
+      const text = document.getElementById("chineseOutput").textContent.trim();
+      if(!text){ alert("請先生成內容"); return; }
+      navigator.clipboard.writeText(text).then(()=>alert("中文描述已複製"));
+    }
+
+    function clearAll(){
+      document.getElementById("motionName").value = "";
+      document.getElementById("motionDetail").value = "";
+      document.getElementById("filenamePrefix").value = "";
+      document.getElementById("extra").value = "";
+      document.getElementById("englishOutput").textContent = "";
+      document.getElementById("chineseOutput").textContent = "";
+      document.getElementById("filenameOutput").textContent = "";
+    }
+
+    generatePrompt();
+  </script>
+</body>
+</html>
