@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>世界文學高階創作提示詞生成器 Pro</title>
+  <style>
+    :root {
+      --bg-main: radial-gradient(circle at top left, #1b3d66 0%, #0b1726 42%, #050b13 100%);
+      --hero-bg: linear-gradient(135deg, rgba(25, 52, 88, 0.82), rgba(6, 14, 28, 0.94));
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-bg-strong: rgba(255, 255, 255, 0.12);
+      --card-border: rgba(255, 255, 255, 0.15);
+      --line: rgba(255, 255, 255, 0.14);
+      --text-main: #eef4ff;
+      --text-soft: #c9d7ee;
+      --text-muted: #9fb3d1;
+      --accent: #8ec5ff;
+      --accent-2: #caa6ff;
+      --accent-3: #7ee0c6;
+      --danger: #ffb3b3;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.3);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+      background: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.75;
+    }
+
+    .container {
+      width: min(1200px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 42px;
+    }
+
+    .hero {
+      background: var(--hero-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 30px;
+      padding: 32px 30px 26px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: clamp(30px, 4vw, 44px);
+      line-height: 1.18;
+      letter-spacing: 0.5px;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 16px;
+      max-width: 940px;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .badge {
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.12fr 0.88fr;
+      gap: 22px;
+    }
+
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 20px 22px 8px;
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.3;
+    }
+
+    .panel-header p {
+      margin: 8px 0 0;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .panel-body {
+      padding: 18px 22px 24px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-soft);
+    }
+
+    .field small {
+      display: block;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-size: 12px;
+    }
+
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+      color: var(--text-main);
+      border-radius: 14px;
+      padding: 14px 15px;
+      font-size: 15px;
+      outline: none;
+      transition: 0.2s ease;
+    }
+
+    input[type="text"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(142, 197, 255, 0.75);
+      box-shadow: 0 0 0 3px rgba(142, 197, 255, 0.14);
+      background: rgba(255,255,255,0.1);
+    }
+
+    textarea {
+      min-height: 128px;
+      resize: vertical;
+    }
+
+    select option {
+      color: #111;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--line);
+      margin: 18px 0 20px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      border-radius: 14px;
+      padding: 12px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      transition: transform 0.15s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #08111c;
+      box-shadow: 0 10px 24px rgba(142, 197, 255, 0.22);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: var(--text-main);
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-soft);
+      border: 1px dashed rgba(255,255,255,0.2);
+    }
+
+    .style-card {
+      background: var(--card-bg-strong);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 16px 16px 14px;
+      margin-bottom: 18px;
+    }
+
+    .style-card h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .style-card .sub {
+      color: var(--accent);
+      font-size: 13px;
+      margin-bottom: 8px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+    }
+
+    .style-card p {
+      margin: 0 0 8px;
+      color: var(--text-soft);
+      font-size: 14px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      font-size: 12px;
+      color: #d8e7ff;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+
+    .output-wrap {
+      display: grid;
+      gap: 16px;
+    }
+
+    .output-box {
+      background: rgba(5, 12, 24, 0.35);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .output-box h3 {
+      margin: 0 0 10px;
+      font-size: 17px;
+      color: var(--accent);
+    }
+
+    .output-box textarea {
+      min-height: 245px;
+      background: rgba(255,255,255,0.04);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.8;
+    }
+
+    .tip-box {
+      border-radius: 18px;
+      border: 1px solid rgba(126, 224, 198, 0.18);
+      background: rgba(126, 224, 198, 0.08);
+      padding: 14px 16px;
+      color: #dcfff5;
+      font-size: 14px;
+      margin-top: 18px;
+    }
+
+    .mode-note {
+      color: var(--accent-3);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      color: var(--text-muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>世界文學高階創作提示詞生成器 Pro</h1>
+      <p>
+        將創作動機、生活片段、人物關係或情緒素材，轉化為具備世界文學結構感的 AI 提示詞。
+        本工具不只是選擇作者風格，而是透過文學引擎、敘事結構、結尾方式與雙作者混血模式，
+        生成更適合高階散文、小說片段與文學性敘事的完整指令。
+      </p>
+      <div class="badge-row">
+        <span class="badge">世界文學 × 華文現代派</span>
+        <span class="badge">雙作者混血模式</span>
+        <span class="badge">文學引擎控制</span>
+        <span class="badge">適用散文、小說、散文詩、回憶書寫</span>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="panel">
+        <div class="panel-header">
+          <h2>輸入創作素材</h2>
+          <p>先放入創作核心，再選擇作者、引擎與敘事結構。</p>
+        </div>
+
+        <div class="panel-body">
+          <div class="field">
+            <label for="motivation">創作動機</label>
+            <textarea id="motivation" placeholder="例如：我想寫一篇雨天週五的文章，不只是寫天氣，而是寫人在日常裡突然感覺自己與世界有距離，但又被一杯拿鐵、一個飯糰、一處自習室安靜接住。"></textarea>
+          </div>
+
+          <div class="field">
+            <label for="eventDesc">事件描述 / 素材片段</label>
+            <textarea id="eventDesc" placeholder="例如：週五下雨，我去買飯糰，選了不要辣。到了大墩文化中心，自習室很安靜。雨滴打在玻璃上，像普普風格的圓點。拿鐵還熱，外面風涼。"></textarea>
+          </div>
+
+          <div class="grid">
+            <div class="field">
+              <label for="mode">創作模式</label>
+              <select id="mode" onchange="toggleModeNote()">
+                <option value="single">單作者模式</option>
+                <option value="hybrid">雙作者混血模式</option>
+              </select>
+              <small id="modeNote">單作者模式適合明確控制一種筆法。</small>
+            </div>
+
+            <div class="field">
+              <label for="authorPrimary">主要作者風格</label>
+              <select id="authorPrimary"></select>
+            </div>
+
+            <div class="field" id="secondaryAuthorField">
+              <label for="authorSecondary">第二作者風格</label>
+              <select id="authorSecondary"></select>
+              <small>混血模式會將第一作者作為主結構，第二作者作為語感或精神補強。</small>
+            </div>
+
+            <div class="field">
+              <label for="genre">文章類型</label>
+              <select id="genre">
+                <option value="文學性散文">文學性散文</option>
+                <option value="敘事散文">敘事散文</option>
+                <option value="散文詩">散文詩</option>
+                <option value="短篇小說片段">短篇小說片段</option>
+                <option value="回憶書寫">回憶書寫</option>
+                <option value="哲思性短文">哲思性短文</option>
+                <option value="城市文學短章">城市文學短章</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="engine">文學引擎</label>
+              <select id="engine">
+                <option value="意識流引擎：弱化事件，強化感覺、念頭、記憶與內在韻律。">意識流引擎</option>
+                <option value="迷宮敘事引擎：讓日常場景逐步轉向時間、記憶、空間或命運的迷宮。">迷宮敘事引擎</option>
+                <option value="存在主義引擎：從微小選擇推進到偶然、自由、荒謬與生命重量。">存在主義引擎</option>
+                <option value="都市孤獨引擎：以乾淨日常細節呈現人在城市中的距離感與自我修行。">都市孤獨引擎</option>
+                <option value="時間蒙太奇引擎：讓現在與過去彼此對倒、切換、重疊，形成電影感。">時間蒙太奇引擎</option>
+                <option value="金句收尾引擎：前文鋪陳，結尾壓縮成短、冷、亮的哲思句。">金句收尾引擎</option>
+                <option value="繁華殘影引擎：讓人情、時代、空間與舊日餘暉形成凋零美學。">繁華殘影引擎</option>
+                <option value="童心拼貼引擎：用輕巧、觀察、空間感與物件想像拼出城市童話。">童心拼貼引擎</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="structure">敘事結構</label>
+              <select id="structure">
+                <option value="一日生活流：從一個平凡時段開始，讓感覺自然流動。">一日生活流</option>
+                <option value="回憶交錯：現在場景與過去記憶互相牽引。">回憶交錯</option>
+                <option value="拼貼碎片：以片段、物件、聲音、空間組合出整體情緒。">拼貼碎片</option>
+                <option value="哲學插敘：在敘事中穿插短小哲思，但不變成說教。">哲學插敘</option>
+                <option value="無情節純氛圍：不強調事件，只讓氛圍、感官與內心形成文章。">無情節純氛圍</option>
+                <option value="迷宮回返：結尾回到開頭的場景，但意義已經改變。">迷宮回返</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="ending">結尾方式</label>
+              <select id="ending">
+                <option value="安靜停住：不總結，不說破，只讓情緒自然停在畫面上。">安靜停住</option>
+                <option value="冷句收尾：用一句短而冷的句子收束全文。">冷句收尾</option>
+                <option value="哲思懸空：讓最後一句保留一點思想上的空隙。">哲思懸空</option>
+                <option value="情緒回彈：讓前文壓抑的情緒在最後輕微回聲。">情緒回彈</option>
+                <option value="開放式迷宮結尾：讓結尾像另一個入口，而不是答案。">開放式迷宮結尾</option>
+                <option value="日常物件收尾：讓一個物件承接全文餘韻。">日常物件收尾</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="tone">整體語氣</label>
+              <select id="tone">
+                <option value="深沉孤寂">深沉孤寂</option>
+                <option value="冷靜克制">冷靜克制</option>
+                <option value="溫柔含蓄">溫柔含蓄</option>
+                <option value="都會疏離">都會疏離</option>
+                <option value="哲思內省">哲思內省</option>
+                <option value="夢境迷離">夢境迷離</option>
+                <option value="童稚明亮">童稚明亮</option>
+                <option value="繁華落盡">繁華落盡</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="length">文章長度</label>
+              <select id="length">
+                <option value="約 500 字">約 500 字</option>
+                <option value="約 800 字">約 800 字</option>
+                <option value="約 1200 字">約 1200 字</option>
+                <option value="約 1500 字">約 1500 字</option>
+                <option value="約 2000 字">約 2000 字</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="perspective">敘事視角</label>
+              <select id="perspective">
+                <option value="第一人稱">第一人稱</option>
+                <option value="第二人稱">第二人稱</option>
+                <option value="第三人稱有限視角">第三人稱有限視角</option>
+                <option value="第三人稱全知視角">第三人稱全知視角</option>
+                <option value="自由切換但保持自然">自由切換但保持自然</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="density">文學濃度</label>
+              <select id="density">
+                <option value="中等，保持可讀性與文學感平衡">中等</option>
+                <option value="偏高，允許較多意象、哲思與句法變化">偏高</option>
+                <option value="高，追求文學獎式語言密度，但仍需可讀">高</option>
+                <option value="極高，接近實驗性散文，但不得晦澀到失去內容">極高</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="extraReq">額外要求（可選）</label>
+            <textarea id="extraReq" placeholder="例如：不要寫成網路抒情文。不要過度解釋。希望有雨、拿鐵、文化中心、自習室、飯糰，但不要把它們寫得太直白。"></textarea>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="button-row">
+            <button class="btn-primary" onclick="generatePrompt()">生成提示句</button>
+            <button class="btn-secondary" onclick="copyPrompt()">複製提示句</button>
+            <button class="btn-secondary" onclick="copyDirectPrompt()">複製直接生成版</button>
+            <button class="btn-ghost" onclick="clearAllFields()">清空內容</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>風格摘要與輸出</h2>
+          <p>此區會顯示作者精神、敘事策略與可直接貼回 AI 的提示詞。</p>
+        </div>
+
+        <div class="panel-body">
+          <div class="style-card" id="styleCard"></div>
+
+          <div class="output-wrap">
+            <div class="output-box">
+              <h3>AI 提示句</h3>
+              <textarea id="promptOutput" placeholder="按下「生成提示句」後，這裡會出現完整提示詞。"></textarea>
+            </div>
+
+            <div class="output-box">
+              <h3>直接生成文章版</h3>
+              <textarea id="directOutput" placeholder="這裡會出現可直接要求 AI 生成文章的版本。"></textarea>
+            </div>
+          </div>
+
+          <div class="tip-box">
+            使用建議：若生成結果太像仿作，可追加一句：
+            「請只吸收作家的敘事精神與結構策略，不要模仿其原句、固定句型或可辨識文本。」
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer-note">
+      World Literature Prompt Engine Pro
+    </div>
+  </div>
+
+  <script>
+    const styleData = {
+      "米蘭・昆德拉｜輕重辯證": {
+        category: "世界文學：結構與精神的開拓者",
+        subtitle: "在敘事中穿插哲學隨筆，從日常選擇推向存在的輕與重。",
+        features: ["哲學插敘", "偶然性", "存在辯證", "輕與重", "敘事與思辨並行"],
+        structure: "日常事件 → 偶然選擇 → 哲學插敘 → 存在辯證 → 回到人物處境",
+        rhythm: "句子冷靜清楚，允許短段哲思，但不得變成論文式說理。",
+        suitable: "選擇、偶然、愛情、記憶、命運、自我辯證",
+        example: "可將一個「不要辣」的選擇，寫成關於偶然、自由與生命重量的隱喻。",
+        instruction: "請以昆德拉式的輕重辯證書寫，讓日常事件不只是事件，而是通往偶然、選擇、自由與存在重量的入口。"
+      },
+      "博爾赫斯｜迷宮與形而上學": {
+        category: "世界文學：結構與精神的開拓者",
+        subtitle: "將現實與虛幻模糊，使圖書館、迷宮、時間與符號成為敘事核心。",
+        features: ["迷宮敘事", "形而上學", "時間錯位", "虛實混融", "符號密碼"],
+        structure: "真實場景 → 異常細節 → 空間轉化 → 時間迷宮 → 開放式謎題",
+        rhythm: "語言精準、冷靜、帶智性，像在記錄一個不可證明的宇宙假說。",
+        suitable: "圖書館、文化中心、雨、書、記憶、時間、空間、命運",
+        example: "可讓自習室的座位通往另一個無限重複的宇宙，雨滴成為神留下的密碼。",
+        instruction: "請以博爾赫斯式的迷宮與形而上學筆法書寫，讓平凡空間逐漸變成時間、記憶與宇宙秩序的迷宮。"
+      },
+      "維吉尼亞・吳爾芙｜意識流與內在韻律": {
+        category: "世界文學：結構與精神的開拓者",
+        subtitle: "捕捉瞬間思緒、感官與記憶的細微流動，讓文字如水般綿延。",
+        features: ["意識流", "內在韻律", "感官交織", "時間流動", "心理細描"],
+        structure: "外部瞬間 → 感官觸發 → 思緒流動 → 記憶浮現 → 情緒暈染",
+        rhythm: "句子可較長，帶流動感與音樂性，避免明顯的起承轉合。",
+        suitable: "雨、風、咖啡、光線、孤獨、女性心理、時間感",
+        example: "可讓拿鐵的熱氣、涼風與落雨交織成一場心靈交響樂。",
+        instruction: "請以吳爾芙式的意識流書寫，弱化外在事件，強化瞬間感官、內在聲音、記憶波紋與心理韻律。"
+      },
+      "村上春樹｜都會疏離與生活儀式感": {
+        category: "世界文學：結構與精神的開拓者",
+        subtitle: "以乾淨日常、淡淡憂鬱與生活儀式，呈現城市孤獨。",
+        features: ["都會疏離", "生活儀式", "乾淨句子", "淡淡憂鬱", "日常細節"],
+        structure: "日常動作 → 安靜觀察 → 孤獨感浮現 → 微小異樣 → 生活繼續",
+        rhythm: "句子簡潔、乾淨、節制，避免過度華麗。",
+        suitable: "城市、雨天、咖啡、食物、散步、孤獨、音樂、日常修行",
+        example: "可將飯糰與拿鐵寫成都市孤獨者的一套日常儀式。",
+        instruction: "請以村上春樹式的都會疏離筆法書寫，用乾淨日常細節呈現孤獨、儀式感與微微不真實的生活氣味。"
+      },
+      "卡繆｜冷感存在主義": {
+        category: "世界文學：結構與精神的開拓者",
+        subtitle: "以冷靜、清澈、近乎無表情的語調，寫出荒謬與存在感。",
+        features: ["冷感敘事", "荒謬感", "陽光與空白", "存在孤獨", "清澈語言"],
+        structure: "平凡事實 → 情緒缺席 → 荒謬浮現 → 人的孤立 → 冷靜停住",
+        rhythm: "短句與中句為主，語調平直，讓荒謬感自然浮出。",
+        suitable: "孤獨、炎熱、等待、日常、死亡感、荒謬、無意義",
+        example: "可將一個普通雨天寫成個體面對世界無聲重量的片刻。",
+        instruction: "請以卡繆式的冷感存在主義書寫，不煽情，不解釋，用平直語言呈現人與世界之間的荒謬距離。"
+      },
+      "卡爾維諾｜輕盈寓言": {
+        category: "世界文學：結構與精神的開拓者",
+        subtitle: "用輕盈、透明、寓言式結構，把抽象概念化為可感空間。",
+        features: ["輕盈", "寓言結構", "空間想像", "概念具象化", "透明敘事"],
+        structure: "具體場景 → 奇妙轉換 → 概念化空間 → 寓言式收束",
+        rhythm: "語言清亮、輕巧，有理性秩序與童話感。",
+        suitable: "城市、空間、想像、旅行、輕盈、閱讀、日常寓言",
+        example: "可把文化中心寫成一座由雨滴、書桌與沉默搭成的城市。",
+        instruction: "請以卡爾維諾式的輕盈寓言書寫，讓日常空間變成概念化、透明、帶想像秩序的文學場景。"
+      },
+      "白先勇｜傳統與現代的凋零美學": {
+        category: "華文文學：意境與留白的現代演譯",
+        subtitle: "以瑰麗、優雅的筆觸書寫舊時代餘暉與人情宿命。",
+        features: ["凋零美學", "繁華餘暉", "人情流動", "宿命感", "典雅筆調"],
+        structure: "空間出場 → 人物或記憶浮現 → 繁華對照 → 時光凋零 → 餘韻收束",
+        rhythm: "語言優雅、帶舊時光質地，情感濃而不俗。",
+        suitable: "舊時代、回憶、朋友、城市、雨、情感餘韻、生命流轉",
+        example: "可將大雨寫成繁華散盡後的落寞，自習室像對過去時光的祭奠。",
+        instruction: "請以白先勇式的凋零美學書寫，使日常場景帶有時代餘暉、人情流動與繁華散盡後的宿命感。"
+      },
+      "西西｜童稚與拼貼藝術": {
+        category: "華文文學：意境與留白的現代演譯",
+        subtitle: "語言輕快、觀察敏銳，用童心、拼貼與空間感組成敘事。",
+        features: ["童心觀察", "拼貼", "空間感", "輕快語言", "物件想像"],
+        structure: "小物件 → 好奇觀察 → 空間拼貼 → 想像展開 → 輕巧收束",
+        rhythm: "句子輕盈、活潑、帶兒童般的認真與城市感。",
+        suitable: "城市、地磚、雨滴、日常物件、童心、創意觀察",
+        example: "可把地磚上的雨滴想像成城市正在玩的填色遊戲。",
+        instruction: "請以西西式的童稚拼貼書寫，從小物件與空間細節出發，讓城市日常產生輕巧、聰明、帶童心的文學趣味。"
+      },
+      "劉以鬯｜心理實驗與時間蒙太奇": {
+        category: "華文文學：意境與留白的現代演譯",
+        subtitle: "以蒙太奇與心理時空交錯，使平凡事件產生電影感。",
+        features: ["心理蒙太奇", "時間對倒", "意識切換", "都市感", "電影節奏"],
+        structure: "現在動作 → 記憶插入 → 時間對倒 → 心理重疊 → 畫面切回",
+        rhythm: "節奏可跳接，畫面感強，允許片段式轉場。",
+        suitable: "城市、記憶、買東西、走路、雨天、心理流動、電影感",
+        example: "可將買飯糰的動作與某個過去記憶對倒切換，讓週五產生電影感。",
+        instruction: "請以劉以鬯式的心理實驗與時間蒙太奇書寫，讓現在與過去相互切換，使平凡片刻產生強烈心理與電影感。"
+      },
+      "木心｜精煉與俳句式智慧": {
+        category: "華文文學：意境與留白的現代演譯",
+        subtitle: "語句短、冷、美，帶遺世獨立的紳士感與哲思。",
+        features: ["精煉", "冷美", "短句", "哲思", "留白"],
+        structure: "極簡場景 → 微小觀察 → 情緒壓縮 → 冷句收尾",
+        rhythm: "短句為主，乾淨、冷、亮，不多解釋。",
+        suitable: "孤獨、雨、時間、日常、微小感悟、留白結尾",
+        example: "可收成一句：雨聲大了，我知道它不久。這便是今日的全部。",
+        instruction: "請以木心式的精煉與俳句式智慧書寫，壓縮情緒與哲思，使文字短、冷、美，並保留高密度留白。"
+      },
+      "張愛玲｜情緒微觀與物件映照": {
+        category: "華文文學：意境與留白的現代演譯",
+        subtitle: "以物件、細節、心理微光寫出情感的幽微與蒼涼。",
+        features: ["情緒微觀", "物件象徵", "冷暖交錯", "心理細描", "蒼涼感"],
+        structure: "場景質地 → 物件細節 → 心理流動 → 情緒反照 → 蒼涼收束",
+        rhythm: "句子細密、有質地，帶冷靜與微微華麗。",
+        suitable: "愛情、距離、舊物、城市、女性心理、人情冷暖",
+        example: "可讓一杯拿鐵、一個飯糰或一張桌子承載無法明說的情緒。",
+        instruction: "請以張愛玲式的情緒微觀書寫，讓物件、空間與人物心理彼此映照，在冷暖交錯中呈現細膩而蒼涼的情感。"
+      },
+      "駱以軍｜記憶洪流與破碎敘事": {
+        category: "華文文學：意境與留白的現代演譯",
+        subtitle: "以龐雜記憶、家庭陰影、身體感與破碎敘事形成巨大內在壓力。",
+        features: ["記憶洪流", "破碎敘事", "身體感", "家庭陰影", "語言密度高"],
+        structure: "當下片刻 → 記憶潰堤 → 身體感浮現 → 家族或自我陰影 → 破碎收束",
+        rhythm: "語言密度高，句子可長可碎，帶強烈內在壓力。",
+        suitable: "家族、記憶、城市、創傷、時間、內在獨白",
+        example: "可讓一個雨天牽動多層記憶，像城市突然裂開。",
+        instruction: "請以駱以軍式的記憶洪流書寫，讓當下場景引爆多層記憶、身體感與內在破碎，但仍需保持可讀性。"
+      },
+      "朱天文｜城市情慾與時代感": {
+        category: "華文文學：意境與留白的現代演譯",
+        subtitle: "以細緻感官、城市氣味與時代流動，書寫人與空間的曖昧關係。",
+        features: ["城市氣味", "感官細節", "時代感", "曖昧情緒", "精緻語感"],
+        structure: "城市場景 → 感官細節 → 人物氣息 → 時代流動 → 情緒留白",
+        rhythm: "句子精緻、帶感官濕度與曖昧流動。",
+        suitable: "城市、青春、時代、身體、氣味、空間、曖昧記憶",
+        example: "可把文化中心、雨與拿鐵寫成一段城市肌理裡的微小情慾與孤獨。",
+        instruction: "請以朱天文式的城市感官筆法書寫，使空間、氣味、光線與人物情緒交織出細膩的時代感。"
+      }
+    };
+
+    const primarySelect = document.getElementById("authorPrimary");
+    const secondarySelect = document.getElementById("authorSecondary");
+    const styleCard = document.getElementById("styleCard");
+    const secondaryAuthorField = document.getElementById("secondaryAuthorField");
+
+    function initStyles() {
+      const grouped = {};
+      Object.keys(styleData).forEach(name => {
+        const cat = styleData[name].category;
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push(name);
+      });
+
+      primarySelect.innerHTML = "";
+      secondarySelect.innerHTML = "";
+
+      Object.keys(grouped).forEach(category => {
+        const group1 = document.createElement("optgroup");
+        const group2 = document.createElement("optgroup");
+        group1.label = category;
+        group2.label = category;
+
+        grouped[category].forEach(name => {
+          const option1 = document.createElement("option");
+          option1.value = name;
+          option1.textContent = name;
+          group1.appendChild(option1);
+
+          const option2 = document.createElement("option");
+          option2.value = name;
+          option2.textContent = name;
+          group2.appendChild(option2);
+        });
+
+        primarySelect.appendChild(group1);
+        secondarySelect.appendChild(group2);
+      });
+
+      secondarySelect.selectedIndex = 1;
+      toggleModeNote();
+      updateStyleCard();
+    }
+
+    function toggleModeNote() {
+      const mode = document.getElementById("mode").value;
+      const modeNote = document.getElementById("modeNote");
+
+      if (mode === "single") {
+        secondaryAuthorField.style.display = "none";
+        modeNote.textContent = "單作者模式適合明確控制一種筆法。";
+      } else {
+        secondaryAuthorField.style.display = "block";
+        modeNote.textContent = "混血模式會將主要作者作為結構骨架，第二作者作為語感、意象或精神補強。";
+      }
+
+      updateStyleCard();
+    }
+
+    function updateStyleCard() {
+      const mode = document.getElementById("mode").value;
+      const primaryName = primarySelect.value;
+      const secondaryName = secondarySelect.value;
+      const primary = styleData[primaryName];
+      const secondary = styleData[secondaryName];
+
+      if (!primary) return;
+
+      if (mode === "single") {
+        styleCard.innerHTML = `
+          <h3>${primaryName}</h3>
+          <div class="sub">${primary.subtitle}</div>
+          <p><strong>核心手法：</strong>${primary.features.join("、")}</p>
+          <p><strong>敘事邏輯：</strong>${primary.structure}</p>
+          <p><strong>句型語感：</strong>${primary.rhythm}</p>
+          <p><strong>適合主題：</strong>${primary.suitable}</p>
+          <p><strong>套用示例：</strong>${primary.example}</p>
+          <div class="chips">
+            ${primary.features.map(item => `<span class="chip">${item}</span>`).join("")}
+          </div>
+        `;
+      } else {
+        styleCard.innerHTML = `
+          <h3>${primaryName} × ${secondaryName}</h3>
+          <div class="sub">雙作者混血模式</div>
+          <p><strong>主結構：</strong>${primary.subtitle}</p>
+          <p><strong>補強語感：</strong>${secondary.subtitle}</p>
+          <p><strong>主敘事邏輯：</strong>${primary.structure}</p>
+          <p><strong>第二層語感：</strong>${secondary.rhythm}</p>
+          <p><strong>混合方向：</strong>以「${primaryName}」控制文章骨架，以「${secondaryName}」補足意象、情緒、節奏或結尾餘韻。</p>
+          <div class="chips">
+            ${primary.features.concat(secondary.features).slice(0, 10).map(item => `<span class="chip">${item}</span>`).join("")}
+          </div>
+        `;
+      }
+    }
+
+    primarySelect.addEventListener("change", updateStyleCard);
+    secondarySelect.addEventListener("change", updateStyleCard);
+
+    function generatePrompt() {
+      const motivation = document.getElementById("motivation").value.trim();
+      const eventDesc = document.getElementById("eventDesc").value.trim();
+      const mode = document.getElementById("mode").value;
+      const primaryName = document.getElementById("authorPrimary").value;
+      const secondaryName = document.getElementById("authorSecondary").value;
+      const genre = document.getElementById("genre").value;
+      const engine = document.getElementById("engine").value;
+      const structure = document.getElementById("structure").value;
+      const ending = document.getElementById("ending").value;
+      const tone = document.getElementById("tone").value;
+      const length = document.getElementById("length").value;
+      const perspective = document.getElementById("perspective").value;
+      const density = document.getElementById("density").value;
+      const extraReq = document.getElementById("extraReq").value.trim();
+
+      const primary = styleData[primaryName];
+      const secondary = styleData[secondaryName];
+
+      let styleInstruction = "";
+
+      if (mode === "single") {
+        styleInstruction = `請參考「${primaryName}」的寫作精神，但不要直接模仿原句，也不要拼貼其作品語氣。
+風格重點如下：
+- ${primary.instruction}
+- 核心手法：${primary.features.join("、")}
+- 敘事結構：${primary.structure}
+- 語感節奏：${primary.rhythm}
+- 適合主題：${primary.suitable}
+- 套用方向：${primary.example}`;
+      } else {
+        styleInstruction = `請採用雙作者混血模式，但不要直接模仿原句，也不要拼貼式仿作。
+
+主要作者：「${primaryName}」
+- 主結構：${primary.instruction}
+- 核心手法：${primary.features.join("、")}
+- 敘事結構：${primary.structure}
+
+第二作者：「${secondaryName}」
+- 補強方向：${secondary.instruction}
+- 可補入的特徵：${secondary.features.join("、")}
+- 語感節奏：${secondary.rhythm}
+
+混合原則：
+- 以「${primaryName}」作為文章的主要敘事骨架。
+- 以「${secondaryName}」補強文章的意象、語氣、節奏、心理層次或結尾餘韻。
+- 不要讓兩種風格彼此打架，應形成自然融合。`;
+      }
+
+      const prompt = `你是一位擅長世界文學、華文現代派、散文、小說片段與高階文學敘事的寫作模型。
+請根據以下素材，寫成一篇具有文學性、結構感與內在張力的${genre}。
+
+【創作動機】
+${motivation || "請根據事件與素材自行推導創作動機。"}
+
+【事件描述 / 素材片段】
+${eventDesc || "請根據創作動機自行補足合理場景、人物、物件與情緒線索。"}
+
+【指定文學風格】
+${styleInstruction}
+
+【文學引擎】
+${engine}
+
+【敘事結構】
+${structure}
+
+【結尾方式】
+${ending}
+
+【文章條件】
+1. 文章類型：${genre}
+2. 整體語氣：${tone}
+3. 敘事視角：${perspective}
+4. 文學濃度：${density}
+5. 文章長度：${length}
+6. 文字需具有畫面、聲音、空氣感與心理層次。
+7. 情緒必須透過場景、動作、物件、感官、記憶或心理流動呈現，不要只用抽象詞直接說明。
+8. 可補入合理細節，但不得偏離原始素材。
+9. 不要寫成網路抒情文、心靈雞湯、說教短文或一般社群貼文。
+10. 不要解釋創作方法，不要列點，不要分析。
+
+${extraReq ? `【額外要求】\n${extraReq}\n` : ""}
+
+請直接輸出完整文章。`;
+
+      const directPrompt = `請直接將以下素材寫成一篇${genre}。
+
+創作動機：
+${motivation || "請依素材合理推定。"}
+
+素材片段：
+${eventDesc || "請依創作動機自行延伸。"}
+
+風格模式：
+${mode === "single" ? `採用「${primaryName}」的文學精神。重點是：${primary.subtitle}。` : `採用「${primaryName} × ${secondaryName}」雙作者混血模式。以「${primaryName}」控制主結構，以「${secondaryName}」補強語感與情緒層次。`}
+
+文學引擎：
+${engine}
+
+敘事結構：
+${structure}
+
+結尾方式：
+${ending}
+
+寫作條件：
+- 語氣：${tone}
+- 視角：${perspective}
+- 文學濃度：${density}
+- 長度：${length}
+- 要有文學感，但不要刻意華麗
+- 要有具體畫面，不要只有抽象情緒
+- 要有內在推進，不要平鋪直述
+- 不要說明寫作方法，直接輸出成品
+${extraReq ? `- 補充要求：${extraReq}` : ""}`;
+
+      document.getElementById("promptOutput").value = prompt;
+      document.getElementById("directOutput").value = directPrompt;
+    }
+
+    function copyPrompt() {
+      const target = document.getElementById("promptOutput");
+      target.select();
+      target.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      alert("AI 提示句已複製");
+    }
+
+    function copyDirectPrompt() {
+      const target = document.getElementById("directOutput");
+      target.select();
+      target.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      alert("直接生成版已複製");
+    }
+
+    function clearAllFields() {
+      document.getElementById("motivation").value = "";
+      document.getElementById("eventDesc").value = "";
+      document.getElementById("extraReq").value = "";
+      document.getElementById("promptOutput").value = "";
+      document.getElementById("directOutput").value = "";
+
+      document.getElementById("mode").selectedIndex = 0;
+      document.getElementById("genre").selectedIndex = 0;
+      document.getElementById("engine").selectedIndex = 0;
+      document.getElementById("structure").selectedIndex = 0;
+      document.getElementById("ending").selectedIndex = 0;
+      document.getElementById("tone").selectedIndex = 0;
+      document.getElementById("length").selectedIndex = 1;
+      document.getElementById("perspective").selectedIndex = 0;
+      document.getElementById("density").selectedIndex = 0;
+
+      primarySelect.selectedIndex = 0;
+      secondarySelect.selectedIndex = 1;
+      toggleModeNote();
+      updateStyleCard();
+    }
+
+    initStyles();
+  </script>
+</body>
+</html>
