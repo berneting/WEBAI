@@ -36,66 +36,37 @@ body{
 }
 
 #book{
-  width:1200px;
-  height:760px;
+  width:1000px;
+  height:700px;
 }
 
 .page{
   background:#fffdf8;
   overflow:hidden;
   border-radius:8px;
-  box-shadow:inset 0 0 20px rgba(0,0,0,.08);
+  box-shadow:inset 0 0 18px rgba(0,0,0,.08);
 }
 
-.page-content{
-  width:100%;
-  height:100%;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  background:#f8f3ea;
-  position:relative;
-}
-
-.page-content::before{
-  content:"";
-  position:absolute;
-  top:0;
-  left:50%;
-  width:16px;
-  height:100%;
-  transform:translateX(-50%);
-  background:linear-gradient(to right,
-    rgba(0,0,0,.12),
-    rgba(255,255,255,.65),
-    rgba(0,0,0,.12));
-  z-index:5;
-}
-
-.left-page,
-.right-page{
-  padding:34px;
-  position:relative;
-}
-
-.left-page{
+.image-page{
   background:#f0e6d8;
+  padding:28px;
   display:flex;
   justify-content:center;
   align-items:center;
 }
 
-.left-page img{
+.image-page img{
   width:100%;
   height:100%;
-  max-height:680px;
   object-fit:cover;
   border-radius:14px;
   box-shadow:0 10px 28px rgba(0,0,0,.18);
 }
 
-.right-page{
+.text-page{
   background:#fffdf8;
-  padding:55px 60px;
+  padding:52px 56px;
+  position:relative;
 }
 
 .author{
@@ -103,20 +74,20 @@ body{
   font-size:14px;
   letter-spacing:3px;
   color:#777;
-  margin-bottom:55px;
+  margin-bottom:48px;
 }
 
 .story{
-  font-size:30px;
+  font-size:28px;
   line-height:2;
   letter-spacing:.08em;
   writing-mode:vertical-rl;
-  height:520px;
+  height:500px;
   margin:auto;
 }
 
 .story .first{
-  font-size:72px;
+  font-size:68px;
   font-weight:bold;
   color:#111;
 }
@@ -127,6 +98,28 @@ body{
   bottom:24px;
   color:#888;
   font-size:18px;
+}
+
+.cover{
+  background:#efe3cf;
+  padding:40px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.cover h1{
+  font-size:52px;
+  letter-spacing:.12em;
+  margin-bottom:20px;
+}
+
+.cover p{
+  font-size:20px;
+  color:#555;
+  letter-spacing:.16em;
 }
 
 .controls{
@@ -160,32 +153,23 @@ button:hover{
 }
 
 @media(max-width:900px){
-
   body{
     padding:12px;
   }
 
   #book{
-    width:96vw;
+    width:94vw;
     height:72vh;
   }
 
-  .page-content{
-    grid-template-columns:1fr;
-  }
-
-  .page-content::before{
-    display:none;
-  }
-
-  .right-page{
-    padding:28px;
+  .text-page{
+    padding:32px 30px;
   }
 
   .story{
     writing-mode:horizontal-tb;
     height:auto;
-    font-size:22px;
+    font-size:21px;
     line-height:2;
   }
 
@@ -193,12 +177,8 @@ button:hover{
     font-size:42px;
   }
 
-  .left-page{
-    min-height:50%;
-  }
-
-  .left-page img{
-    max-height:330px;
+  .cover h1{
+    font-size:36px;
   }
 }
 </style>
@@ -211,180 +191,153 @@ button:hover{
   <div class="book-area">
     <div id="book">
 
-      <div class="page">
-        <div class="page-content">
-          <div class="left-page">
-            <img src="images/p01.jpg" alt="">
-          </div>
-          <div class="right-page">
-            <div class="author">BERNE TING</div>
-            <div class="story">
-              <span class="first">國</span>王的新衣<br><br>古典寓言繪本
-            </div>
-            <div class="page-num">1 / 11</div>
-          </div>
-        </div>
+      <div class="page cover">
+        <h1>國王的新衣</h1>
+        <p>古典寓言繪本</p>
+        <p style="margin-top:40px;">BERNE TING</p>
       </div>
 
-      <div class="page">
-        <div class="page-content">
-          <div class="left-page">
-            <img src="images/p02.jpg" alt="">
-          </div>
-          <div class="right-page">
-            <div class="author">BERNE TING</div>
-            <div class="story">
-              <span class="first">昔</span>國王，好華衣。<br>命巧匠，製新奇。<br><br>
-              百官忙，不可息。<br>王怒喝，嫌舊跡。<br><br>
-              下詔書，布全國。<br>求異服，賞金帛。
-            </div>
-            <div class="page-num">2 / 11</div>
-          </div>
-        </div>
+      <div class="page image-page">
+        <img src="images/p01.jpg" alt="">
       </div>
 
-      <div class="page">
-        <div class="page-content">
-          <div class="left-page">
-            <img src="images/p03.jpg" alt="">
-          </div>
-          <div class="right-page">
-            <div class="author">BERNE TING</div>
-            <div class="story">
-              <span class="first">二</span>騙子，自鄰邦。<br>入宮廷，誇其長。<br><br>
-              織魔布，賽雲霓。<br>色斑斕，質如絲。
-            </div>
-            <div class="page-num">3 / 11</div>
-          </div>
+      <div class="page text-page">
+        <div class="author">BERNE TING</div>
+        <div class="story">
+          <span class="first">國</span>王的新衣<br><br>古典寓言繪本
         </div>
+        <div class="page-num">1</div>
       </div>
 
-      <div class="page">
-        <div class="page-content">
-          <div class="left-page">
-            <img src="images/p04.jpg" alt="">
-          </div>
-          <div class="right-page">
-            <div class="author">BERNE TING</div>
-            <div class="story">
-              <span class="first">唯</span>賢者，方能見。<br>愚笨人，空餘羨。<br><br>
-              王大喜，賞重金。<br>欲以此，辨臣心。
-            </div>
-            <div class="page-num">4 / 11</div>
-          </div>
-        </div>
+      <div class="page image-page">
+        <img src="images/p02.jpg" alt="">
       </div>
 
-      <div class="page">
-        <div class="page-content">
-          <div class="left-page">
-            <img src="images/p05.jpg" alt="">
-          </div>
-          <div class="right-page">
-            <div class="author">BERNE TING</div>
-            <div class="story">
-              <span class="first">遣</span>老臣，往察之。<br>機台空，無一絲。<br><br>
-              臣惶恐，懼其名。<br>假稱讚，飾太平。
-            </div>
-            <div class="page-num">5 / 11</div>
-          </div>
+      <div class="page text-page">
+        <div class="author">BERNE TING</div>
+        <div class="story">
+          <span class="first">昔</span>國王，好華衣。<br>命巧匠，製新奇。<br><br>
+          百官忙，不可息。<br>王怒喝，嫌舊跡。<br><br>
+          下詔書，布全國。<br>求異服，賞金帛。
         </div>
+        <div class="page-num">2</div>
       </div>
 
-      <div class="page">
-        <div class="page-content">
-          <div class="left-page">
-            <img src="images/p06.jpg" alt="">
-          </div>
-          <div class="right-page">
-            <div class="author">BERNE TING</div>
-            <div class="story">
-              <span class="first">又</span>遣才，復觀瞧。<br>見虛無，心驚跳。<br><br>
-              亦隨聲，頌其工。<br>稱陛下，福無窮。
-            </div>
-            <div class="page-num">6 / 11</div>
-          </div>
-        </div>
+      <div class="page image-page">
+        <img src="images/p03.jpg" alt="">
       </div>
 
-      <div class="page">
-        <div class="page-content">
-          <div class="left-page">
-            <img src="images/p07.jpg" alt="">
-          </div>
-          <div class="right-page">
-            <div class="author">BERNE TING</div>
-            <div class="story">
-              <span class="first">王</span>親臨，視其成。<br>目所及，皆虛影。<br><br>
-              恐自愚，強作歡。<br>讚神技，眾皆觀。
-            </div>
-            <div class="page-num">7 / 11</div>
-          </div>
+      <div class="page text-page">
+        <div class="author">BERNE TING</div>
+        <div class="story">
+          <span class="first">二</span>騙子，自鄰邦。<br>入宮廷，誇其長。<br><br>
+          織魔布，賽雲霓。<br>色斑斕，質如絲。
         </div>
+        <div class="page-num">3</div>
       </div>
 
-      <div class="page">
-        <div class="page-content">
-          <div class="left-page">
-            <img src="images/p08.jpg" alt="">
-          </div>
-          <div class="right-page">
-            <div class="author">BERNE TING</div>
-            <div class="story">
-              <span class="first">賜</span>金牌，令巡遊。<br>示百姓，競風流。<br><br>
-              解舊服，剩內衣。<br>幻為袍，手相隨。
-            </div>
-            <div class="page-num">8 / 11</div>
-          </div>
-        </div>
+      <div class="page image-page">
+        <img src="images/p04.jpg" alt="">
       </div>
 
-      <div class="page">
-        <div class="page-content">
-          <div class="left-page">
-            <img src="images/p09.jpg" alt="">
-          </div>
-          <div class="right-page">
-            <div class="author">BERNE TING</div>
-            <div class="story">
-              <span class="first">言</span>袖長，語身輕。<br>王顧影，自多情。<br><br>
-              入市井，過長街。<br>民皆噤，讚金鞋。
-            </div>
-            <div class="page-num">9 / 11</div>
-          </div>
+      <div class="page text-page">
+        <div class="author">BERNE TING</div>
+        <div class="story">
+          <span class="first">唯</span>賢者，方能見。<br>愚笨人，空餘羨。<br><br>
+          王大喜，賞重金。<br>欲以此，辨臣心。
         </div>
+        <div class="page-num">4</div>
       </div>
 
-      <div class="page">
-        <div class="page-content">
-          <div class="left-page">
-            <img src="images/p10.jpg" alt="">
-          </div>
-          <div class="right-page">
-            <div class="author">BERNE TING</div>
-            <div class="story">
-              <span class="first">忽</span>童子，指而笑。<br>王無衣，赤條條。<br><br>
-              腹且大，更何言。<br>眾皆醒，笑喧天。
-            </div>
-            <div class="page-num">10 / 11</div>
-          </div>
-        </div>
+      <div class="page image-page">
+        <img src="images/p05.jpg" alt="">
       </div>
 
-      <div class="page">
-        <div class="page-content">
-          <div class="left-page">
-            <img src="images/p11.jpg" alt="">
-          </div>
-          <div class="right-page">
-            <div class="author">BERNE TING</div>
-            <div class="story">
-              <span class="first">王</span>省悟，歸深宮。<br>賞誠實，嘆愚蒙。<br><br>
-              逐浮華，愛庶民。<br>勤國政，德日新。
-            </div>
-            <div class="page-num">11 / 11</div>
-          </div>
+      <div class="page text-page">
+        <div class="author">BERNE TING</div>
+        <div class="story">
+          <span class="first">遣</span>老臣，往察之。<br>機台空，無一絲。<br><br>
+          臣惶恐，懼其名。<br>假稱讚，飾太平。
         </div>
+        <div class="page-num">5</div>
+      </div>
+
+      <div class="page image-page">
+        <img src="images/p06.jpg" alt="">
+      </div>
+
+      <div class="page text-page">
+        <div class="author">BERNE TING</div>
+        <div class="story">
+          <span class="first">又</span>遣才，復觀瞧。<br>見虛無，心驚跳。<br><br>
+          亦隨聲，頌其工。<br>稱陛下，福無窮。
+        </div>
+        <div class="page-num">6</div>
+      </div>
+
+      <div class="page image-page">
+        <img src="images/p07.jpg" alt="">
+      </div>
+
+      <div class="page text-page">
+        <div class="author">BERNE TING</div>
+        <div class="story">
+          <span class="first">王</span>親臨，視其成。<br>目所及，皆虛影。<br><br>
+          恐自愚，強作歡。<br>讚神技，眾皆觀。
+        </div>
+        <div class="page-num">7</div>
+      </div>
+
+      <div class="page image-page">
+        <img src="images/p08.jpg" alt="">
+      </div>
+
+      <div class="page text-page">
+        <div class="author">BERNE TING</div>
+        <div class="story">
+          <span class="first">賜</span>金牌，令巡遊。<br>示百姓，競風流。<br><br>
+          解舊服，剩內衣。<br>幻為袍，手相隨。
+        </div>
+        <div class="page-num">8</div>
+      </div>
+
+      <div class="page image-page">
+        <img src="images/p09.jpg" alt="">
+      </div>
+
+      <div class="page text-page">
+        <div class="author">BERNE TING</div>
+        <div class="story">
+          <span class="first">言</span>袖長，語身輕。<br>王顧影，自多情。<br><br>
+          入市井，過長街。<br>民皆噤，讚金鞋。
+        </div>
+        <div class="page-num">9</div>
+      </div>
+
+      <div class="page image-page">
+        <img src="images/p10.jpg" alt="">
+      </div>
+
+      <div class="page text-page">
+        <div class="author">BERNE TING</div>
+        <div class="story">
+          <span class="first">忽</span>童子，指而笑。<br>王無衣，赤條條。<br><br>
+          腹且大，更何言。<br>眾皆醒，笑喧天。
+        </div>
+        <div class="page-num">10</div>
+      </div>
+
+      <div class="page image-page">
+        <img src="images/p11.jpg" alt="">
+      </div>
+
+      <div class="page text-page">
+        <div class="author">BERNE TING</div>
+        <div class="story">
+          <span class="first">王</span>省悟，歸深宮。<br>賞誠實，嘆愚蒙。<br><br>
+          逐浮華，愛庶民。<br>勤國政，德日新。
+        </div>
+        <div class="page-num">11</div>
       </div>
 
     </div>
@@ -403,14 +356,14 @@ button:hover{
 const pageFlip = new St.PageFlip(
   document.getElementById("book"),
   {
-    width: 1200,
-    height: 760,
+    width: 500,
+    height: 700,
     size: "stretch",
-    minWidth: 320,
-    maxWidth: 1250,
-    minHeight: 500,
-    maxHeight: 820,
-    showCover: false,
+    minWidth: 300,
+    maxWidth: 500,
+    minHeight: 420,
+    maxHeight: 700,
+    showCover: true,
     mobileScrollSupport: false,
     usePortrait: true,
     flippingTime: 900,
