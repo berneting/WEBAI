@@ -1,300 +1,42 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Berne Ting 線上繪本</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background:
-        radial-gradient(circle at top, #f7f2e8 0%, #d8c7aa 45%, #8b7355 100%);
-      font-family: "Noto Serif TC", "Songti TC", "PMingLiU", serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #2f2a24;
-    }
-
-    .book-wrap {
-      width: min(1180px, 94vw);
-      padding: 28px;
-    }
-
-    .book {
-      position: relative;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      min-height: 720px;
-      background: #fdfbf6;
-      border-radius: 22px;
-      overflow: hidden;
-      box-shadow:
-        0 30px 70px rgba(40, 25, 10, 0.35),
-        inset 0 0 30px rgba(255,255,255,0.5);
-    }
-
-    .book::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 0;
-      width: 36px;
-      height: 100%;
-      transform: translateX(-50%);
-      background: linear-gradient(
-        to right,
-        rgba(0,0,0,0.12),
-        rgba(255,255,255,0.5),
-        rgba(0,0,0,0.14)
-      );
-      z-index: 3;
-      pointer-events: none;
-    }
-
-    .page {
-      position: relative;
-      padding: 36px;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.9), rgba(245,240,230,0.9));
-    }
-
-    .image-page {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f4eadb;
-    }
-
-    .image-page img {
-      width: 100%;
-      height: 100%;
-      max-height: 660px;
-      object-fit: cover;
-      border-radius: 16px;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.22);
-    }
-
-    .text-page {
-      padding: 58px 72px;
-      background:
-        linear-gradient(90deg, rgba(0,0,0,0.08), transparent 8%),
-        #fbfaf5;
-    }
-
-    .author {
-      text-align: right;
-      letter-spacing: 0.18em;
-      font-size: 15px;
-      color: #777;
-      margin-bottom: 60px;
-      font-family: Georgia, serif;
-    }
-
-    .story-text {
-      font-size: 30px;
-      line-height: 1.95;
-      letter-spacing: 0.08em;
-      writing-mode: vertical-rl;
-      max-height: 500px;
-      margin: 0 auto;
-    }
-
-    .story-text .first-word {
-      font-size: 82px;
-      line-height: 1;
-      margin-left: 18px;
-      font-weight: 600;
-      color: #111;
-    }
-
-    .page-number {
-      position: absolute;
-      right: 42px;
-      bottom: 30px;
-      font-size: 18px;
-      color: #777;
-      font-family: Georgia, serif;
-    }
-
-    .controls {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 24px;
-    }
-
-    button {
-      border: none;
-      padding: 12px 26px;
-      border-radius: 999px;
-      background: rgba(40, 32, 25, 0.88);
-      color: white;
-      font-size: 16px;
-      letter-spacing: 0.08em;
-      cursor: pointer;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.22);
-    }
-
-    button:hover {
-      background: #111;
-      transform: translateY(-1px);
-    }
-
-    button:disabled {
-      opacity: 0.35;
-      cursor: not-allowed;
-    }
-
-    .fade {
-      animation: fadeIn 0.45s ease;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateX(12px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @media (max-width: 820px) {
-      body {
-        align-items: flex-start;
-      }
-
-      .book-wrap {
-        padding: 16px;
-      }
-
-      .book {
-        grid-template-columns: 1fr;
-        min-height: auto;
-      }
-
-      .book::before {
-        display: none;
-      }
-
-      .page {
-        padding: 22px;
-      }
-
-      .image-page img {
-        max-height: 420px;
-      }
-
-      .text-page {
-        padding: 36px 28px 70px;
-      }
-
-      .author {
-        margin-bottom: 28px;
-      }
-
-      .story-text {
-        writing-mode: horizontal-tb;
-        font-size: 22px;
-        line-height: 2;
-        letter-spacing: 0.05em;
-        max-height: none;
-      }
-
-      .story-text .first-word {
-        font-size: 44px;
-        margin-right: 4px;
-      }
-    }
-  </style>
-</head>
-
-<body>
-  <main class="book-wrap">
-    <section class="book fade" id="book">
-      <div class="page image-page">
-        <img id="pageImage" src="images/p01.jpg" alt="繪本插圖">
-      </div>
-
-      <div class="page text-page">
-        <div class="author">BERNE TING</div>
-
-        <div class="story-text" id="pageText">
-          <span class="first-word">從</span>
-          前從前，有一個非常特別的國王，他不愛運動，也不愛吃零食，他唯一的愛好就是穿漂亮的衣服。
-        </div>
-
-        <div class="page-number" id="pageNumber">1</div>
-      </div>
-    </section>
-
-    <div class="controls">
-      <button id="prevBtn" onclick="prevPage()">上一頁</button>
-      <button id="nextBtn" onclick="nextPage()">下一頁</button>
-    </div>
-  </main>
-
-  <script>
-    const pages = [
-      {
-        image: "images/p01.jpg",
-        text: '<span class="first-word">從</span>前從前，有一個非常特別的國王，他不愛運動，也不愛吃零食，他唯一的愛好就是穿漂亮的衣服。'
-      },
-      {
-        image: "images/p02.jpg",
-        text: '<span class="first-word">他</span>的衣櫃比一個足球場還要大，裡面裝滿了五顏六色的絲綢和亮晶晶的斗篷。'
-      },
-      {
-        image: "images/p03.jpg",
-        text: '<span class="first-word">國</span>王每一小時就要換一套新衣服，如果不換衣服，他就覺得渾身不舒服。'
-      }
-    ];
-
-    let currentPage = 0;
-
-    const book = document.getElementById("book");
-    const pageImage = document.getElementById("pageImage");
-    const pageText = document.getElementById("pageText");
-    const pageNumber = document.getElementById("pageNumber");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
-
-    function renderPage() {
-      pageImage.src = pages[currentPage].image;
-      pageText.innerHTML = pages[currentPage].text;
-      pageNumber.textContent = currentPage + 1;
-
-      prevBtn.disabled = currentPage === 0;
-      nextBtn.disabled = currentPage === pages.length - 1;
-
-      book.classList.remove("fade");
-      void book.offsetWidth;
-      book.classList.add("fade");
-    }
-
-    function nextPage() {
-      if (currentPage < pages.length - 1) {
-        currentPage++;
-        renderPage();
-      }
-    }
-
-    function prevPage() {
-      if (currentPage > 0) {
-        currentPage--;
-        renderPage();
-      }
-    }
-
-    renderPage();
-  </script>
-</body>
-</html>
+const pages = [
+  {
+    image: "images/p01.jpg",
+    text: '<span class="first-word">昔</span>國王，好華衣。<br>命巧匠，製新奇。<br><br>百官忙，不可息。<br>王怒喝，嫌舊跡。<br><br>下詔書，布全國。<br>求異服，賞金帛。'
+  },
+  {
+    image: "images/p02.jpg",
+    text: '<span class="first-word">二</span>騙子，自鄰邦。<br>入宮廷，誇其長。<br><br>織魔布，賽雲霓。<br>色斑斕，質如絲。'
+  },
+  {
+    image: "images/p03.jpg",
+    text: '<span class="first-word">唯</span>賢者，方能見。<br>愚笨人，空餘羨。<br><br>王大喜，賞重金。<br>欲以此，辨臣心。'
+  },
+  {
+    image: "images/p04.jpg",
+    text: '<span class="first-word">遣</span>老臣，往察之。<br>機台空，無一絲。<br><br>臣惶恐，懼其名。<br>假稱讚，飾太平。'
+  },
+  {
+    image: "images/p05.jpg",
+    text: '<span class="first-word">又</span>遣才，復觀瞧。<br>見虛無，心驚跳。<br><br>亦隨聲，頌其工。<br>稱陛下，福無窮。'
+  },
+  {
+    image: "images/p06.jpg",
+    text: '<span class="first-word">王</span>親臨，視其成。<br>目所及，皆虛影。<br><br>恐自愚，強作歡。<br>讚神技，眾皆觀。'
+  },
+  {
+    image: "images/p07.jpg",
+    text: '<span class="first-word">賜</span>金牌，令巡遊。<br>示百姓，競風流。<br><br>解舊服，剩內衣。<br>幻為袍，手相隨。'
+  },
+  {
+    image: "images/p08.jpg",
+    text: '<span class="first-word">言</span>袖長，語身輕。<br>王顧影，自多情。<br><br>入市井，過長街。<br>民皆噤，讚金鞋。'
+  },
+  {
+    image: "images/p09.jpg",
+    text: '<span class="first-word">忽</span>童子，指而笑。<br>王無衣，赤條條。<br><br>腹且大，更何言。<br>眾皆醒，笑喧天。'
+  },
+  {
+    image: "images/p10.jpg",
+    text: '<span class="first-word">王</span>省悟，歸深宮。<br>賞誠實，嘆愚蒙。<br><br>逐浮華，愛庶民。<br>勤國政，德日新。'
+  }
+];
