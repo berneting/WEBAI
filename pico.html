@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PICO 研究搜尋提示句生成器</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background:
+      radial-gradient(circle at top left, #1d4ed8 0, transparent 35%),
+      linear-gradient(135deg, #06142e, #0f172a 55%, #111827);
+    color: #e5e7eb;
+    min-height: 100vh;
+  }
+  header {
+    padding: 48px 8vw 28px;
+    text-align: center;
+  }
+  header h1 {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    letter-spacing: 1px;
+  }
+  header p {
+    color: #cbd5e1;
+    max-width: 850px;
+    margin: 16px auto 0;
+    line-height: 1.8;
+  }
+  .wrap {
+    width: min(1280px, 92vw);
+    margin: 0 auto 60px;
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 24px;
+  }
+  .card {
+    background: rgba(15, 23, 42, 0.72);
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    backdrop-filter: blur(16px);
+    padding: 24px;
+  }
+  h2 {
+    margin-top: 0;
+    color: #bfdbfe;
+    font-size: 1.35rem;
+  }
+  label {
+    display: block;
+    margin: 18px 0 8px;
+    color: #dbeafe;
+    font-weight: 700;
+  }
+  input, textarea, select {
+    width: 100%;
+    border: 1px solid rgba(147,197,253,.35);
+    background: rgba(15,23,42,.8);
+    color: #f8fafc;
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 15px;
+    line-height: 1.6;
+    outline: none;
+  }
+  textarea {
+    min-height: 82px;
+    resize: vertical;
+  }
+  .hint {
+    color: #94a3b8;
+    font-size: 13px;
+    margin-top: 6px;
+    line-height: 1.6;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  button {
+    border: none;
+    border-radius: 999px;
+    padding: 12px 18px;
+    font-weight: 800;
+    cursor: pointer;
+    color: white;
+    background: linear-gradient(135deg, #2563eb, #06b6d4);
+    box-shadow: 0 10px 25px rgba(37,99,235,.35);
+  }
+  button.secondary {
+    background: rgba(30,41,59,.95);
+    border: 1px solid rgba(148,163,184,.35);
+    box-shadow: none;
+  }
+  .btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .outputBox {
+    margin-bottom: 18px;
+    border: 1px solid rgba(148,163,184,.25);
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(2,6,23,.42);
+  }
+  .outputHead {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    background: rgba(30,64,175,.38);
+    color: #dbeafe;
+    font-weight: 800;
+  }
+  .copyBtn {
+    padding: 7px 12px;
+    font-size: 13px;
+    background: rgba(14,165,233,.35);
+    box-shadow: none;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 16px;
+    color: #f8fafc;
+    line-height: 1.7;
+    font-size: 14px;
+  }
+  .tag {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: rgba(59,130,246,.18);
+    border: 1px solid rgba(147,197,253,.28);
+    color: #bfdbfe;
+    font-size: 13px;
+    margin: 4px 4px 0 0;
+  }
+  footer {
+    text-align: center;
+    color: #94a3b8;
+    padding: 0 0 40px;
+    font-size: 13px;
+  }
+  @media (max-width: 900px) {
+    .wrap { grid-template-columns: 1fr; }
+    .row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+
+<body>
+<header>
+  <h1>PICO 研究搜尋提示句生成器</h1>
+  <p>
+    將研究問題拆成 Population、Intervention、Comparison、Outcome，
+    自動產生 PubMed、Google Scholar、Cochrane、Embase 與 AI 搜尋策略提示句。
+  </p>
+</header>
+
+<main class="wrap">
+  <section class="card">
+    <h2>一、輸入研究 PICO</h2>
+
+    <label>研究主題或問題</label>
+    <textarea id="question" placeholder="例如：Does music therapy improve depression and anxiety in older adults with dementia?"></textarea>
+
+    <label>P｜Population 研究對象</label>
+    <textarea id="p" placeholder="例如：older adults with dementia, Alzheimer’s disease, nursing home residents"></textarea>
+
+    <label>I｜Intervention 介入方式</label>
+    <textarea id="i" placeholder="例如：music therapy, music intervention, singing, preferred music listening"></textarea>
+
+    <label>C｜Comparison 對照組</label>
+    <textarea id="c" placeholder="例如：usual care, standard care, no intervention, occupational therapy"></textarea>
+    <div class="hint">系統性回顧搜尋時，Comparison 通常可先不放，避免搜尋過窄。</div>
+
+    <label>O｜Outcome 結果指標</label>
+    <textarea id="o" placeholder="例如：depression, anxiety, BPSD, cognitive function, quality of life"></textarea>
+
+    <div class="row">
+      <div>
+        <label>研究類型</label>
+        <select id="studyType">
+          <option value="systematic review">Systematic review / Meta-analysis</option>
+          <option value="randomized controlled trial">Randomized controlled trial</option>
+          <option value="clinical trial">Clinical trial</option>
+          <option value="observational study">Observational study</option>
+          <option value="general">General literature search</option>
+        </select>
+      </div>
+
+      <div>
+        <label>搜尋策略</label>
+        <select id="strategy">
+          <option value="sensitive">敏感搜尋｜較廣，適合系統性回顧</option>
+          <option value="specific">精準搜尋｜較窄，適合快速找文獻</option>
+          <option value="balanced">平衡搜尋｜廣度與精準兼具</option>
+        </select>
+      </div>
+    </div>
+
+    <label>額外限制或備註</label>
+    <textarea id="note" placeholder="例如：只找英文文獻、近十年、older adults、RCT、不要納入 protocol"></textarea>
+
+    <div class="btns">
+      <button onclick="generate()">生成提示句</button>
+      <button class="secondary" onclick="clearAll()">清空內容</button>
+    </div>
+
+    <div class="hint">
+      <span class="tag">PICO 拆解</span>
+      <span class="tag">Boolean search</span>
+      <span class="tag">PubMed</span>
+      <span class="tag">Embase</span>
+      <span class="tag">Cochrane</span>
+      <span class="tag">Google Scholar</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>二、輸出搜尋提示句</h2>
+
+    <div class="outputBox">
+      <div class="outputHead">
+        <span>AI 總提示句</span>
+        <button class="copyBtn" onclick="copyText('aiPrompt')">複製</button>
+      </div>
+      <pre id="aiPrompt">請先輸入 PICO 後按下「生成提示句」。</pre>
+    </div>
+
+    <div class="outputBox">
+      <div class="outputHead">
+        <span>PubMed 搜尋提示句</span>
+        <button class="copyBtn" onclick="copyText('pubmed')">複製</button>
+      </div>
+      <pre id="pubmed"></pre>
+    </div>
+
+    <div class="outputBox">
+      <div class="outputHead">
+        <span>Google Scholar 搜尋提示句</span>
+        <button class="copyBtn" onclick="copyText('scholar')">複製</button>
+      </div>
+      <pre id="scholar"></pre>
+    </div>
+
+    <div class="outputBox">
+      <div class="outputHead">
+        <span>Cochrane Library 搜尋提示句</span>
+        <button class="copyBtn" onclick="copyText('cochrane')">複製</button>
+      </div>
+      <pre id="cochrane"></pre>
+    </div>
+
+    <div class="outputBox">
+      <div class="outputHead">
+        <span>Embase 搜尋提示句</span>
+        <button class="copyBtn" onclick="copyText('embase')">複製</button>
+      </div>
+      <pre id="embase"></pre>
+    </div>
+  </section>
+</main>
+
+<footer>
+  PICO Search Prompt Generator｜適用於研究問題拆解、文獻搜尋策略設計與系統性回顧前期規劃
+</footer>
+
+<script>
+function val(id) {
+  return document.getElementById(id).value.trim();
+}
+
+function generate() {
+  const question = val("question") || "[請填入研究問題]";
+  const p = val("p") || "[Population]";
+  const i = val("i") || "[Intervention]";
+  const c = val("c") || "[Comparison，可視情況不放入搜尋式]";
+  const o = val("o") || "[Outcome]";
+  const studyType = val("studyType");
+  const strategy = val("strategy");
+  const note = val("note") || "No additional restrictions.";
+
+  let strategyText = "";
+  if (strategy === "sensitive") {
+    strategyText = "Use a sensitive and comprehensive search strategy suitable for a systematic review. Avoid making the search too narrow.";
+  } else if (strategy === "specific") {
+    strategyText = "Use a more specific search strategy suitable for quickly identifying highly relevant studies.";
+  } else {
+    strategyText = "Use a balanced search strategy that considers both sensitivity and specificity.";
+  }
+
+  const aiPrompt = `我想針對以下研究問題設計文獻搜尋策略。
+
+Research question:
+${question}
+
+PICO:
+P｜Population:
+${p}
+
+I｜Intervention:
+${i}
+
+C｜Comparison:
+${c}
+
+O｜Outcome:
+${o}
+
+Study type:
+${studyType}
+
+Search strategy preference:
+${strategyText}
+
+Additional notes:
+${note}
+
+請幫我完成以下任務：
+1. 將研究問題拆解成清楚的 PICO。
+2. 判斷哪些 PICO 元素適合放入搜尋式，哪些不建議放入。
+3. 為每個元素列出英文關鍵字、同義詞、相關詞、縮寫詞。
+4. 若適用，請提供 MeSH terms 與 Emtree terms。
+5. 產生 PubMed 搜尋式。
+6. 產生 Embase 搜尋式。
+7. 產生 Cochrane Library 搜尋式。
+8. 產生 Google Scholar 簡化搜尋式。
+9. 分別提供 broad search、balanced search、focused search。
+10. 提醒我哪些詞可能造成搜尋過窄、搜尋偏誤或漏掉重要文獻。
+
+Important:
+Please make the search sensitive enough for evidence synthesis, not only precise for a quick literature search.`;
+
+  const pubmed = `Please generate a PubMed search strategy based on the following PICO.
+
+Research question:
+${question}
+
+P:
+${p}
+
+I:
+${i}
+
+C:
+${c}
+
+O:
+${o}
+
+Requirements:
+- Include MeSH terms if available.
+- Include Title/Abstract keywords.
+- Use OR for synonyms within each concept.
+- Use AND to combine Population, Intervention, and Outcome.
+- Usually do not include Comparison unless necessary.
+- Provide three versions:
+  1. Broad search
+  2. Balanced search
+  3. Focused search
+- Add filters only if justified.
+- Explain why each major concept is included or excluded.`;
+
+  const scholar = `Please create Google Scholar search queries for the following PICO question.
+
+Research question:
+${question}
+
+P:
+${p}
+
+I:
+${i}
+
+O:
+${o}
+
+Requirements:
+- Create 8 short and practical Google Scholar queries.
+- Use exact phrases with quotation marks when useful.
+- Avoid overly long Boolean strings.
+- Include:
+  1. Broad query
+  2. Narrow query
+  3. Query focused on randomized controlled trials
+  4. Query focused on systematic reviews or meta-analyses
+  5. Query using synonyms for the intervention
+  6. Query using synonyms for the population
+  7. Query using outcome-related terms
+  8. Query suitable for citation chasing.`;
+
+  const cochrane = `Please generate a Cochrane Library Advanced Search strategy for this PICO.
+
+P:
+${p}
+
+I:
+${i}
+
+C:
+${c}
+
+O:
+${o}
+
+Requirements:
+- Build the search line by line.
+- Use OR within each PICO concept.
+- Use AND between concepts.
+- Keep the strategy sensitive enough for evidence synthesis.
+- Usually do not include Comparison unless necessary.
+- Provide a final combined search line.
+- Suggest whether to search Trials, Reviews, or both.`;
+
+  const embase = `Please generate an Embase search strategy for this PICO.
+
+Research question:
+${question}
+
+P:
+${p}
+
+I:
+${i}
+
+C:
+${c}
+
+O:
+${o}
+
+Requirements:
+- Include possible Emtree terms.
+- Include free-text keywords.
+- Use OR for synonyms.
+- Use AND between major concepts.
+- Use proximity operators when appropriate.
+- Provide broad, balanced, and focused versions.
+- Explain which terms may be too narrow.
+- Mention whether study design filters should be applied for ${studyType}.`;
+
+  document.getElementById("aiPrompt").textContent = aiPrompt;
+  document.getElementById("pubmed").textContent = pubmed;
+  document.getElementById("scholar").textContent = scholar;
+  document.getElementById("cochrane").textContent = cochrane;
+  document.getElementById("embase").textContent = embase;
+}
+
+function copyText(id) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    alert("已複製到剪貼簿");
+  });
+}
+
+function clearAll() {
+  ["question", "p", "i", "c", "o", "note"].forEach(id => {
+    document.getElementById(id).value = "";
+  });
+  ["aiPrompt", "pubmed", "scholar", "cochrane", "embase"].forEach(id => {
+    document.getElementById(id).textContent = "";
+  });
+  document.getElementById("aiPrompt").textContent = "請先輸入 PICO 後按下「生成提示句」。";
+}
+</script>
+</body>
+</html>
