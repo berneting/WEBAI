@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>台語文學生成器 Pro</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: linear-gradient(135deg, #07111f, #102642, #f5f1e8);
+    color: #f7f7f7;
+  }
+  header {
+    padding: 36px 24px 20px;
+    text-align: center;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 34px;
+    letter-spacing: 1px;
+  }
+  header p {
+    color: #d9e4f2;
+    margin-top: 10px;
+  }
+  .container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+  }
+  .card {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 22px;
+    padding: 24px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.25);
+  }
+  h2 {
+    margin-top: 0;
+    color: #ffffff;
+    font-size: 22px;
+  }
+  label {
+    display: block;
+    margin: 14px 0 6px;
+    font-weight: 600;
+    color: #f2f6fb;
+  }
+  input, textarea, select {
+    width: 100%;
+    padding: 11px 12px;
+    border-radius: 12px;
+    border: none;
+    font-size: 15px;
+    background: rgba(255,255,255,0.92);
+    color: #102033;
+  }
+  textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.7;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 22px;
+    flex-wrap: wrap;
+  }
+  button {
+    border: none;
+    border-radius: 14px;
+    padding: 12px 18px;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+  .primary {
+    background: #ffffff;
+    color: #0b1b2e;
+  }
+  .secondary {
+    background: #1f4f82;
+    color: #ffffff;
+  }
+  .danger {
+    background: #8b2f2f;
+    color: #ffffff;
+  }
+  #output {
+    min-height: 600px;
+    white-space: pre-wrap;
+    line-height: 1.8;
+    background: rgba(255,255,255,0.93);
+    color: #132033;
+    border-radius: 16px;
+    padding: 18px;
+    font-size: 15px;
+  }
+  .note {
+    margin-top: 14px;
+    font-size: 13px;
+    color: #d9e4f2;
+    line-height: 1.6;
+  }
+  footer {
+    text-align: center;
+    padding: 28px;
+    color: #e8eef7;
+    font-size: 13px;
+  }
+  @media (max-width: 900px) {
+    .container { grid-template-columns: 1fr; }
+    header h1 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>台語文學生成器 Pro</h1>
+  <p>以台語書寫系統為核心，生成詩、散文、小說、戲劇與歌詞的 AI 提示詞</p>
+</header>
+
+<div class="container">
+
+  <section class="card">
+    <h2>一、創作設定</h2>
+
+    <label>創作主題</label>
+    <input id="theme" placeholder="例如：阿母、雨天、離鄉、老街、記憶、AI與母語" />
+
+    <label>素材內容</label>
+    <textarea id="material" placeholder="請貼上你的故事、情緒、事件、人物、場景或想表達的內容"></textarea>
+
+    <div class="row">
+      <div>
+        <label>文體類型</label>
+        <select id="genre">
+          <option>台語散文</option>
+          <option>台語現代詩</option>
+          <option>台語小說片段</option>
+          <option>台語戲劇對白</option>
+          <option>台語歌詞</option>
+          <option>台語兒童文學</option>
+          <option>台語評論短文</option>
+        </select>
+      </div>
+
+      <div>
+        <label>書寫模式</label>
+        <select id="writingMode">
+          <option>漢羅並用</option>
+          <option>全漢寫法</option>
+          <option>全羅寫法</option>
+          <option>漢字主體，關鍵詞附台羅</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>語言層次</label>
+        <select id="languageLevel">
+          <option>自然生活台語</option>
+          <option>文學化台語</option>
+          <option>淺文言台語</option>
+          <option>現代詩性台語</option>
+          <option>口語敘事台語</option>
+        </select>
+      </div>
+
+      <div>
+        <label>情緒色調</label>
+        <select id="emotion">
+          <option>溫柔懷舊</option>
+          <option>孤獨深沉</option>
+          <option>親切日常</option>
+          <option>幽默生活</option>
+          <option>社會批判</option>
+          <option>莊重典雅</option>
+          <option>童趣明亮</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>語氣詞密度</label>
+        <select id="particles">
+          <option>低：少量使用</option>
+          <option>中：自然保留</option>
+          <option>高：強化口語感</option>
+        </select>
+      </div>
+
+      <div>
+        <label>音樂性與節奏</label>
+        <select id="rhythm">
+          <option>中等自然</option>
+          <option>高：強調聲音與韻律</option>
+          <option>低：偏敘事清楚</option>
+          <option>詩性：短句、停頓、回聲感</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>敘事視角</label>
+        <select id="viewpoint">
+          <option>第一人稱</option>
+          <option>第二人稱</option>
+          <option>第三人稱</option>
+          <option>自由切換</option>
+        </select>
+      </div>
+
+      <div>
+        <label>篇幅長度</label>
+        <select id="length">
+          <option>短篇，約300字</option>
+          <option>中篇，約600字</option>
+          <option>長篇，約1000字</option>
+          <option>極短，約150字</option>
+        </select>
+      </div>
+    </div>
+
+    <label>特殊要求</label>
+    <textarea id="extra" placeholder="例如：保留台語語序、不要太華語化、加入台羅標音、像老街記憶、適合朗讀、避免艱澀本字"></textarea>
+
+    <div class="buttons">
+      <button class="primary" onclick="generatePrompt()">生成 AI 提示詞</button>
+      <button class="secondary" onclick="copyPrompt()">複製 AI 提示詞</button>
+      <button class="danger" onclick="clearAll()">清空內容</button>
+    </div>
+
+    <p class="note">
+      建議：若要創作文學作品，可選「漢羅並用」或「漢字主體，關鍵詞附台羅」；若要語音保存或朗讀教學，可選「全羅寫法」。
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>二、生成結果</h2>
+    <div id="output">請先輸入左側設定，按下「生成 AI 提示詞」。</div>
+    <div class="buttons">
+      <button class="secondary" onclick="copyPrompt()">複製 AI 提示詞</button>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  台語文學生成器 Pro v1.0 ｜ 書寫系統：全漢、漢羅、全羅、台羅輔助
+</footer>
+
+<script>
+function val(id) {
+  return document.getElementById(id).value.trim();
+}
+
+function generatePrompt() {
+  const prompt = `你是一位精通台語文學、台語書寫系統、臺羅拼音、漢羅並用、台語口語語序與現代文學創作的寫作模型。
+
+請根據以下設定，直接創作一篇完成度高的台語文學作品。
+
+【創作主題】
+${val("theme") || "請依素材自行判斷主題"}
+
+【素材內容】
+${val("material") || "請根據主題自行發展內容"}
+
+【文體類型】
+${val("genre")}
+
+【書寫模式】
+${val("writingMode")}
+
+【語言層次】
+${val("languageLevel")}
+
+【情緒色調】
+${val("emotion")}
+
+【敘事視角】
+${val("viewpoint")}
+
+【篇幅長度】
+${val("length")}
+
+【語氣詞密度】
+${val("particles")}
+
+【音樂性與節奏】
+${val("rhythm")}
+
+【特殊要求】
+${val("extra") || "無"}
+
+【台語書寫原則】
+1. 請盡量保留台語原生語序，不要直接翻譯成華語語法。
+2. 若使用漢羅並用，請在有音無字、語氣詞、特殊台語詞或容易誤讀處加入臺羅。
+3. 若使用全漢寫法，請避免過度艱澀的本字考據，優先維持可讀性與文學性。
+4. 若使用全羅寫法，請使用臺羅拼音，並注意聲調、連字符與詞組分界。
+5. 請保留台語常見語氣詞，例如：啊、啦、咧、矣、喔、呢、嘛、閣、毋過。
+6. 請強化台語的聲音感、節奏感與生活感。
+7. 不要寫成華語文章再硬塞台語詞。
+8. 作品要像真正可閱讀、可朗讀、可發表的台語文學，不要只像語言練習。
+
+【輸出格式】
+請直接輸出作品。
+作品後面請附上簡短說明：
+一、使用的書寫策略
+二、保留的台語語序特色
+三、語氣詞與節奏處理
+四、若有台羅，請簡短說明其功能`;
+
+  document.getElementById("output").innerText = prompt;
+}
+
+function copyPrompt() {
+  const text = document.getElementById("output").innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    alert("AI 提示詞已複製！");
+  });
+}
+
+function clearAll() {
+  const ids = ["theme", "material", "extra"];
+  ids.forEach(id => document.getElementById(id).value = "");
+  document.getElementById("output").innerText = "請先輸入左側設定，按下「生成 AI 提示詞」。";
+}
+</script>
+
+</body>
+</html>
