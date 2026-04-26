@@ -1,742 +1,487 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>PICO Research Search Prompt Generator Pro v2</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research Search Prompt Generator Pro v2</title>
+
 <style>
-*{box-sizing:border-box}
-body{
+*{
   margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
   font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;
-  background:radial-gradient(circle at top left,#2563eb 0,transparent 32%),
-             linear-gradient(135deg,#06142e,#0f172a 55%,#111827);
+  background:linear-gradient(135deg,#06142e,#0f172a,#111827);
   color:#e5e7eb;
   min-height:100vh;
 }
+
 header{
-  padding:48px 8vw 26px;
+  padding:40px 20px 25px;
   text-align:center;
 }
+
 header h1{
-  margin:0;
-  font-size:clamp(2rem,4vw,3.3rem);
+  font-size:34px;
+  color:#ffffff;
+  margin-bottom:10px;
 }
+
 header p{
   color:#cbd5e1;
   max-width:900px;
-  margin:16px auto 0;
+  margin:auto;
   line-height:1.8;
 }
-.wrap{
-  width:min(1320px,92vw);
-  margin:0 auto 60px;
+
+.container{
+  width:95%;
+  max-width:1400px;
+  margin:auto;
   display:grid;
-  grid-template-columns:1fr 1.15fr;
+  grid-template-columns:1fr 1fr;
   gap:24px;
+  padding-bottom:50px;
 }
+
 .card{
-  background:rgba(15,23,42,.72);
-  border:1px solid rgba(148,163,184,.28);
-  border-radius:24px;
-  box-shadow:0 20px 60px rgba(0,0,0,.35);
-  backdrop-filter:blur(16px);
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:18px;
   padding:24px;
+  backdrop-filter:blur(14px);
 }
+
 h2{
-  margin-top:0;
-  color:#bfdbfe;
-  font-size:1.35rem;
-}
-h3{
-  margin:24px 0 10px;
+  font-size:22px;
+  margin-bottom:18px;
   color:#93c5fd;
-  font-size:1rem;
 }
+
 label{
   display:block;
-  margin:16px 0 8px;
-  color:#dbeafe;
+  margin-top:14px;
+  margin-bottom:8px;
   font-weight:700;
+  color:#dbeafe;
 }
+
 input,textarea,select{
   width:100%;
-  border:1px solid rgba(147,197,253,.35);
-  background:rgba(15,23,42,.82);
-  color:#f8fafc;
-  border-radius:14px;
   padding:12px 14px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.12);
+  background:rgba(255,255,255,0.04);
+  color:#fff;
   font-size:15px;
-  line-height:1.6;
-  outline:none;
 }
+
 textarea{
-  min-height:76px;
+  min-height:82px;
   resize:vertical;
 }
+
 .row{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:14px;
 }
-.hint{
-  color:#94a3b8;
+
+.small{
   font-size:13px;
-  line-height:1.6;
+  color:#94a3b8;
   margin-top:6px;
+  line-height:1.6;
 }
+
+.modeNote{
+  margin-top:14px;
+  padding:14px;
+  border-left:4px solid #38bdf8;
+  background:rgba(56,189,248,0.08);
+  border-radius:12px;
+  line-height:1.7;
+  color:#cbd5e1;
+}
+
+.buttons{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:22px;
+}
+
 button{
   border:none;
   border-radius:999px;
   padding:12px 18px;
-  font-weight:800;
   cursor:pointer;
+  font-weight:700;
   color:white;
   background:linear-gradient(135deg,#2563eb,#06b6d4);
-  box-shadow:0 10px 25px rgba(37,99,235,.35);
 }
-button.secondary{
-  background:rgba(30,41,59,.95);
-  border:1px solid rgba(148,163,184,.35);
-  box-shadow:none;
+
+button.alt{
+  background:#334155;
 }
-.btns{
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
-  margin-top:24px;
-}
+
 .outputBox{
   margin-bottom:18px;
-  border:1px solid rgba(148,163,184,.25);
-  border-radius:18px;
+  border-radius:16px;
   overflow:hidden;
-  background:rgba(2,6,23,.42);
+  border:1px solid rgba(255,255,255,0.08);
 }
+
 .outputHead{
+  background:rgba(37,99,235,0.35);
+  padding:12px 14px;
   display:flex;
   justify-content:space-between;
-  gap:12px;
   align-items:center;
-  padding:12px 14px;
-  background:rgba(30,64,175,.38);
-  color:#dbeafe;
-  font-weight:800;
+  font-weight:700;
 }
+
 .copyBtn{
   padding:7px 12px;
   font-size:13px;
-  background:rgba(14,165,233,.35);
-  box-shadow:none;
+  border-radius:999px;
+  background:#0ea5e9;
 }
+
 pre{
   white-space:pre-wrap;
   word-break:break-word;
-  margin:0;
   padding:16px;
-  color:#f8fafc;
-  line-height:1.7;
+  line-height:1.75;
   font-size:14px;
 }
-.tag{
-  display:inline-block;
-  padding:5px 10px;
-  border-radius:999px;
-  background:rgba(59,130,246,.18);
-  border:1px solid rgba(147,197,253,.28);
-  color:#bfdbfe;
-  font-size:13px;
-  margin:4px 4px 0 0;
-}
-.modeNote{
-  border-left:4px solid #38bdf8;
-  padding:12px 14px;
-  background:rgba(14,165,233,.08);
-  border-radius:12px;
-  color:#cbd5e1;
-  line-height:1.7;
-  margin-top:14px;
-}
+
 footer{
   text-align:center;
   color:#94a3b8;
-  padding:0 0 40px;
-  font-size:13px;
+  padding:30px 15px 40px;
 }
-@media(max-width:900px){
-  .wrap{grid-template-columns:1fr}
-  .row{grid-template-columns:1fr}
+
+@media(max-width:1000px){
+  .container{
+    grid-template-columns:1fr;
+  }
+
+  .row{
+    grid-template-columns:1fr;
+  }
 }
 </style>
 </head>
 
 <body>
+
 <header>
-  <h1>PICO Research Search Prompt Generator Pro v2</h1>
-  <p>
-    適用於臨床研究、動物實驗、細胞研究、多體學與機轉研究。
-    可自動產生 PubMed、Embase、Cochrane、Google Scholar 與 AI 搜尋策略提示句。
-  </p>
+<h1>Research Search Prompt Generator Pro v2</h1>
+<p>
+支援 Clinical、Animal、Cell、Omics、Mechanism 模式。
+研究場景與研究設計連動選單，自動產生 PubMed、Embase、Scholar 搜尋提示句。
+</p>
 </header>
 
-<main class="wrap">
-<section class="card">
-<h2>一、輸入研究問題與研究類別</h2>
+<div class="container">
 
-<label>研究主題或研究問題</label>
+<!-- LEFT -->
+<section class="card">
+
+<h2>研究設定</h2>
+
+<label>研究問題</label>
 <textarea id="question" placeholder="例如：Does Antrodia cinnamomea improve liver injury through anti-inflammatory mechanisms?"></textarea>
 
 <div class="row">
-  <div>
-    <label>研究模式</label>
-    <select id="researchMode" onchange="updateModeNote()">
-      <option value="clinical">Clinical｜臨床研究 PICO</option>
-      <option value="animal">Animal｜動物實驗</option>
-      <option value="cell">Cell｜細胞實驗</option>
-      <option value="omics">Omics｜多體學研究</option>
-      <option value="mechanism">Mechanism｜機轉研究</option>
-      <option value="mixed">Mixed｜混合型研究</option>
-    </select>
-  </div>
 
-  <div>
-    <label>研究類型</label>
-    <select id="studyType">
-      <option value="systematic review">Systematic review / Meta-analysis</option>
-      <option value="randomized controlled trial">Randomized controlled trial</option>
-      <option value="clinical trial">Clinical trial</option>
-      <option value="observational study">Observational study</option>
-      <option value="animal study">Animal study</option>
-      <option value="mouse model">Mouse model</option>
-      <option value="rat model">Rat model</option>
-      <option value="zebrafish model">Zebrafish model</option>
-      <option value="cell study">Cell study</option>
-      <option value="in vitro study">In vitro study</option>
-      <option value="cell line study">Cell line study</option>
-      <option value="transcriptomics">Transcriptomics</option>
-      <option value="proteomics">Proteomics</option>
-      <option value="metabolomics">Metabolomics</option>
-      <option value="lipidomics">Lipidomics</option>
-      <option value="mechanism study">Mechanism study</option>
-      <option value="general">General literature search</option>
-    </select>
-  </div>
+<div>
+<label>研究場景</label>
+<select id="researchMode" onchange="updateModeNote();updateStudyTypeOptions();">
+<option value="clinical">Clinical｜臨床研究</option>
+<option value="animal">Animal｜動物研究</option>
+<option value="cell">Cell｜細胞研究</option>
+<option value="omics">Omics｜多體學研究</option>
+<option value="mechanism">Mechanism｜機轉研究</option>
+<option value="mixed">Mixed｜混合研究</option>
+</select>
+</div>
+
+<div>
+<label>研究設計</label>
+<select id="studyType"></select>
+</div>
+
 </div>
 
 <div id="modeNote" class="modeNote"></div>
 
-<h3>核心研究元素</h3>
+<label>P / Species / Cell line</label>
+<textarea id="p" placeholder="older adults with dementia / C57BL6 mice / HepG2"></textarea>
 
-<label>P / Species / Cell line｜研究對象、物種或細胞株</label>
-<textarea id="p" placeholder="臨床：older adults with dementia；動物：C57BL/6 mice, Sprague-Dawley rats；細胞：HepG2, AML-12, RAW264.7"></textarea>
+<label>I / Intervention / Treatment</label>
+<textarea id="i" placeholder="music therapy / Antrodia cinnamomea / exercise"></textarea>
 
-<label>I / Treatment｜介入、處理或暴露因子</label>
-<textarea id="i" placeholder="例如：music therapy, exercise, Antrodia cinnamomea extract, LPS, high-fat diet, palmitic acid"></textarea>
+<label>C / Control</label>
+<textarea id="c" placeholder="placebo / usual care / vehicle control"></textarea>
 
-<label>C / Control｜對照條件</label>
-<textarea id="c" placeholder="例如：usual care, placebo, vehicle control, untreated control, normal diet, negative control"></textarea>
+<label>O / Outcome</label>
+<textarea id="o" placeholder="depression / ALT / inflammation / apoptosis"></textarea>
 
-<label>O / Endpoint｜結果指標</label>
-<textarea id="o" placeholder="例如：depression, anxiety, ALT, AST, inflammation, oxidative stress, apoptosis, lipid accumulation"></textarea>
+<label>Animal model</label>
+<textarea id="animalModel" placeholder="high-fat diet model / CCl4 liver injury"></textarea>
 
-<h3>實驗模型補充欄位</h3>
+<label>Cell condition</label>
+<textarea id="cellCondition" placeholder="LPS-induced RAW264.7 / palmitic acid-induced steatosis"></textarea>
 
-<label>Animal model｜動物疾病模型</label>
-<textarea id="animalModel" placeholder="例如：CCl4-induced liver injury, high-fat diet model, LPS-induced inflammation, 6-OHDA Parkinson’s model"></textarea>
+<label>Mechanism / Pathway</label>
+<textarea id="mechanism" placeholder="NF-kB / Nrf2 / AMPK / mTOR"></textarea>
 
-<label>Cell condition｜細胞處理條件</label>
-<textarea id="cellCondition" placeholder="例如：H2O2-induced oxidative stress, palmitic acid-induced steatosis, LPS-stimulated RAW264.7 cells"></textarea>
+<label>Omics method</label>
+<textarea id="omics" placeholder="RNA-seq / lipidomics / metabolomics / GSEA"></textarea>
 
-<label>Mechanism / Pathway｜可能機轉或路徑</label>
-<textarea id="mechanism" placeholder="例如：NF-κB, Nrf2, AMPK, mTOR, PPAR, apoptosis, autophagy, inflammation"></textarea>
+<label>備註限制</label>
+<textarea id="note" placeholder="English only / last 10 years / exclude review"></textarea>
 
-<label>Omics method｜多體學方法</label>
-<textarea id="omics" placeholder="例如：RNA-seq, transcriptomics, lipidomics, metabolomics, proteomics, GSEA, KEGG, GO analysis"></textarea>
-
-<div class="row">
-  <div>
-    <label>搜尋策略</label>
-    <select id="strategy">
-      <option value="sensitive">敏感搜尋｜較廣，適合系統性回顧</option>
-      <option value="balanced">平衡搜尋｜廣度與精準兼具</option>
-      <option value="specific">精準搜尋｜較窄，適合快速找文獻</option>
-    </select>
-  </div>
-
-  <div>
-    <label>輸出語言</label>
-    <select id="lang">
-      <option value="bilingual">中英雙語</option>
-      <option value="english">English only</option>
-      <option value="chinese">繁體中文</option>
-    </select>
-  </div>
+<div class="buttons">
+<button onclick="generatePrompt()">生成提示句</button>
+<button class="alt" onclick="clearAll()">清空內容</button>
 </div>
 
-<label>額外限制或備註</label>
-<textarea id="note" placeholder="例如：近十年、英文文獻、排除 review、只找 in vivo、只找 in vitro、不要 protocol"></textarea>
-
-<div class="btns">
-  <button onclick="generate()">生成提示句</button>
-  <button class="secondary" onclick="clearAll()">清空內容</button>
-</div>
-
-<div class="hint">
-  <span class="tag">Clinical PICO</span>
-  <span class="tag">Animal model</span>
-  <span class="tag">Cell line</span>
-  <span class="tag">Omics</span>
-  <span class="tag">Mechanism</span>
-  <span class="tag">PubMed</span>
-  <span class="tag">Embase</span>
-</div>
 </section>
 
+<!-- RIGHT -->
 <section class="card">
-<h2>二、輸出搜尋提示句</h2>
+
+<h2>輸出結果</h2>
 
 <div class="outputBox">
-  <div class="outputHead">
-    <span>AI 總提示句</span>
-    <button class="copyBtn" onclick="copyText('aiPrompt')">複製</button>
-  </div>
-  <pre id="aiPrompt">請先輸入研究問題後按下「生成提示句」。</pre>
+<div class="outputHead">
+<span>AI 總提示句</span>
+<button class="copyBtn" onclick="copyText('mainOutput')">複製</button>
+</div>
+<pre id="mainOutput">請輸入內容後按下生成提示句。</pre>
 </div>
 
 <div class="outputBox">
-  <div class="outputHead">
-    <span>PubMed 搜尋提示句</span>
-    <button class="copyBtn" onclick="copyText('pubmed')">複製</button>
-  </div>
-  <pre id="pubmed"></pre>
+<div class="outputHead">
+<span>PubMed 搜尋提示句</span>
+<button class="copyBtn" onclick="copyText('pubmedOutput')">複製</button>
+</div>
+<pre id="pubmedOutput"></pre>
 </div>
 
 <div class="outputBox">
-  <div class="outputHead">
-    <span>Embase 搜尋提示句</span>
-    <button class="copyBtn" onclick="copyText('embase')">複製</button>
-  </div>
-  <pre id="embase"></pre>
+<div class="outputHead">
+<span>Google Scholar 搜尋提示句</span>
+<button class="copyBtn" onclick="copyText('scholarOutput')">複製</button>
+</div>
+<pre id="scholarOutput"></pre>
 </div>
 
 <div class="outputBox">
-  <div class="outputHead">
-    <span>Cochrane / CENTRAL 搜尋提示句</span>
-    <button class="copyBtn" onclick="copyText('cochrane')">複製</button>
-  </div>
-  <pre id="cochrane"></pre>
+<div class="outputHead">
+<span>Embase 搜尋提示句</span>
+<button class="copyBtn" onclick="copyText('embaseOutput')">複製</button>
+</div>
+<pre id="embaseOutput"></pre>
 </div>
 
-<div class="outputBox">
-  <div class="outputHead">
-    <span>Google Scholar 搜尋提示句</span>
-    <button class="copyBtn" onclick="copyText('scholar')">複製</button>
-  </div>
-  <pre id="scholar"></pre>
-</div>
-
-<div class="outputBox">
-  <div class="outputHead">
-    <span>快速搜尋式範本</span>
-    <button class="copyBtn" onclick="copyText('quickSearch')">複製</button>
-  </div>
-  <pre id="quickSearch"></pre>
-</div>
 </section>
-</main>
+</div>
 
 <footer>
-Research Search Prompt Generator Pro v2｜Clinical、Animal、Cell、Omics、Mechanism Search
+Research Search Prompt Generator Pro v2
 </footer>
 
 <script>
-function val(id){
-  return document.getElementById(id).value.trim();
+
+const studyTypeOptions = {
+
+clinical:[
+["systematic review","Systematic review / Meta-analysis"],
+["randomized controlled trial","Randomized Controlled Trial"],
+["clinical trial","Clinical Trial"],
+["cohort study","Cohort Study"],
+["case-control study","Case-Control Study"],
+["observational study","Observational Study"]
+],
+
+animal:[
+["mouse model","Mouse Model"],
+["rat model","Rat Model"],
+["zebrafish model","Zebrafish Model"],
+["in vivo study","In Vivo Study"],
+["disease model study","Disease Model Study"],
+["animal study","General Animal Study"]
+],
+
+cell:[
+["cell line study","Cell Line Study"],
+["in vitro study","In Vitro Study"],
+["primary cell study","Primary Cell Study"],
+["co-culture study","Co-culture Study"],
+["dose-response study","Dose-Response Study"],
+["cell study","General Cell Study"]
+],
+
+omics:[
+["transcriptomics","Transcriptomics"],
+["proteomics","Proteomics"],
+["metabolomics","Metabolomics"],
+["lipidomics","Lipidomics"],
+["multi-omics","Multi-Omics"],
+["pathway analysis","Pathway Analysis"]
+],
+
+mechanism:[
+["signaling pathway study","Signaling Pathway Study"],
+["molecular mechanism","Molecular Mechanism"],
+["oxidative stress study","Oxidative Stress Study"],
+["inflammation study","Inflammation Study"],
+["autophagy study","Autophagy Study"],
+["mechanism study","General Mechanism Study"]
+],
+
+mixed:[
+["mixed evidence search","Mixed Evidence Search"],
+["clinical + animal","Clinical + Animal"],
+["animal + cell","Animal + Cell"],
+["mechanism + omics","Mechanism + Omics"],
+["broad biomedical","Broad Biomedical Search"]
+]
+
+};
+
+function updateStudyTypeOptions(){
+const mode=document.getElementById("researchMode").value;
+const target=document.getElementById("studyType");
+target.innerHTML="";
+
+studyTypeOptions[mode].forEach(item=>{
+let op=document.createElement("option");
+op.value=item[0];
+op.textContent=item[1];
+target.appendChild(op);
+});
 }
 
 function updateModeNote(){
-  const mode = document.getElementById("researchMode").value;
-  const note = document.getElementById("modeNote");
+const mode=document.getElementById("researchMode").value;
+const note=document.getElementById("modeNote");
 
-  const notes = {
-    clinical:
-`Clinical 模式：以 PICO 為主。
-P = patients / population；I = intervention；C = comparison；O = outcome。
-建議 Comparison 不一定放入搜尋式，避免過窄。`,
+const text={
+clinical:"Clinical：真人患者研究，使用 PICO 架構。常見 RCT、cohort、meta-analysis。",
+animal:"Animal：動物模型研究。常見 mouse model、rat model、in vivo disease model。",
+cell:"Cell：細胞株與體外研究。常見 HepG2、RAW264.7、AML-12、SH-SY5Y。",
+omics:"Omics：轉錄體、蛋白體、代謝體、脂質體研究。",
+mechanism:"Mechanism：機轉與訊號路徑研究，如 NF-kB、AMPK、mTOR。",
+mixed:"Mixed：跨臨床、動物、細胞或多體學整合搜尋。"
+};
 
-    animal:
-`Animal 模式：建議使用 Species + Disease model + Treatment + Outcome。
-常見詞包括 mice, rats, C57BL/6, Sprague-Dawley, animal model, in vivo。`,
-
-    cell:
-`Cell 模式：建議使用 Cell line + Stimulus / Condition + Treatment + Endpoint。
-常見詞包括 HepG2, AML-12, RAW264.7, SH-SY5Y, in vitro, cell viability, apoptosis。`,
-
-    omics:
-`Omics 模式：建議使用 Model + Treatment + Omics method + Pathway analysis。
-常見詞包括 RNA-seq, transcriptomics, lipidomics, metabolomics, KEGG, GO, GSEA。`,
-
-    mechanism:
-`Mechanism 模式：建議使用 Disease / model + Treatment + Pathway + Biological endpoint。
-常見詞包括 NF-κB, Nrf2, AMPK, mTOR, PPAR, oxidative stress, inflammation, apoptosis。`,
-
-    mixed:
-`Mixed 模式：適合跨臨床、動物、細胞或多體學主題。
-搜尋式需分層建立，避免把所有詞一次塞入造成過窄。`
-  };
-
-  note.textContent = notes[mode];
+note.textContent=text[mode];
 }
 
-function getStrategyText(strategy){
-  if(strategy === "sensitive"){
-    return "Use a sensitive and comprehensive search strategy suitable for systematic review or evidence synthesis. Avoid making the search too narrow.";
-  }
-  if(strategy === "specific"){
-    return "Use a focused and specific search strategy suitable for quickly identifying highly relevant papers.";
-  }
-  return "Use a balanced search strategy that considers both sensitivity and specificity.";
+function getVal(id){
+return document.getElementById(id).value.trim();
 }
 
-function getModeInstruction(mode){
-  const map = {
-    clinical:
-`Use the PICO framework. Focus on patients, intervention, comparison, and outcomes. Use MeSH / Emtree terms where available.`,
+function generatePrompt(){
 
-    animal:
-`Use an animal-study framework: species, strain, disease model, intervention or treatment, control condition, and biological endpoints. Include in vivo terms, animal model synonyms, and species-specific terms.`,
+let q=getVal("question");
+let mode=getVal("researchMode");
+let type=getVal("studyType");
+let p=getVal("p");
+let i=getVal("i");
+let c=getVal("c");
+let o=getVal("o");
+let am=getVal("animalModel");
+let cc=getVal("cellCondition");
+let me=getVal("mechanism");
+let om=getVal("omics");
+let note=getVal("note");
 
-    cell:
-`Use an in vitro framework: cell line, cell type, stimulus or injury condition, treatment, control, and cellular endpoints. Include cell line synonyms and in vitro terminology.`,
+let main=`請根據以下研究設定產生專業搜尋策略。
 
-    omics:
-`Use an omics-study framework: biological model, treatment, omics platform, pathway analysis, and molecular outcomes. Include transcriptomics, metabolomics, lipidomics, proteomics, RNA-seq, KEGG, GO, and GSEA terms when appropriate.`,
+Research Question:
+${q}
 
-    mechanism:
-`Use a mechanism-study framework: disease or injury context, intervention, pathway, molecular target, and biological endpoint. Include pathway-related terms and molecular mechanism terms.`,
-
-    mixed:
-`Use a layered search strategy. Separate clinical, animal, cell, omics, and mechanism concepts when needed. Avoid combining too many concepts in one overly restrictive search.`
-  };
-  return map[mode];
-}
-
-function generate(){
-  const question = val("question") || "[請填入研究問題]";
-  const mode = val("researchMode");
-  const studyType = val("studyType");
-  const p = val("p") || "[Population / Species / Cell line]";
-  const i = val("i") || "[Intervention / Treatment / Exposure]";
-  const c = val("c") || "[Comparison / Control]";
-  const o = val("o") || "[Outcome / Endpoint]";
-  const animalModel = val("animalModel") || "[Animal disease model, if applicable]";
-  const cellCondition = val("cellCondition") || "[Cell condition or stimulus, if applicable]";
-  const mechanism = val("mechanism") || "[Mechanism or pathway, if applicable]";
-  const omics = val("omics") || "[Omics method, if applicable]";
-  const strategy = val("strategy");
-  const lang = val("lang");
-  const note = val("note") || "No additional restrictions.";
-
-  const strategyText = getStrategyText(strategy);
-  const modeInstruction = getModeInstruction(mode);
-
-  const aiPrompt =
-`我想設計一個適合醫學與生物醫學研究的文獻搜尋策略。
-
-Research question:
-${question}
-
-Research mode:
+Research Mode:
 ${mode}
 
-Study type:
-${studyType}
+Study Type:
+${type}
 
-Core elements:
-P / Species / Cell line:
+P / Species / Cell:
 ${p}
 
-I / Treatment / Exposure:
-${i}
-
-C / Control:
-${c}
-
-O / Endpoint:
-${o}
-
-Animal model:
-${animalModel}
-
-Cell condition:
-${cellCondition}
-
-Mechanism / Pathway:
-${mechanism}
-
-Omics method:
-${omics}
-
-Search strategy preference:
-${strategyText}
-
-Additional notes:
-${note}
-
-Output language:
-${lang}
-
-請幫我完成以下任務：
-1. 判斷本題較適合使用 PICO、animal model framework、cell study framework、omics framework 或 mechanism framework。
-2. 將研究問題拆成可搜尋的概念群。
-3. 每個概念群請列出英文關鍵字、同義詞、縮寫詞、相關詞。
-4. 若是臨床研究，請提供 MeSH terms 與 Emtree terms。
-5. 若是動物研究，請補充 species、strain、animal model、in vivo 相關詞。
-6. 若是細胞研究，請補充 cell line、cell type、stimulus、in vitro 相關詞。
-7. 若是多體學研究，請補充 transcriptomics、lipidomics、metabolomics、proteomics、RNA-seq、GO、KEGG、GSEA 等相關詞。
-8. 若是機轉研究，請補充 pathway、molecular target、biological process 相關詞。
-9. 產生 PubMed 搜尋策略。
-10. 產生 Embase 搜尋策略。
-11. 產生 Cochrane / CENTRAL 搜尋策略。
-12. 產生 Google Scholar 簡化搜尋式。
-13. 分別提供 broad search、balanced search、focused search。
-14. 指出哪些詞可能造成搜尋過窄或漏掉重要文獻。
-15. 提醒是否應排除 review、protocol、conference abstract 或非原始研究。
-
-Important:
-${modeInstruction}
-
-Please make the search sensitive enough for evidence synthesis, not only precise for a quick literature search.`;
-
-  const pubmed =
-`Please generate a PubMed search strategy for the following biomedical research question.
-
-Research question:
-${question}
-
-Research mode:
-${mode}
-
-Study type:
-${studyType}
-
-P / Species / Cell line:
-${p}
-
-Intervention / Treatment / Exposure:
+Intervention:
 ${i}
 
 Control:
 ${c}
 
-Outcome / Endpoint:
+Outcome:
 ${o}
 
-Animal model:
-${animalModel}
+Animal Model:
+${am}
 
-Cell condition:
-${cellCondition}
-
-Mechanism / Pathway:
-${mechanism}
-
-Omics method:
-${omics}
-
-Requirements:
-- Use MeSH terms if available.
-- Use Title/Abstract keywords.
-- Use OR for synonyms within each concept.
-- Use AND between major concepts.
-- Adjust terms according to the selected research mode.
-- For clinical studies, use patient and outcome terms carefully.
-- For animal studies, include species, strain, disease model, and in vivo terms.
-- For cell studies, include cell line, cell type, stimulus, and in vitro terms.
-- For omics studies, include RNA-seq, transcriptomics, lipidomics, metabolomics, proteomics, GO, KEGG, and GSEA terms when appropriate.
-- For mechanism studies, include pathway and molecular target terms.
-- Provide broad, balanced, and focused versions.
-- Explain which terms should not be included because they may make the search too narrow.`;
-
-  const embase =
-`Please generate an Embase search strategy for the following biomedical research question.
-
-Research question:
-${question}
-
-Research mode:
-${mode}
-
-Study type:
-${studyType}
-
-Core elements:
-${p}
-${i}
-${c}
-${o}
-
-Animal model:
-${animalModel}
-
-Cell condition:
-${cellCondition}
-
-Mechanism / Pathway:
-${mechanism}
-
-Omics method:
-${omics}
-
-Requirements:
-- Include possible Emtree terms.
-- Include free-text terms.
-- Use OR for synonyms.
-- Use AND between major concepts.
-- Use proximity operators when appropriate.
-- Adjust terminology for clinical, animal, cell, omics, or mechanism studies.
-- Include disease model and species terms for animal studies.
-- Include cell line and in vitro terms for cell studies.
-- Include omics platform and pathway enrichment terms for omics studies.
-- Provide broad, balanced, and focused versions.
-- State whether study design filters are appropriate for ${studyType}.`;
-
-  const cochrane =
-`Please generate a Cochrane Library / CENTRAL search strategy.
-
-Research question:
-${question}
-
-Research mode:
-${mode}
-
-Study type:
-${studyType}
-
-P / Species / Cell line:
-${p}
-
-I / Treatment:
-${i}
-
-C / Control:
-${c}
-
-O / Endpoint:
-${o}
-
-Requirements:
-- Build the search line by line.
-- Use OR within each concept.
-- Use AND between concepts.
-- Keep the search sensitive.
-- For clinical studies, focus on trials and reviews.
-- For animal or cell studies, explain whether Cochrane Library is suitable or whether PubMed / Embase / Web of Science may be better.
-- Provide a final combined search line.
-- Suggest whether to search Reviews, Trials, or CENTRAL.`;
-
-  const scholar =
-`Please create practical Google Scholar search queries for this research question.
-
-Research question:
-${question}
-
-Research mode:
-${mode}
-
-Study type:
-${studyType}
-
-Core terms:
-${p}
-${i}
-${o}
-
-Animal model:
-${animalModel}
-
-Cell condition:
-${cellCondition}
+Cell Condition:
+${cc}
 
 Mechanism:
-${mechanism}
+${me}
 
 Omics:
-${omics}
+${om}
 
-Requirements:
-- Create 10 short Google Scholar search queries.
-- Use exact phrases with quotation marks.
-- Avoid overly complex Boolean syntax.
-- Include one broad query.
-- Include one focused query.
-- Include one query for review papers.
-- Include one query for original research.
-- Include one query specific to the selected research mode.
-- Include one query for mechanism.
-- Include one query for omics if relevant.
-- Include one query suitable for citation chasing.`;
+Additional Notes:
+${note}
 
-  const quickSearch =
-`快速搜尋式範本：
+請產生：
+1. 關鍵字群組
+2. 同義詞
+3. PubMed 搜尋式
+4. Embase 搜尋式
+5. Google Scholar 搜尋式
+6. Broad / Focused 版本
+7. 搜尋過窄風險提醒`;
 
-1. Broad search
-(${p}) AND (${i})
+let pubmed=`(${p}) AND (${i}) AND (${o})`;
 
-2. Outcome-based search
-(${p}) AND (${i}) AND (${o})
+let scholar=`"${p}" "${i}" "${o}"`;
 
-3. Animal model search
-(${p}) AND (${animalModel}) AND (${i}) AND (${o})
+let embase=`(${p}) AND (${i}) AND (${o})`;
 
-4. Cell study search
-(${p}) AND (${cellCondition}) AND (${i}) AND (${o})
+document.getElementById("mainOutput").textContent=main;
+document.getElementById("pubmedOutput").textContent=pubmed;
+document.getElementById("scholarOutput").textContent=scholar;
+document.getElementById("embaseOutput").textContent=embase;
 
-5. Mechanism search
-(${i}) AND (${mechanism}) AND (${o})
-
-6. Omics search
-(${i}) AND (${omics}) AND (${mechanism})
-
-7. Review search
-(${p}) AND (${i}) AND (${o}) AND (systematic review OR meta-analysis OR review)
-
-8. Original study search
-(${p}) AND (${i}) AND (${o}) AND (experiment OR trial OR in vivo OR in vitro)`;
-
-  document.getElementById("aiPrompt").textContent = aiPrompt;
-  document.getElementById("pubmed").textContent = pubmed;
-  document.getElementById("embase").textContent = embase;
-  document.getElementById("cochrane").textContent = cochrane;
-  document.getElementById("scholar").textContent = scholar;
-  document.getElementById("quickSearch").textContent = quickSearch;
 }
 
 function copyText(id){
-  const text = document.getElementById(id).textContent;
-  navigator.clipboard.writeText(text).then(()=>{
-    alert("已複製到剪貼簿");
-  });
+navigator.clipboard.writeText(document.getElementById(id).textContent);
+alert("已複製");
 }
 
 function clearAll(){
-  [
-    "question","p","i","c","o",
-    "animalModel","cellCondition","mechanism","omics","note"
-  ].forEach(id=>{
-    document.getElementById(id).value="";
-  });
-
-  [
-    "aiPrompt","pubmed","embase","cochrane","scholar","quickSearch"
-  ].forEach(id=>{
-    document.getElementById(id).textContent="";
-  });
-
-  document.getElementById("aiPrompt").textContent="請先輸入研究問題後按下「生成提示句」。";
+document.querySelectorAll("textarea").forEach(x=>x.value="");
+document.getElementById("mainOutput").textContent="請輸入內容後按下生成提示句。";
+document.getElementById("pubmedOutput").textContent="";
+document.getElementById("scholarOutput").textContent="";
+document.getElementById("embaseOutput").textContent="";
 }
 
 updateModeNote();
+updateStudyTypeOptions();
+
 </script>
+
 </body>
 </html>
