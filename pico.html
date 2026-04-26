@@ -3,176 +3,160 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Research Search Prompt Generator Pro v2</title>
+<title>Research Search Prompt Generator Pro v3</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box;}
 
 body{
-  font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;
-  background:linear-gradient(135deg,#06142e,#0f172a,#111827);
-  color:#e5e7eb;
-  min-height:100vh;
+font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;
+background:linear-gradient(135deg,#06142e,#0f172a,#111827);
+color:#e5e7eb;
+min-height:100vh;
 }
 
 header{
-  padding:40px 20px 25px;
-  text-align:center;
+padding:42px 20px 28px;
+text-align:center;
 }
 
 header h1{
-  font-size:34px;
-  color:#ffffff;
-  margin-bottom:10px;
+font-size:34px;
+margin-bottom:10px;
+color:#fff;
 }
 
 header p{
-  color:#cbd5e1;
-  max-width:900px;
-  margin:auto;
-  line-height:1.8;
+max-width:920px;
+margin:auto;
+line-height:1.8;
+color:#cbd5e1;
 }
 
 .container{
-  width:95%;
-  max-width:1400px;
-  margin:auto;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:24px;
-  padding-bottom:50px;
+width:95%;
+max-width:1450px;
+margin:auto;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:24px;
+padding-bottom:50px;
 }
 
 .card{
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:18px;
-  padding:24px;
-  backdrop-filter:blur(14px);
+background:rgba(255,255,255,0.06);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:18px;
+padding:24px;
+backdrop-filter:blur(14px);
 }
 
 h2{
-  font-size:22px;
-  margin-bottom:18px;
-  color:#93c5fd;
+font-size:22px;
+margin-bottom:18px;
+color:#93c5fd;
 }
 
 label{
-  display:block;
-  margin-top:14px;
-  margin-bottom:8px;
-  font-weight:700;
-  color:#dbeafe;
+display:block;
+margin-top:14px;
+margin-bottom:8px;
+font-weight:700;
+color:#dbeafe;
 }
 
-input,textarea,select{
-  width:100%;
-  padding:12px 14px;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,0.12);
-  background:rgba(255,255,255,0.04);
-  color:#fff;
-  font-size:15px;
+textarea,select,input{
+width:100%;
+padding:12px 14px;
+border-radius:12px;
+border:1px solid rgba(255,255,255,0.12);
+background:rgba(255,255,255,0.04);
+color:#fff;
+font-size:15px;
 }
 
 textarea{
-  min-height:82px;
-  resize:vertical;
+min-height:82px;
+resize:vertical;
 }
 
 .row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:14px;
 }
 
-.small{
-  font-size:13px;
-  color:#94a3b8;
-  margin-top:6px;
-  line-height:1.6;
-}
-
-.modeNote{
-  margin-top:14px;
-  padding:14px;
-  border-left:4px solid #38bdf8;
-  background:rgba(56,189,248,0.08);
-  border-radius:12px;
-  line-height:1.7;
-  color:#cbd5e1;
+.noteBox{
+margin-top:14px;
+padding:14px;
+border-left:4px solid #38bdf8;
+background:rgba(56,189,248,.08);
+border-radius:12px;
+line-height:1.75;
+color:#cbd5e1;
 }
 
 .buttons{
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
-  margin-top:22px;
+display:flex;
+flex-wrap:wrap;
+gap:12px;
+margin-top:24px;
 }
 
 button{
-  border:none;
-  border-radius:999px;
-  padding:12px 18px;
-  cursor:pointer;
-  font-weight:700;
-  color:white;
-  background:linear-gradient(135deg,#2563eb,#06b6d4);
+border:none;
+padding:12px 18px;
+border-radius:999px;
+font-weight:700;
+cursor:pointer;
+color:#fff;
+background:linear-gradient(135deg,#2563eb,#06b6d4);
 }
 
 button.alt{
-  background:#334155;
+background:#334155;
 }
 
 .outputBox{
-  margin-bottom:18px;
-  border-radius:16px;
-  overflow:hidden;
-  border:1px solid rgba(255,255,255,0.08);
+margin-bottom:18px;
+border-radius:16px;
+overflow:hidden;
+border:1px solid rgba(255,255,255,0.08);
 }
 
 .outputHead{
-  background:rgba(37,99,235,0.35);
-  padding:12px 14px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-weight:700;
+padding:12px 14px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(37,99,235,.35);
+font-weight:700;
 }
 
 .copyBtn{
-  padding:7px 12px;
-  font-size:13px;
-  border-radius:999px;
-  background:#0ea5e9;
+padding:7px 12px;
+font-size:13px;
+border-radius:999px;
+background:#0ea5e9;
 }
 
 pre{
-  white-space:pre-wrap;
-  word-break:break-word;
-  padding:16px;
-  line-height:1.75;
-  font-size:14px;
+white-space:pre-wrap;
+word-break:break-word;
+padding:16px;
+line-height:1.75;
+font-size:14px;
 }
 
 footer{
-  text-align:center;
-  color:#94a3b8;
-  padding:30px 15px 40px;
+text-align:center;
+padding:30px 15px 40px;
+color:#94a3b8;
 }
 
 @media(max-width:1000px){
-  .container{
-    grid-template-columns:1fr;
-  }
-
-  .row{
-    grid-template-columns:1fr;
-  }
+.container{grid-template-columns:1fr;}
+.row{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -180,10 +164,10 @@ footer{
 <body>
 
 <header>
-<h1>Research Search Prompt Generator Pro v2</h1>
+<h1>Research Search Prompt Generator Pro v3</h1>
 <p>
-支援 Clinical、Animal、Cell、Omics、Mechanism 模式。
-研究場景與研究設計連動選單，自動產生 PubMed、Embase、Scholar 搜尋提示句。
+升級版：研究場景 × 研究設計連動選單。Animal 模式新增 Laboratory Rodent Model（大小鼠合併）。
+適合 Clinical、Animal、Cell、Omics、Mechanism 搜尋。
 </p>
 </header>
 
@@ -201,7 +185,7 @@ footer{
 
 <div>
 <label>研究場景</label>
-<select id="researchMode" onchange="updateModeNote();updateStudyTypeOptions();">
+<select id="researchMode" onchange="updateMode();updateStudyType();">
 <option value="clinical">Clinical｜臨床研究</option>
 <option value="animal">Animal｜動物研究</option>
 <option value="cell">Cell｜細胞研究</option>
@@ -218,31 +202,31 @@ footer{
 
 </div>
 
-<div id="modeNote" class="modeNote"></div>
+<div id="modeNote" class="noteBox"></div>
 
 <label>P / Species / Cell line</label>
-<textarea id="p" placeholder="older adults with dementia / C57BL6 mice / HepG2"></textarea>
+<textarea id="p" placeholder="older adults / rodent / HepG2"></textarea>
 
-<label>I / Intervention / Treatment</label>
+<label>I / Intervention</label>
 <textarea id="i" placeholder="music therapy / Antrodia cinnamomea / exercise"></textarea>
 
 <label>C / Control</label>
-<textarea id="c" placeholder="placebo / usual care / vehicle control"></textarea>
+<textarea id="c" placeholder="placebo / vehicle / usual care"></textarea>
 
 <label>O / Outcome</label>
 <textarea id="o" placeholder="depression / ALT / inflammation / apoptosis"></textarea>
 
 <label>Animal model</label>
-<textarea id="animalModel" placeholder="high-fat diet model / CCl4 liver injury"></textarea>
+<textarea id="animalModel" placeholder="high-fat diet / CCl4 / LPS-induced model"></textarea>
 
 <label>Cell condition</label>
-<textarea id="cellCondition" placeholder="LPS-induced RAW264.7 / palmitic acid-induced steatosis"></textarea>
+<textarea id="cellCondition" placeholder="LPS-induced RAW264.7 / palmitic acid HepG2"></textarea>
 
-<label>Mechanism / Pathway</label>
+<label>Mechanism</label>
 <textarea id="mechanism" placeholder="NF-kB / Nrf2 / AMPK / mTOR"></textarea>
 
-<label>Omics method</label>
-<textarea id="omics" placeholder="RNA-seq / lipidomics / metabolomics / GSEA"></textarea>
+<label>Omics</label>
+<textarea id="omics" placeholder="RNA-seq / lipidomics / metabolomics"></textarea>
 
 <label>備註限制</label>
 <textarea id="note" placeholder="English only / last 10 years / exclude review"></textarea>
@@ -269,7 +253,7 @@ footer{
 
 <div class="outputBox">
 <div class="outputHead">
-<span>PubMed 搜尋提示句</span>
+<span>PubMed</span>
 <button class="copyBtn" onclick="copyText('pubmedOutput')">複製</button>
 </div>
 <pre id="pubmedOutput"></pre>
@@ -277,7 +261,7 @@ footer{
 
 <div class="outputBox">
 <div class="outputHead">
-<span>Google Scholar 搜尋提示句</span>
+<span>Google Scholar</span>
 <button class="copyBtn" onclick="copyText('scholarOutput')">複製</button>
 </div>
 <pre id="scholarOutput"></pre>
@@ -285,7 +269,7 @@ footer{
 
 <div class="outputBox">
 <div class="outputHead">
-<span>Embase 搜尋提示句</span>
+<span>Embase</span>
 <button class="copyBtn" onclick="copyText('embaseOutput')">複製</button>
 </div>
 <pre id="embaseOutput"></pre>
@@ -295,74 +279,66 @@ footer{
 </div>
 
 <footer>
-Research Search Prompt Generator Pro v2
+Research Search Prompt Generator Pro v3
 </footer>
 
 <script>
 
-const studyTypeOptions = {
+const options = {
 
 clinical:[
-["systematic review","Systematic review / Meta-analysis"],
-["randomized controlled trial","Randomized Controlled Trial"],
+["systematic review","Systematic Review / Meta-analysis"],
+["randomized trial","Randomized Controlled Trial"],
 ["clinical trial","Clinical Trial"],
 ["cohort study","Cohort Study"],
-["case-control study","Case-Control Study"],
-["observational study","Observational Study"]
+["case-control","Case-Control Study"]
 ],
 
 animal:[
-["mouse model","Mouse Model"],
-["rat model","Rat Model"],
+["rodent model","Laboratory Rodent Model (Mouse + Rat)"],
+["mouse model","Mouse Model Only"],
+["rat model","Rat Model Only"],
 ["zebrafish model","Zebrafish Model"],
-["in vivo study","In Vivo Study"],
-["disease model study","Disease Model Study"],
-["animal study","General Animal Study"]
+["in vivo study","General In Vivo Study"],
+["disease model","Disease Model Study"]
 ],
 
 cell:[
 ["cell line study","Cell Line Study"],
 ["in vitro study","In Vitro Study"],
-["primary cell study","Primary Cell Study"],
-["co-culture study","Co-culture Study"],
-["dose-response study","Dose-Response Study"],
-["cell study","General Cell Study"]
+["primary cell","Primary Cell Study"],
+["co-culture","Co-culture Study"]
 ],
 
 omics:[
 ["transcriptomics","Transcriptomics"],
 ["proteomics","Proteomics"],
 ["metabolomics","Metabolomics"],
-["lipidomics","Lipidomics"],
-["multi-omics","Multi-Omics"],
-["pathway analysis","Pathway Analysis"]
+["lipidomics","Lipidomics"]
 ],
 
 mechanism:[
-["signaling pathway study","Signaling Pathway Study"],
-["molecular mechanism","Molecular Mechanism"],
-["oxidative stress study","Oxidative Stress Study"],
-["inflammation study","Inflammation Study"],
-["autophagy study","Autophagy Study"],
-["mechanism study","General Mechanism Study"]
+["pathway study","Signaling Pathway Study"],
+["oxidative stress","Oxidative Stress Study"],
+["inflammation","Inflammation Study"],
+["autophagy","Autophagy Study"]
 ],
 
 mixed:[
-["mixed evidence search","Mixed Evidence Search"],
+["broad biomedical","Broad Biomedical Search"],
 ["clinical + animal","Clinical + Animal"],
 ["animal + cell","Animal + Cell"],
-["mechanism + omics","Mechanism + Omics"],
-["broad biomedical","Broad Biomedical Search"]
+["mechanism + omics","Mechanism + Omics"]
 ]
 
 };
 
-function updateStudyTypeOptions(){
-const mode=document.getElementById("researchMode").value;
-const target=document.getElementById("studyType");
+function updateStudyType(){
+let mode=document.getElementById("researchMode").value;
+let target=document.getElementById("studyType");
 target.innerHTML="";
 
-studyTypeOptions[mode].forEach(item=>{
+options[mode].forEach(item=>{
 let op=document.createElement("option");
 op.value=item[0];
 op.textContent=item[1];
@@ -370,42 +346,74 @@ target.appendChild(op);
 });
 }
 
-function updateModeNote(){
-const mode=document.getElementById("researchMode").value;
-const note=document.getElementById("modeNote");
+function updateMode(){
 
-const text={
-clinical:"Clinical：真人患者研究，使用 PICO 架構。常見 RCT、cohort、meta-analysis。",
-animal:"Animal：動物模型研究。常見 mouse model、rat model、in vivo disease model。",
-cell:"Cell：細胞株與體外研究。常見 HepG2、RAW264.7、AML-12、SH-SY5Y。",
-omics:"Omics：轉錄體、蛋白體、代謝體、脂質體研究。",
-mechanism:"Mechanism：機轉與訊號路徑研究，如 NF-kB、AMPK、mTOR。",
-mixed:"Mixed：跨臨床、動物、細胞或多體學整合搜尋。"
+let mode=document.getElementById("researchMode").value;
+let box=document.getElementById("modeNote");
+
+const notes={
+
+clinical:"Clinical：真人研究，使用 PICO 架構。",
+
+animal:"Animal：動物研究。Rodent Model = mouse + rat，適合前期廣搜與系統性回顧。",
+
+cell:"Cell：細胞研究，常見 HepG2、RAW264.7、AML-12。",
+
+omics:"Omics：RNA-seq、脂質體、代謝體等。",
+
+mechanism:"Mechanism：NF-kB、AMPK、Nrf2、mTOR 等路徑。",
+
+mixed:"Mixed：跨領域整合搜尋。"
+
 };
 
-note.textContent=text[mode];
+box.textContent=notes[mode];
+
 }
 
-function getVal(id){
+function val(id){
 return document.getElementById(id).value.trim();
+}
+
+function rodentKeywords(type){
+
+if(type==="rodent model"){
+return "(mouse OR mice OR murine OR rat OR rats OR rodent OR rodents)";
+}
+
+if(type==="mouse model"){
+return "(mouse OR mice OR murine)";
+}
+
+if(type==="rat model"){
+return "(rat OR rats)";
+}
+
+return "";
 }
 
 function generatePrompt(){
 
-let q=getVal("question");
-let mode=getVal("researchMode");
-let type=getVal("studyType");
-let p=getVal("p");
-let i=getVal("i");
-let c=getVal("c");
-let o=getVal("o");
-let am=getVal("animalModel");
-let cc=getVal("cellCondition");
-let me=getVal("mechanism");
-let om=getVal("omics");
-let note=getVal("note");
+let q=val("question");
+let mode=val("researchMode");
+let type=val("studyType");
+let p=val("p");
+let i=val("i");
+let c=val("c");
+let o=val("o");
+let am=val("animalModel");
+let cc=val("cellCondition");
+let me=val("mechanism");
+let om=val("omics");
+let note=val("note");
 
-let main=`請根據以下研究設定產生專業搜尋策略。
+let animalExpand = rodentKeywords(type);
+
+let pubmed = `${animalExpand || p} AND (${i}) AND (${o})`;
+let scholar = `"${p}" "${i}" "${o}"`;
+let embase = `${animalExpand || p} AND (${i}) AND (${o})`;
+
+let main = `請根據以下設定建立搜尋策略：
 
 Research Question:
 ${q}
@@ -416,7 +424,7 @@ ${mode}
 Study Type:
 ${type}
 
-P / Species / Cell:
+Population / Model:
 ${p}
 
 Intervention:
@@ -440,23 +448,16 @@ ${me}
 Omics:
 ${om}
 
-Additional Notes:
+Notes:
 ${note}
 
-請產生：
-1. 關鍵字群組
-2. 同義詞
-3. PubMed 搜尋式
-4. Embase 搜尋式
-5. Google Scholar 搜尋式
-6. Broad / Focused 版本
-7. 搜尋過窄風險提醒`;
-
-let pubmed=`(${p}) AND (${i}) AND (${o})`;
-
-let scholar=`"${p}" "${i}" "${o}"`;
-
-let embase=`(${p}) AND (${i}) AND (${o})`;
+請產出：
+1. 同義詞與關鍵字
+2. PubMed 搜尋式
+3. Embase 搜尋式
+4. Google Scholar 搜尋式
+5. Broad 與 Focused 版本
+6. 漏文獻風險提醒`;
 
 document.getElementById("mainOutput").textContent=main;
 document.getElementById("pubmedOutput").textContent=pubmed;
@@ -478,8 +479,8 @@ document.getElementById("scholarOutput").textContent="";
 document.getElementById("embaseOutput").textContent="";
 }
 
-updateModeNote();
-updateStudyTypeOptions();
+updateMode();
+updateStudyType();
 
 </script>
 
