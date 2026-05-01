@@ -1,947 +1,334 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GPT 產品海報提示句生成器 Pro</title>
-  <style>
-    :root{
-      --bg1:#071326;
-      --bg2:#11305f;
-      --card:rgba(255,255,255,.10);
-      --card2:rgba(255,255,255,.14);
-      --line:rgba(255,255,255,.18);
-      --text:#eef6ff;
-      --muted:#bfd0e6;
-      --accent:#7dd3fc;
-      --accent2:#a78bfa;
-      --green:#86efac;
-      --warn:#fb7185;
-      --shadow:0 20px 60px rgba(0,0,0,.34);
-      --radius:22px;
-    }
-
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at 10% 10%, rgba(125,211,252,.26), transparent 28%),
-        radial-gradient(circle at 90% 12%, rgba(167,139,250,.22), transparent 30%),
-        linear-gradient(135deg, var(--bg1), var(--bg2));
-      min-height:100vh;
-    }
-
-    .wrap{
-      width:min(1480px,94vw);
-      margin:0 auto;
-      padding:30px 0 42px;
-    }
-
-    .hero{
-      border:1px solid var(--line);
-      background:linear-gradient(135deg, rgba(255,255,255,.14), rgba(255,255,255,.07));
-      box-shadow:var(--shadow);
-      border-radius:30px;
-      padding:30px;
-      backdrop-filter:blur(16px);
-      margin-bottom:22px;
-      position:relative;
-      overflow:hidden;
-    }
-
-    .hero:after{
-      content:"";
-      position:absolute;
-      right:-60px;
-      bottom:-80px;
-      width:260px;
-      height:260px;
-      background:radial-gradient(circle, rgba(125,211,252,.32), transparent 70%);
-      pointer-events:none;
-    }
-
-    h1{
-      margin:0 0 10px;
-      font-size:clamp(28px,4vw,48px);
-      line-height:1.08;
-      letter-spacing:.02em;
-    }
-
-    .subtitle{
-      color:var(--muted);
-      max-width:980px;
-      line-height:1.8;
-      font-size:15.5px;
-    }
-
-    .tags{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:18px;
-    }
-
-    .tag{
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.08);
-      color:#e2f3ff;
-      padding:8px 12px;
-      border-radius:999px;
-      font-size:13px;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:minmax(380px,560px) 1fr;
-      gap:22px;
-      align-items:start;
-    }
-
-    @media (max-width:1020px){
-      .grid{grid-template-columns:1fr}
-    }
-
-    .panel{
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.09);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(16px);
-      overflow:hidden;
-    }
-
-    .panel-head{
-      padding:18px 20px;
-      border-bottom:1px solid var(--line);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      background:rgba(255,255,255,.06);
-    }
-
-    .panel-head h2{
-      margin:0;
-      font-size:18px;
-      letter-spacing:.02em;
-    }
-
-    .panel-body{padding:20px}
-
-    .section{
-      margin-bottom:18px;
-      padding:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
-      border-radius:18px;
-    }
-
-    .section-title{
-      font-size:15px;
-      font-weight:800;
-      color:#dff4ff;
-      margin-bottom:8px;
-    }
-
-    label{
-      display:block;
-      margin:12px 0 7px;
-      color:#ecf6ff;
-      font-weight:700;
-      font-size:14px;
-    }
-
-    input, textarea, select{
-      width:100%;
-      border:1px solid rgba(255,255,255,.22);
-      border-radius:14px;
-      background:rgba(2,8,23,.46);
-      color:var(--text);
-      padding:12px 13px;
-      outline:none;
-      font-size:15px;
-      line-height:1.55;
-    }
-
-    textarea{resize:vertical; min-height:84px}
-    textarea.long{min-height:110px}
-
-    input::placeholder, textarea::placeholder{
-      color:rgba(238,246,255,.44);
-    }
-
-    select option{
-      color:#0f172a;
-      background:#fff;
-    }
-
-    .row2, .row3{
-      display:grid;
-      gap:12px;
-    }
-
-    .row2{grid-template-columns:1fr 1fr}
-    .row3{grid-template-columns:1fr 1fr 1fr}
-
-    @media (max-width:760px){
-      .row2, .row3{grid-template-columns:1fr}
-    }
-
-    .checks{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:9px;
-      margin-top:10px;
-    }
-
-    .check{
-      display:flex;
-      align-items:flex-start;
-      gap:9px;
-      color:#dbe9f7;
-      font-size:14px;
-      line-height:1.55;
-      padding:10px 12px;
-      border:1px solid rgba(255,255,255,.13);
-      background:rgba(255,255,255,.06);
-      border-radius:14px;
-    }
-
-    .check input{
-      width:auto;
-      margin-top:3px;
-      accent-color:#7dd3fc;
-    }
-
-    .btns{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:18px;
-    }
-
-    button{
-      border:0;
-      border-radius:14px;
-      padding:12px 15px;
-      color:#06111f;
-      font-weight:800;
-      cursor:pointer;
-      background:linear-gradient(135deg, var(--accent), var(--accent2));
-      box-shadow:0 10px 30px rgba(125,211,252,.22);
-    }
-
-    button.secondary{
-      background:rgba(255,255,255,.12);
-      color:var(--text);
-      border:1px solid var(--line);
-      box-shadow:none;
-    }
-
-    button.warn{
-      background:rgba(251,113,133,.18);
-      color:#ffe4e6;
-      border:1px solid rgba(251,113,133,.35);
-      box-shadow:none;
-    }
-
-    .status{
-      font-size:13px;
-      color:var(--green);
-      display:none;
-      align-self:center;
-    }
-
-    .preset{
-      border:1px solid rgba(125,211,252,.22);
-      background:rgba(125,211,252,.08);
-      border-radius:16px;
-      padding:13px 14px;
-      margin-top:12px;
-    }
-
-    .preset-title{
-      font-weight:800;
-      margin-bottom:6px;
-      color:#d8f5ff;
-    }
-
-    .mini{
-      color:var(--muted);
-      font-size:12.5px;
-      line-height:1.7;
-    }
-
-    .output{
-      white-space:pre-wrap;
-      min-height:980px;
-      border:1px solid rgba(255,255,255,.18);
-      border-radius:18px;
-      padding:18px;
-      background:rgba(2,8,23,.56);
-      line-height:1.8;
-      color:#f8fbff;
-      font-size:15px;
-    }
-
-    .tips{
-      margin-top:14px;
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.75;
-    }
-
-    .divider{
-      height:1px;
-      background:rgba(255,255,255,.1);
-      margin:14px 0;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GPT 產品海報提示句生成器 Pro v2.1 手動版</title>
+<style>
+:root{
+  --bg1:#071326;--bg2:#11305f;--line:rgba(255,255,255,.18);--text:#eef6ff;
+  --muted:#bfd0e6;--accent:#7dd3fc;--accent2:#a78bfa;--green:#86efac;--warn:#fb7185;
+  --shadow:0 20px 60px rgba(0,0,0,.34);--radius:22px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  color:var(--text);
+  background:radial-gradient(circle at 10% 10%, rgba(125,211,252,.26), transparent 28%),
+  radial-gradient(circle at 90% 12%, rgba(167,139,250,.22), transparent 30%),
+  linear-gradient(135deg,var(--bg1),var(--bg2));min-height:100vh;
+}
+.wrap{width:min(1480px,94vw);margin:0 auto;padding:30px 0 42px}
+.hero,.panel{border:1px solid var(--line);background:rgba(255,255,255,.09);box-shadow:var(--shadow);backdrop-filter:blur(16px)}
+.hero{border-radius:30px;padding:30px;margin-bottom:22px;background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,.07))}
+h1{margin:0 0 10px;font-size:clamp(28px,4vw,48px);line-height:1.08}
+.subtitle{color:var(--muted);max-width:980px;line-height:1.8;font-size:15.5px}
+.tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.tag{border:1px solid var(--line);background:rgba(255,255,255,.08);color:#e2f3ff;padding:8px 12px;border-radius:999px;font-size:13px}
+.grid{display:grid;grid-template-columns:minmax(380px,560px) 1fr;gap:22px;align-items:start}
+@media(max-width:1020px){.grid{grid-template-columns:1fr}}
+.panel{border-radius:var(--radius);overflow:hidden}
+.panel-head{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.06)}
+.panel-head h2{margin:0;font-size:18px}.panel-body{padding:20px}
+.section{margin-bottom:18px;padding:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);border-radius:18px}
+.section-title{font-size:15px;font-weight:800;color:#dff4ff;margin-bottom:8px}
+label{display:block;margin:12px 0 7px;color:#ecf6ff;font-weight:700;font-size:14px}
+input,textarea,select{
+  width:100%;border:1px solid rgba(255,255,255,.22);border-radius:14px;background:rgba(2,8,23,.46);
+  color:var(--text);padding:12px 13px;outline:none;font-size:15px;line-height:1.55;
+}
+textarea{resize:vertical;min-height:84px}.long{min-height:110px}
+input::placeholder,textarea::placeholder{color:rgba(238,246,255,.44)}
+select option{color:#0f172a;background:#fff}
+.row2,.row3{display:grid;gap:12px}.row2{grid-template-columns:1fr 1fr}.row3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:760px){.row2,.row3{grid-template-columns:1fr}}
+.checks{display:grid;grid-template-columns:1fr;gap:9px;margin-top:10px}
+.check{display:flex;align-items:flex-start;gap:9px;color:#dbe9f7;font-size:14px;line-height:1.55;padding:10px 12px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.06);border-radius:14px}
+.check input{width:auto;margin-top:3px;accent-color:#7dd3fc}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+button{border:0;border-radius:14px;padding:12px 15px;color:#06111f;font-weight:800;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 10px 30px rgba(125,211,252,.22)}
+button.secondary{background:rgba(255,255,255,.12);color:var(--text);border:1px solid var(--line);box-shadow:none}
+button.warn{background:rgba(251,113,133,.18);color:#ffe4e6;border:1px solid rgba(251,113,133,.35);box-shadow:none}
+.status{font-size:13px;color:var(--green);display:none;align-self:center}
+.preset{border:1px solid rgba(125,211,252,.22);background:rgba(125,211,252,.08);border-radius:16px;padding:13px 14px;margin-top:12px}
+.preset-title{font-weight:800;margin-bottom:6px;color:#d8f5ff}.mini{color:var(--muted);font-size:12.5px;line-height:1.7}
+.output{white-space:pre-wrap;min-height:980px;border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:18px;background:rgba(2,8,23,.56);line-height:1.8;color:#f8fbff;font-size:15px;outline:none}
+.output:focus{border-color:rgba(125,211,252,.55);box-shadow:0 0 0 3px rgba(125,211,252,.12)}
+.tips{margin-top:14px;color:var(--muted);font-size:13px;line-height:1.75}
+.divider{height:1px;background:rgba(255,255,255,.1);margin:14px 0}
+</style>
 </head>
 <body>
-  <main class="wrap">
-    <section class="hero">
-      <h1>GPT 產品海報提示句生成器 Pro</h1>
-      <div class="subtitle">
-        專為產品海報、商品廣告、電商主視覺、社群宣傳與品牌形象設計而做。把產品資訊、行銷定位、賣點、風格、比例、包裝呈現與合規提醒整合成可直接貼到 GPT 圖像生成的提示句。
-      </div>
-      <div class="tags">
-        <span class="tag">產品主視覺</span>
-        <span class="tag">電商促銷</span>
-        <span class="tag">社群貼文</span>
-        <span class="tag">品牌海報</span>
-        <span class="tag">健康合規</span>
-        <span class="tag">中英雙語</span>
-      </div>
-    </section>
-
-    <section class="grid">
-      <aside class="panel">
-        <div class="panel-head">
-          <h2>輸入區</h2>
-          <span class="mini">Product Poster Prompt Builder</span>
-        </div>
-        <div class="panel-body">
-
-          <div class="section">
-            <div class="section-title">1. 產品基本資訊</div>
-            <div class="row2">
-              <div>
-                <label for="productName">產品名稱</label>
-                <input id="productName" placeholder="例：NeuroCalm 智眠膠囊" />
-              </div>
-              <div>
-                <label for="brandName">品牌名稱</label>
-                <input id="brandName" placeholder="例：Berne Wellness" />
-              </div>
-            </div>
-
-            <div class="row2">
-              <div>
-                <label for="productType">產品類型</label>
-                <select id="productType">
-                  <option value="health supplement">保健食品</option>
-                  <option value="skincare product">保養品</option>
-                  <option value="beauty product">美妝產品</option>
-                  <option value="book">書籍</option>
-                  <option value="online course">課程 / 教學服務</option>
-                  <option value="mobile app">App / 數位服務</option>
-                  <option value="3C consumer product">3C 產品</option>
-                  <option value="food product">食品 / 飲品</option>
-                  <option value="medical-related service">醫療相關服務</option>
-                  <option value="cultural or creative product">文創商品</option>
-                  <option value="custom product">其他</option>
-                </select>
-              </div>
-              <div>
-                <label for="posterGoal">海報目的</label>
-                <select id="posterGoal">
-                  <option value="new product launch">新品上市</option>
-                  <option value="sales promotion">促銷轉換</option>
-                  <option value="brand awareness">品牌形象</option>
-                  <option value="educational explanation">教育說明</option>
-                  <option value="crowdfunding campaign">募資宣傳</option>
-                  <option value="pre-order campaign">預購宣傳</option>
-                  <option value="event-linked product promotion">活動帶產品</option>
-                </select>
-              </div>
-            </div>
-
-            <label for="features">主要成分 / 核心特色 / 功能要點</label>
-            <textarea id="features" placeholder="例：鎂、茶胺酸、GABA；主打晚間放鬆、睡前儀式感、極簡包裝"></textarea>
-
-            <label for="appearance">產品外觀描述</label>
-            <textarea id="appearance" placeholder="例：深藍色霧面瓶身，銀色瓶蓋，白色簡潔標籤，現代醫學風"></textarea>
-
-            <label for="usageScene">使用情境</label>
-            <textarea id="usageScene" placeholder="例：睡前床頭、書桌、早晨保養台、通勤咖啡桌、健身後、辦公場景"></textarea>
-          </div>
-
-          <div class="section">
-            <div class="section-title">2. 行銷定位</div>
-            <label for="targetAudience">目標客群</label>
-            <input id="targetAudience" placeholder="例：30-45 歲工作繁忙的上班族，重視健康與專業感" />
-
-            <label for="painPoints">受眾痛點</label>
-            <textarea id="painPoints" placeholder="例：忙碌、壓力大、需要更容易理解與信任的產品資訊"></textarea>
-
-            <label for="sellingPoints">核心賣點</label>
-            <textarea id="sellingPoints" class="long" placeholder="例：1. 成分清楚 2. 專業感包裝 3. 日常使用門檻低"></textarea>
-
-            <div class="row2">
-              <div>
-                <label for="brandTone">品牌調性</label>
-                <select id="brandTone">
-                  <option value="professional and trustworthy">專業可信</option>
-                  <option value="premium and elegant">高級優雅</option>
-                  <option value="warm and human-centered">溫暖親和</option>
-                  <option value="clean and minimalist">乾淨極簡</option>
-                  <option value="tech-forward and innovative">科技創新</option>
-                  <option value="playful and youthful">活潑年輕</option>
-                  <option value="editorial and refined">雜誌精品感</option>
-                </select>
-              </div>
-              <div>
-                <label for="priceTone">價格 / 檔次感</label>
-                <select id="priceTone">
-                  <option value="premium">高價值感</option>
-                  <option value="mid-range professional">中價位專業感</option>
-                  <option value="affordable and accessible">親民易入手</option>
-                  <option value="luxury boutique">精品高端</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div class="section">
-            <div class="section-title">3. 海報文字</div>
-            <label for="headline">主標題</label>
-            <input id="headline" placeholder="例：睡前，回到真正的放鬆" />
-
-            <label for="subheadline">副標題</label>
-            <input id="subheadline" placeholder="例：鎂 × 茶胺酸 × GABA，打造安心晚安儀式" />
-
-            <label for="bulletPoints">三個賣點 / 重點短句</label>
-            <textarea id="bulletPoints" placeholder="例：• 溫和配方&#10;• 專業質感包裝&#10;• 適合日常保養"></textarea>
-
-            <div class="row2">
-              <div>
-                <label for="cta">CTA 行動呼籲</label>
-                <input id="cta" placeholder="例：立即了解更多 / 立即購買 / 立即報名" />
-              </div>
-              <div>
-                <label for="footnote">小字備註 / 補充文字</label>
-                <input id="footnote" placeholder="例：圖片僅供示意；實際包裝以官方資訊為準" />
-              </div>
-            </div>
-          </div>
-
-          <div class="section">
-            <div class="section-title">4. 視覺風格</div>
-            <div class="row2">
-              <div>
-                <label for="style">商業風格</label>
-                <select id="style"></select>
-              </div>
-              <div>
-                <label for="ratio">海報比例</label>
-                <select id="ratio">
-                  <option value="vertical 4:5 poster for social and product campaign">直式 4:5 社群產品海報</option>
-                  <option value="vertical 2:3 poster">直式 2:3 海報</option>
-                  <option value="vertical 9:16 poster story">直式 9:16 限動海報</option>
-                  <option value="horizontal 16:9 promotional visual">橫式 16:9 橫幅宣傳圖</option>
-                  <option value="square 1:1 promotional post">方形 1:1 貼文</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="row3">
-              <div>
-                <label for="textDensity">文字多寡</label>
-                <select id="textDensity">
-                  <option value="minimal text">少字版</option>
-                  <option value="balanced amount of text">中等資訊量</option>
-                  <option value="information-rich poster">資訊較多</option>
-                </select>
-              </div>
-              <div>
-                <label for="productScale">產品佔比</label>
-                <select id="productScale">
-                  <option value="large dominant product shot">大產品主視覺</option>
-                  <option value="balanced product and information layout">產品與資訊平衡</option>
-                  <option value="editorial lifestyle composition">偏生活感與雜誌感</option>
-                </select>
-              </div>
-              <div>
-                <label for="bgComplexity">背景複雜度</label>
-                <select id="bgComplexity">
-                  <option value="clean simple background">簡潔背景</option>
-                  <option value="moderately styled background with texture">適度質感背景</option>
-                  <option value="rich styled background with atmosphere">豐富氛圍背景</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="checks">
-              <label class="check"><input type="checkbox" id="includePeople"> 加入人物 / 手部 / 生活場景</label>
-              <label class="check"><input type="checkbox" id="includeMockup" checked> 強化包裝 mockup 或商品攝影呈現</label>
-              <label class="check"><input type="checkbox" id="emphasizeCTA" checked> 強化 CTA 區塊與轉換感</label>
-              <label class="check"><input type="checkbox" id="exactText" checked> 強化文字準確與可讀性，不要亂碼或多餘文字</label>
-              <label class="check"><input type="checkbox" id="healthMode"> 健康 / 醫療 / 保健類產品合規模式</label>
-              <label class="check"><input type="checkbox" id="bilingual"> 產出中英雙語提示</label>
-            </div>
-
-            <div id="stylePreset" class="preset"></div>
-          </div>
-
-          <div class="btns">
-            <button onclick="generatePrompts()">生成新版提示句</button>
-            <button class="secondary" onclick="copyOutput()">複製結果</button>
-            <button class="warn" onclick="clearAll()">清空內容</button>
-            <span id="copyStatus" class="status">已複製</span>
-          </div>
-        </div>
-      </aside>
-
-      <section class="panel">
-        <div class="panel-head">
-          <h2>輸出結果</h2>
-          <span class="mini">可直接貼到 GPT 圖像生成工具</span>
-        </div>
-        <div class="panel-body">
-          <div id="output" class="output">請先填入產品資訊，然後按「生成新版提示句」。</div>
-          <div class="tips">
-            使用建議：<br>
-            1. 若是產品海報，先要求「建立主視覺與包裝」，再第二輪補上精準文字，成功率通常更高。<br>
-            2. 若是健康或保健產品，建議勾選「合規模式」，避免過度醫療宣稱。<br>
-            3. 若要做電商圖，可先生成主圖，再複製其中的「電商促銷海報提示句」單獨使用。
-          </div>
-        </div>
-      </section>
-    </section>
-  </main>
-
-  <script>
-    const stylePresets = {
-      "商業極簡風": {
-        keywords: "clean minimal commercial poster, premium layout, elegant spacing, restrained color palette, clear product hero shot",
-        colors: "white, charcoal, gray, one accent color",
-        usage: "適合科技產品、保健產品、正式品牌形象"
-      },
-      "高級保養品風": {
-        keywords: "luxury skincare advertisement, glossy or matte bottle close-up, soft lighting, elegant texture, premium beauty editorial",
-        colors: "ivory, champagne, pale beige, muted gold, blush",
-        usage: "適合保養品、美妝、香氛"
-      },
-      "醫學專業風": {
-        keywords: "medical-professional visual language, trustworthy healthcare branding, clean infographic cues, calm scientific atmosphere",
-        colors: "white, medical blue, teal, silver",
-        usage: "適合保健食品、健康服務、醫療教育"
-      },
-      "科技產品風": {
-        keywords: "sleek tech product poster, futuristic interface accents, sharp lighting, metallic details, innovation-focused composition",
-        colors: "black, blue, silver, violet glow",
-        usage: "適合 3C、App、AI 工具"
-      },
-      "日系生活感": {
-        keywords: "Japanese lifestyle poster, warm natural light, calm home scene, simple props, healing and approachable mood",
-        colors: "cream, soft brown, sage, warm white",
-        usage: "適合食品、家居、保養、生活商品"
-      },
-      "電商促銷風": {
-        keywords: "e-commerce sales poster, bold headline, clear offer block, strong CTA, conversion-oriented layout",
-        colors: "red, orange, yellow, white, black accent",
-        usage: "適合限時促銷、折扣頁、檔期活動"
-      },
-      "社群爆款風": {
-        keywords: "social media catchy poster, high-impact focal point, trendy typography, fast-scrolling attention capture",
-        colors: "bright gradient accents, bold contrast",
-        usage: "適合 IG、FB、短影音封面"
-      },
-      "雜誌精品風": {
-        keywords: "editorial luxury poster, fashion-magazine composition, refined serif-sans pairing, large negative space, premium storytelling",
-        colors: "black, cream, muted green, soft gold",
-        usage: "適合精品、書籍、設計感品牌"
-      },
-      "3D 商品攝影風": {
-        keywords: "3D product mockup poster, photoreal package render, studio lighting, dimensional pedestal, polished commercial style",
-        colors: "flexible based on brand palette",
-        usage: "適合新品主視覺、包裝展示"
-      },
-      "資訊圖表風": {
-        keywords: "infographic product poster, benefit icons, structured information blocks, clean chart-like layout, educational commercial design",
-        colors: "blue, teal, white, accent orange",
-        usage: "適合成分說明、功能比較、課程與服務"
-      },
-      "未來科技風": {
-        keywords: "futuristic commercial poster, holographic accents, immersive light, bold digital texture, forward-looking brand feel",
-        colors: "electric blue, magenta, black, chrome",
-        usage: "適合 AI、科技新品、創新產品"
-      },
-      "自然有機風": {
-        keywords: "natural organic product poster, botanical elements, eco-friendly texture, fresh light, wellness lifestyle atmosphere",
-        colors: "green, cream, earthy beige, light brown",
-        usage: "適合食品、保健、永續品牌"
-      }
-    };
-
-    const styleSelect = document.getElementById("style");
-    const stylePreset = document.getElementById("stylePreset");
-
-    function initStyles(){
-      Object.keys(stylePresets).forEach(k=>{
-        const opt = document.createElement("option");
-        opt.value = k;
-        opt.textContent = k;
-        styleSelect.appendChild(opt);
-      });
-      updateStylePreset();
-    }
-
-    function updateStylePreset(){
-      const style = styleSelect.value;
-      const data = stylePresets[style];
-      stylePreset.innerHTML = `
-        <div class="preset-title">${style}</div>
-        <div class="mini">適用情境：${data.usage}</div>
-        <div class="divider"></div>
-        <div class="mini"><strong>關鍵語彙：</strong>${data.keywords}</div>
-        <div class="mini"><strong>色彩方向：</strong>${data.colors}</div>
-      `;
-    }
-
-    styleSelect.addEventListener("change", ()=>{
-      updateStylePreset();
-      generatePrompts();
-    });
-
-    function v(id, fallback=""){
-      const x = document.getElementById(id).value.trim();
-      return x || fallback;
-    }
-
-    function c(id){
-      return document.getElementById(id).checked;
-    }
-
-    function posterTextBlock(lang="zh"){
-      const headline = v("headline", "keep a strong main headline");
-      const subheadline = v("subheadline", "keep a supporting subheadline");
-      const bulletPoints = v("bulletPoints", "show 3 short product benefits");
-      const cta = v("cta", "Learn More");
-      const footnote = v("footnote", "");
-
-      if(lang==="en"){
-        return `Exact poster text to include:
-Headline: ${headline}
-Subheadline: ${subheadline}
-Key points: ${bulletPoints}
-CTA: ${cta}
-Footnote: ${footnote || "none"}`;
-      }
-
-      return `海報上要出現的文字：
-主標題：${headline}
-副標題：${subheadline}
-重點短句：${bulletPoints}
-CTA：${cta}
-小字備註：${footnote || "無"}`;
-    }
-
-    function commonData(lang="zh"){
-      const productName = v("productName", "Unnamed Product");
-      const brandName = v("brandName", "Brand");
-      const productType = v("productType");
-      const posterGoal = v("posterGoal");
-      const features = v("features", "clear product benefits and distinctive features");
-      const appearance = v("appearance", "clean product packaging with a professional look");
-      const usageScene = v("usageScene", "show a relevant usage scenario");
-      const targetAudience = v("targetAudience", "general consumers");
-      const painPoints = v("painPoints", "audience pain points not provided");
-      const sellingPoints = v("sellingPoints", "three concise commercial selling points");
-      const brandTone = v("brandTone");
-      const priceTone = v("priceTone");
-      const style = v("style");
-      const ratio = v("ratio");
-      const textDensity = v("textDensity");
-      const productScale = v("productScale");
-      const bgComplexity = v("bgComplexity");
-
-      const styleData = stylePresets[style];
-      const people = c("includePeople")
-        ? (lang==="en" ? "Include people, hand interaction, or a believable lifestyle context when helpful." : "可加入人物、手部互動或可信的生活情境，提升使用代入感。")
-        : (lang==="en" ? "Do not rely on people as the main focus unless necessary." : "不要讓人物成為唯一主體，產品仍須是視覺主角。");
-
-      const mockup = c("includeMockup")
-        ? (lang==="en" ? "Show a polished product shot or package mockup with realistic lighting and strong visual presence." : "請強化商品攝影或包裝 mockup 呈現，讓產品本身具有真實且吸睛的主視覺。")
-        : "";
-
-      const textAccuracy = c("exactText")
-        ? (lang==="en" ? "All visible text must be accurate, readable, clean, and limited to the exact provided text. Do not invent extra text, fake labels, random letters, or gibberish." : "所有可見文字必須清楚、可讀、準確，只能使用提供的文字內容，不要產生亂碼、假字、額外標語或隨機英文。")
-        : "";
-
-      const ctaEmphasis = c("emphasizeCTA")
-        ? (lang==="en" ? "Make the CTA visually distinct and conversion-oriented." : "請讓 CTA 區塊清楚可見，具有轉換導向。")
-        : "";
-
-      const healthRule = c("healthMode")
-        ? (lang==="en"
-          ? "Compliance rule: avoid disease-treatment claims, guaranteed outcomes, cure language, before-after miracle wording, or exaggerated medical promises. Use educational, evidence-informed, non-exaggerated wording."
-          : "合規規則：避免使用治療疾病、保證效果、立即改善、奇蹟轉變、療效保證等誇大或醫療化宣稱。請採用教育性、理性、實證導向、較保守的產品描述。")
-        : "";
-
-      if(lang==="en"){
-        return `Product information:
-Product name: ${productName}
-Brand name: ${brandName}
-Product category: ${productType}
-Poster goal: ${posterGoal}
-Features or ingredients: ${features}
-Product appearance: ${appearance}
-Usage scene: ${usageScene}
-
-Marketing positioning:
-Target audience: ${targetAudience}
-Audience pain points: ${painPoints}
-Core selling points: ${sellingPoints}
-Brand tone: ${brandTone}
-Price or value perception: ${priceTone}
-
-Visual style:
-Style direction: ${style}
-Style keywords: ${styleData.keywords}
-Suggested palette: ${styleData.colors}
-Poster ratio: ${ratio}
-Text density: ${textDensity}
-Product scale: ${productScale}
-Background complexity: ${bgComplexity}
-
-Extra instructions:
-${people}
-${mockup}
-${ctaEmphasis}
-${textAccuracy}
-${healthRule}`.trim();
-      }
-
-      return `產品資訊：
-產品名稱：${productName}
-品牌名稱：${brandName}
-產品類型：${productType}
-海報目的：${posterGoal}
-主要成分或特色：${features}
-產品外觀：${appearance}
-使用情境：${usageScene}
-
-行銷定位：
-目標客群：${targetAudience}
-受眾痛點：${painPoints}
-核心賣點：${sellingPoints}
-品牌調性：${brandTone}
-價格或檔次感：${priceTone}
-
-視覺風格：
-風格方向：${style}
-風格關鍵字：${styleData.keywords}
-建議色彩：${styleData.colors}
-海報比例：${ratio}
-文字多寡：${textDensity}
-產品佔比：${productScale}
-背景複雜度：${bgComplexity}
-
-補充要求：
-${people}
-${mockup}
-${ctaEmphasis}
-${textAccuracy}
-${healthRule}`.trim();
-    }
-
-    function promptProductHero(lang="zh"){
-      if(lang==="en"){
-        return `Create a premium product hero poster.
-Focus on a striking product-centered composition with strong brand identity and polished commercial quality.
-
-${commonData("en")}
-
-${posterTextBlock("en")}
-
-Typography and layout:
-Use a clear hierarchy with a dominant headline, elegant product placement, and clean supporting information. Keep the poster visually balanced and premium.
-
-Restrictions:
-Avoid low resolution, poor cropping, messy layout, distorted packaging, extra fingers, unreadable text, watermarks, fake QR codes, and unauthorized logos.`;
-      }
-
-      return `【產品主視覺海報提示句】
-請生成一張高質感的產品主視覺海報，重點放在產品本體、品牌辨識度與商業完成度。
-
-${commonData("zh")}
-
-${posterTextBlock("zh")}
-
-排版要求：
-以產品為主體，主標題醒目，整體視覺需有高級感、清楚的資訊層級與商業海報完成度。
-
-限制條件：
-避免低解析、構圖凌亂、包裝變形、人物手部錯誤、文字難讀、浮水印、假 QR code、未授權品牌 logo。`;
-    }
-
-    function promptEcom(lang="zh"){
-      if(lang==="en"){
-        return `Create an e-commerce promotional poster optimized for conversion.
-The poster should clearly communicate the product, the offer feeling, and the call to action.
-
-${commonData("en")}
-
-${posterTextBlock("en")}
-
-Layout emphasis:
-Make the product instantly recognizable. Use a conversion-friendly composition, clear benefit bullets, and a strong CTA area. The design should feel practical, commercial, and easy to scan.
-
-Restrictions:
-Avoid clutter, confusing hierarchy, unreadable details, fake discount claims not provided, or random promotional stickers.`;
-      }
-
-      return `【電商促銷海報提示句】
-請生成一張偏電商轉換導向的產品促銷海報，強調產品辨識、重點賣點與 CTA。
-
-${commonData("zh")}
-
-${posterTextBlock("zh")}
-
-排版要求：
-讓產品一眼可辨識，賣點短句清楚排列，CTA 區塊明確，整體適合電商頁面或促銷宣傳使用。
-
-限制條件：
-避免資訊擁擠、層級混亂、看不清的文字、未提供卻自行加入的折扣資訊、隨機促銷貼紙。`;
-    }
-
-    function promptSocial(lang="zh"){
-      if(lang==="en"){
-        return `Create a social-media-ready product poster.
-It should be eye-catching in a fast-scrolling feed while still keeping the product and message clear.
-
-${commonData("en")}
-
-${posterTextBlock("en")}
-
-Design emphasis:
-Use a bold focal point, simplified information hierarchy, high visual impact, and a memorable social-media look. Suitable for Instagram, Facebook, or short-video cover usage.
-
-Restrictions:
-Avoid overloading the composition, making the text too small, or losing the product identity in excessive decoration.`;
-      }
-
-      return `【社群貼文海報提示句】
-請生成一張適合社群平台的產品海報，重點是吸睛、快速理解、容易停留觀看。
-
-${commonData("zh")}
-
-${posterTextBlock("zh")}
-
-排版要求：
-需要有明確焦點、較快的閱讀節奏、較強的視覺記憶點，適合 IG、FB 或短影音封面。
-
-限制條件：
-避免裝飾過多、文字太小、為了吸睛而犧牲產品辨識度。`;
-    }
-
-    function promptHealth(lang="zh"){
-      if(lang==="en"){
-        return `Create a compliance-conscious healthcare or wellness product poster.
-Use an educational and trustworthy visual language, while keeping the poster attractive and commercially usable.
-
-${commonData("en")}
-
-${posterTextBlock("en")}
-
-Special compliance note:
-Use careful and moderate wording. Avoid disease claims, cure claims, guaranteed outcomes, and miracle promises. Emphasize product education, ingredients, lifestyle support, and trustworthiness.
-
-Layout emphasis:
-The poster should feel professional, clear, and evidence-informed, with a calm and trustworthy aesthetic.`;
-      }
-
-      return `【健康 / 保健 / 醫療合規版提示句】
-請生成一張兼顧商業視覺與合規意識的健康或保健產品海報。
-
-${commonData("zh")}
-
-${posterTextBlock("zh")}
-
-特別要求：
-請使用理性、保守、可信的語氣，不要出現治療疾病、保證效果、立即改善或奇蹟轉變等宣稱。可強調成分、日常保養、生活支持與專業信任感。
-
-排版要求：
-整體應具有專業、清楚、可信的視覺語言，可帶有資訊圖表或醫學感，但仍需保持美觀與商業完成度。`;
-    }
-
-    function generatePrompts(){
-      const bilingual = c("bilingual");
-      let resultZh = [
-        promptProductHero("zh"),
-        "",
-        promptEcom("zh"),
-        "",
-        promptSocial("zh")
-      ];
-
-      if(c("healthMode")){
-        resultZh.push("", promptHealth("zh"));
-      }
-
-      let finalText = resultZh.join("\n\n");
-
-      if(bilingual){
-        let resultEn = [
-          "==============================",
-          "ENGLISH VERSION",
-          "==============================",
-          promptProductHero("en"),
-          "",
-          promptEcom("en"),
-          "",
-          promptSocial("en")
-        ];
-        if(c("healthMode")){
-          resultEn.push("", promptHealth("en"));
-        }
-        finalText += "\n\n" + resultEn.join("\n\n");
-      }
-
-      document.getElementById("output").textContent = finalText;
-    }
-
-    async function copyOutput(){
-      const text = document.getElementById("output").textContent;
-      await navigator.clipboard.writeText(text);
-      const s = document.getElementById("copyStatus");
-      s.style.display = "inline";
-      setTimeout(()=>s.style.display="none", 1600);
-    }
-
-    function clearAll(){
-      ["productName","brandName","features","appearance","usageScene","targetAudience","painPoints","sellingPoints","headline","subheadline","bulletPoints","cta","footnote"].forEach(id=>{
-        document.getElementById(id).value = "";
-      });
-      document.getElementById("healthMode").checked = false;
-      document.getElementById("includePeople").checked = false;
-      document.getElementById("includeMockup").checked = true;
-      document.getElementById("emphasizeCTA").checked = true;
-      document.getElementById("exactText").checked = true;
-      document.getElementById("bilingual").checked = false;
-      document.getElementById("output").textContent = "請先填入產品資訊，然後按「生成新版提示句」。";
-    }
-
-    document.querySelectorAll("input, textarea, select").forEach(el=>{
-      el.addEventListener("input", generatePrompts);
-      el.addEventListener("change", generatePrompts);
-    });
-
-    initStyles();
-  </script>
+<main class="wrap">
+<section class="hero">
+  <h1>GPT 產品海報提示句生成器 Pro v2.1</h1>
+  <div class="subtitle">
+    手動生成版：填寫欄位時右側不會自動跳出提示句，只有按下「生成新版提示句」才會更新。右側輸出區可直接編輯，方便你修改不同版本。
+  </div>
+  <div class="tags">
+    <span class="tag">手動生成</span><span class="tag">產品主視覺</span><span class="tag">電商促銷</span>
+    <span class="tag">社群貼文</span><span class="tag">健康合規</span><span class="tag">可編輯輸出</span>
+  </div>
+</section>
+
+<section class="grid">
+<aside class="panel">
+<div class="panel-head"><h2>輸入區</h2><span class="mini">Manual Mode</span></div>
+<div class="panel-body">
+
+<div class="section">
+<div class="section-title">1. 產品基本資訊</div>
+<div class="row2">
+<div><label for="productName">產品名稱</label><input id="productName" placeholder="例：NeuroCalm 智眠膠囊"></div>
+<div><label for="brandName">品牌名稱</label><input id="brandName" placeholder="可留空，留空時不會自動補 Brand"></div>
+</div>
+<div class="row2">
+<div><label for="productType">產品類型</label><select id="productType">
+<option value="">不指定</option><option value="health supplement">保健食品</option><option value="skincare product">保養品</option>
+<option value="beauty product">美妝產品</option><option value="book">書籍</option><option value="online course">課程 / 教學服務</option>
+<option value="mobile app">App / 數位服務</option><option value="3C consumer product">3C 產品</option><option value="food product">食品 / 飲品</option>
+<option value="medical-related service">醫療相關服務</option><option value="cultural or creative product">文創商品</option><option value="custom product">其他</option>
+</select></div>
+<div><label for="posterGoal">海報目的</label><select id="posterGoal">
+<option value="">不指定</option><option value="new product launch">新品上市</option><option value="sales promotion">促銷轉換</option>
+<option value="brand awareness">品牌形象</option><option value="educational explanation">教育說明</option><option value="crowdfunding campaign">募資宣傳</option>
+<option value="pre-order campaign">預購宣傳</option><option value="event-linked product promotion">活動帶產品</option>
+</select></div>
+</div>
+<label for="features">主要成分 / 核心特色 / 功能要點</label><textarea id="features" placeholder="例：鎂、茶胺酸、GABA；主打晚間放鬆、睡前儀式感、極簡包裝"></textarea>
+<label for="appearance">產品外觀描述</label><textarea id="appearance" placeholder="例：深藍色霧面瓶身，銀色瓶蓋，白色簡潔標籤"></textarea>
+<label for="usageScene">使用情境</label><textarea id="usageScene" placeholder="例：睡前床頭、書桌、早晨保養台、通勤咖啡桌"></textarea>
+</div>
+
+<div class="section">
+<div class="section-title">2. 行銷定位</div>
+<label for="targetAudience">目標客群</label><input id="targetAudience" placeholder="例：30-45 歲工作繁忙的上班族">
+<label for="painPoints">受眾痛點</label><textarea id="painPoints" placeholder="例：忙碌、壓力大、需要更容易理解與信任的產品資訊"></textarea>
+<label for="sellingPoints">核心賣點</label><textarea id="sellingPoints" class="long" placeholder="例：1. 成分清楚 2. 專業感包裝 3. 日常使用門檻低"></textarea>
+<div class="row2">
+<div><label for="brandTone">品牌調性</label><select id="brandTone">
+<option value="">不指定</option><option value="professional and trustworthy">專業可信</option><option value="premium and elegant">高級優雅</option>
+<option value="warm and human-centered">溫暖親和</option><option value="clean and minimalist">乾淨極簡</option>
+<option value="tech-forward and innovative">科技創新</option><option value="playful and youthful">活潑年輕</option><option value="editorial and refined">雜誌精品感</option>
+</select></div>
+<div><label for="priceTone">價格 / 檔次感</label><select id="priceTone">
+<option value="">不指定</option><option value="premium">高價值感</option><option value="mid-range professional">中價位專業感</option>
+<option value="affordable and accessible">親民易入手</option><option value="luxury boutique">精品高端</option>
+</select></div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">3. 海報文字</div>
+<label for="headline">主標題</label><input id="headline" placeholder="例：睡前，回到真正的放鬆">
+<label for="subheadline">副標題</label><input id="subheadline" placeholder="例：鎂 × 茶胺酸 × GABA，打造安心晚安儀式">
+<label for="bulletPoints">三個賣點 / 重點短句</label><textarea id="bulletPoints" placeholder="例：• 溫和配方&#10;• 專業質感包裝&#10;• 適合日常保養"></textarea>
+<div class="row2">
+<div><label for="cta">CTA 行動呼籲</label><input id="cta" placeholder="可留空，留空時不會自動補 Learn More"></div>
+<div><label for="footnote">小字備註 / 補充文字</label><input id="footnote" placeholder="例：圖片僅供示意；實際包裝以官方資訊為準"></div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">4. 視覺風格</div>
+<div class="row2">
+<div><label for="style">商業風格</label><select id="style"></select></div>
+<div><label for="ratio">海報比例</label><select id="ratio">
+<option value="">不指定</option><option value="vertical 4:5 poster for social and product campaign">直式 4:5 社群產品海報</option>
+<option value="vertical 2:3 poster">直式 2:3 海報</option><option value="vertical 9:16 poster story">直式 9:16 限動海報</option>
+<option value="horizontal 16:9 promotional visual">橫式 16:9 橫幅宣傳圖</option><option value="square 1:1 promotional post">方形 1:1 貼文</option>
+</select></div>
+</div>
+<div class="row3">
+<div><label for="textDensity">文字多寡</label><select id="textDensity"><option value="">不指定</option><option value="minimal text">少字版</option><option value="balanced amount of text">中等資訊量</option><option value="information-rich poster">資訊較多</option></select></div>
+<div><label for="productScale">產品佔比</label><select id="productScale"><option value="">不指定</option><option value="large dominant product shot">大產品主視覺</option><option value="balanced product and information layout">產品與資訊平衡</option><option value="editorial lifestyle composition">偏生活感與雜誌感</option></select></div>
+<div><label for="bgComplexity">背景複雜度</label><select id="bgComplexity"><option value="">不指定</option><option value="clean simple background">簡潔背景</option><option value="moderately styled background with texture">適度質感背景</option><option value="rich styled background with atmosphere">豐富氛圍背景</option></select></div>
+</div>
+
+<div class="checks">
+<label class="check"><input type="checkbox" id="includePeople"> 加入人物 / 手部 / 生活場景</label>
+<label class="check"><input type="checkbox" id="includeMockup" checked> 強化包裝 mockup 或商品攝影呈現</label>
+<label class="check"><input type="checkbox" id="emphasizeCTA" checked> 強化 CTA 區塊與轉換感</label>
+<label class="check"><input type="checkbox" id="exactText" checked> 強化文字準確與可讀性，不要亂碼或多餘文字</label>
+<label class="check"><input type="checkbox" id="healthMode"> 健康 / 醫療 / 保健類產品合規模式</label>
+<label class="check"><input type="checkbox" id="bilingual"> 產出中英雙語提示</label>
+<label class="check"><input type="checkbox" id="autoPreview"> 即時預覽模式，勾選後才會邊輸入邊更新</label>
+</div>
+<div id="stylePreset" class="preset"></div>
+</div>
+
+<div class="btns">
+<button onclick="generatePrompts()">生成新版提示句</button>
+<button class="secondary" onclick="copyOutput()">複製結果</button>
+<button class="warn" onclick="clearAll()">清空內容</button>
+<span id="copyStatus" class="status">已複製</span>
+</div>
+
+</div>
+</aside>
+
+<section class="panel">
+<div class="panel-head"><h2>輸出結果</h2><span class="mini">右側可直接編輯</span></div>
+<div class="panel-body">
+<div id="output" class="output" contenteditable="true">請先填入產品資訊；右側不會自動生成，需按「生成新版提示句」。</div>
+<div class="tips">
+使用建議：若要手動改第二版、第三版，請直接在右側編輯。只要沒有勾選「即時預覽模式」，輸入區變動不會覆蓋右側內容。
+</div>
+</div>
+</section>
+</section>
+</main>
+
+<script>
+const stylePresets={
+"商業極簡風":{keywords:"clean minimal commercial poster, premium layout, elegant spacing, restrained color palette, clear product hero shot",colors:"white, charcoal, gray, one accent color",usage:"適合科技產品、保健產品、正式品牌形象"},
+"高級保養品風":{keywords:"luxury skincare advertisement, glossy or matte bottle close-up, soft lighting, elegant texture, premium beauty editorial",colors:"ivory, champagne, pale beige, muted gold, blush",usage:"適合保養品、美妝、香氛"},
+"醫學專業風":{keywords:"medical-professional visual language, trustworthy healthcare branding, clean infographic cues, calm scientific atmosphere",colors:"white, medical blue, teal, silver",usage:"適合保健食品、健康服務、醫療教育"},
+"科技產品風":{keywords:"sleek tech product poster, futuristic interface accents, sharp lighting, metallic details, innovation-focused composition",colors:"black, blue, silver, violet glow",usage:"適合 3C、App、AI 工具"},
+"日系生活感":{keywords:"Japanese lifestyle poster, warm natural light, calm home scene, simple props, healing and approachable mood",colors:"cream, soft brown, sage, warm white",usage:"適合食品、家居、保養、生活商品"},
+"電商促銷風":{keywords:"e-commerce sales poster, bold headline, clear offer block, strong CTA, conversion-oriented layout",colors:"red, orange, yellow, white, black accent",usage:"適合限時促銷、折扣頁、檔期活動"},
+"社群爆款風":{keywords:"social media catchy poster, high-impact focal point, trendy typography, fast-scrolling attention capture",colors:"bright gradient accents, bold contrast",usage:"適合 IG、FB、短影音封面"},
+"雜誌精品風":{keywords:"editorial luxury poster, fashion-magazine composition, refined serif-sans pairing, large negative space, premium storytelling",colors:"black, cream, muted green, soft gold",usage:"適合精品、書籍、設計感品牌"},
+"3D 商品攝影風":{keywords:"3D product mockup poster, photoreal package render, studio lighting, dimensional pedestal, polished commercial style",colors:"flexible based on brand palette",usage:"適合新品主視覺、包裝展示"},
+"資訊圖表風":{keywords:"infographic product poster, benefit icons, structured information blocks, clean chart-like layout, educational commercial design",colors:"blue, teal, white, accent orange",usage:"適合成分說明、功能比較、課程與服務"},
+"未來科技風":{keywords:"futuristic commercial poster, holographic accents, immersive light, bold digital texture, forward-looking brand feel",colors:"electric blue, magenta, black, chrome",usage:"適合 AI、科技新品、創新產品"},
+"自然有機風":{keywords:"natural organic product poster, botanical elements, eco-friendly texture, fresh light, wellness lifestyle atmosphere",colors:"green, cream, earthy beige, light brown",usage:"適合食品、保健、永續品牌"}
+};
+
+const styleSelect=document.getElementById("style");
+const stylePreset=document.getElementById("stylePreset");
+
+function initStyles(){
+  const empty=document.createElement("option");
+  empty.value="";empty.textContent="不指定";
+  styleSelect.appendChild(empty);
+  Object.keys(stylePresets).forEach(k=>{
+    const opt=document.createElement("option");
+    opt.value=k;opt.textContent=k;styleSelect.appendChild(opt);
+  });
+  updateStylePreset();
+}
+
+function updateStylePreset(){
+  const style=styleSelect.value;
+  if(!style){stylePreset.innerHTML='<div class="preset-title">未選擇風格</div><div class="mini">可先填資料，再決定風格；此區只顯示風格說明，不會自動生成提示句。</div>';return;}
+  const d=stylePresets[style];
+  stylePreset.innerHTML=`<div class="preset-title">${style}</div><div class="mini">適用情境：${d.usage}</div><div class="divider"></div><div class="mini"><strong>關鍵語彙：</strong>${d.keywords}</div><div class="mini"><strong>色彩方向：</strong>${d.colors}</div>`;
+}
+
+function v(id){return document.getElementById(id).value.trim();}
+function c(id){return document.getElementById(id).checked;}
+
+function line(label,value){return value?`${label}：${value}\n`:"";}
+function lineEn(label,value){return value?`${label}: ${value}\n`:"";}
+
+function posterTextBlock(lang="zh"){
+  const headline=v("headline"), subheadline=v("subheadline"), bulletPoints=v("bulletPoints"), cta=v("cta"), footnote=v("footnote");
+  if(lang==="en"){
+    let t="Exact poster text to include:\n";
+    t+=lineEn("Headline",headline)+lineEn("Subheadline",subheadline)+lineEn("Key points",bulletPoints)+lineEn("CTA",cta)+lineEn("Footnote",footnote);
+    return t.trim();
+  }
+  let t="海報上要出現的文字：\n";
+  t+=line("主標題",headline)+line("副標題",subheadline)+line("重點短句",bulletPoints)+line("CTA",cta)+line("小字備註",footnote);
+  return t.trim();
+}
+
+function commonData(lang="zh"){
+  const style=v("style");
+  const styleData=style?stylePresets[style]:null;
+  const people=c("includePeople")?(lang==="en"?"Include people, hand interaction, or believable lifestyle context when helpful.":"可加入人物、手部互動或可信的生活情境，提升使用代入感。"):"";
+  const mockup=c("includeMockup")?(lang==="en"?"Show a polished product shot or package mockup with realistic lighting and strong visual presence.":"請強化商品攝影或包裝 mockup 呈現，讓產品本身具有真實且吸睛的主視覺。"):"";
+  const cta=c("emphasizeCTA")?(lang==="en"?"Make the CTA visually distinct and conversion-oriented.":"請讓 CTA 區塊清楚可見，具有轉換導向。"):"";
+  const exact=c("exactText")?(lang==="en"?"All visible text must be accurate, readable, and limited to the exact provided text. Do not invent extra text, fake labels, random letters, or gibberish.":"所有可見文字必須清楚、可讀、準確，只能使用提供的文字內容，不要產生亂碼、假字、額外標語或隨機英文。"):"";
+  const health=c("healthMode")?(lang==="en"?"Compliance rule: avoid disease-treatment claims, guaranteed outcomes, cure language, before-after miracle wording, or exaggerated medical promises.":"合規規則：避免使用治療疾病、保證效果、立即改善、奇蹟轉變、療效保證等誇大或醫療化宣稱。"):"";
+
+  if(lang==="en"){
+    let t="Product information:\n";
+    t+=lineEn("Product name",v("productName"))+lineEn("Brand name",v("brandName"))+lineEn("Product category",v("productType"))+lineEn("Poster goal",v("posterGoal"));
+    t+=lineEn("Features or ingredients",v("features"))+lineEn("Product appearance",v("appearance"))+lineEn("Usage scene",v("usageScene"));
+    t+="\nMarketing positioning:\n";
+    t+=lineEn("Target audience",v("targetAudience"))+lineEn("Audience pain points",v("painPoints"))+lineEn("Core selling points",v("sellingPoints"));
+    t+=lineEn("Brand tone",v("brandTone"))+lineEn("Price or value perception",v("priceTone"));
+    t+="\nVisual style:\n";
+    t+=lineEn("Style direction",style);
+    if(styleData){t+=lineEn("Style keywords",styleData.keywords)+lineEn("Suggested palette",styleData.colors);}
+    t+=lineEn("Poster ratio",v("ratio"))+lineEn("Text density",v("textDensity"))+lineEn("Product scale",v("productScale"))+lineEn("Background complexity",v("bgComplexity"));
+    t+="\nExtra instructions:\n"+[people,mockup,cta,exact,health].filter(Boolean).join("\n");
+    return t.trim();
+  }
+
+  let t="產品資訊：\n";
+  t+=line("產品名稱",v("productName"))+line("品牌名稱",v("brandName"))+line("產品類型",v("productType"))+line("海報目的",v("posterGoal"));
+  t+=line("主要成分或特色",v("features"))+line("產品外觀",v("appearance"))+line("使用情境",v("usageScene"));
+  t+="\n行銷定位：\n";
+  t+=line("目標客群",v("targetAudience"))+line("受眾痛點",v("painPoints"))+line("核心賣點",v("sellingPoints"));
+  t+=line("品牌調性",v("brandTone"))+line("價格或檔次感",v("priceTone"));
+  t+="\n視覺風格：\n";
+  t+=line("風格方向",style);
+  if(styleData){t+=line("風格關鍵字",styleData.keywords)+line("建議色彩",styleData.colors);}
+  t+=line("海報比例",v("ratio"))+line("文字多寡",v("textDensity"))+line("產品佔比",v("productScale"))+line("背景複雜度",v("bgComplexity"));
+  t+="\n補充要求：\n"+[people,mockup,cta,exact,health].filter(Boolean).join("\n");
+  return t.trim();
+}
+
+function promptProductHero(lang="zh"){
+  if(lang==="en") return `Create a premium product hero poster.\nFocus on a striking product-centered composition with strong brand identity and polished commercial quality.\n\n${commonData("en")}\n\n${posterTextBlock("en")}\n\nTypography and layout:\nUse a clear hierarchy with a dominant headline, elegant product placement, and clean supporting information. Keep the poster visually balanced and premium.\n\nRestrictions:\nAvoid low resolution, poor cropping, messy layout, distorted packaging, unreadable text, watermarks, fake QR codes, and unauthorized logos.`;
+  return `【產品主視覺海報提示句】\n請生成一張高質感的產品主視覺海報，重點放在產品本體、品牌辨識度與商業完成度。\n\n${commonData("zh")}\n\n${posterTextBlock("zh")}\n\n排版要求：\n以產品為主體，主標題醒目，整體視覺需有高級感、清楚的資訊層級與商業海報完成度。\n\n限制條件：\n避免低解析、構圖凌亂、包裝變形、人物手部錯誤、文字難讀、浮水印、假 QR code、未授權品牌 logo。`;
+}
+
+function promptEcom(lang="zh"){
+  if(lang==="en") return `Create an e-commerce promotional poster optimized for conversion.\nThe poster should clearly communicate the product, the offer feeling, and the call to action.\n\n${commonData("en")}\n\n${posterTextBlock("en")}\n\nLayout emphasis:\nMake the product instantly recognizable. Use a conversion-friendly composition, clear benefit bullets, and a strong CTA area.`;
+  return `【電商促銷海報提示句】\n請生成一張偏電商轉換導向的產品促銷海報，強調產品辨識、重點賣點與 CTA。\n\n${commonData("zh")}\n\n${posterTextBlock("zh")}\n\n排版要求：\n讓產品一眼可辨識，賣點短句清楚排列，CTA 區塊明確，整體適合電商頁面或促銷宣傳使用。`;
+}
+
+function promptSocial(lang="zh"){
+  if(lang==="en") return `Create a social-media-ready product poster.\nIt should be eye-catching in a fast-scrolling feed while still keeping the product and message clear.\n\n${commonData("en")}\n\n${posterTextBlock("en")}\n\nDesign emphasis:\nUse a bold focal point, simplified information hierarchy, high visual impact, and a memorable social-media look.`;
+  return `【社群貼文海報提示句】\n請生成一張適合社群平台的產品海報，重點是吸睛、快速理解、容易停留觀看。\n\n${commonData("zh")}\n\n${posterTextBlock("zh")}\n\n排版要求：\n需要有明確焦點、較快的閱讀節奏、較強的視覺記憶點，適合 IG、FB 或短影音封面。`;
+}
+
+function promptHealth(lang="zh"){
+  if(lang==="en") return `Create a compliance-conscious healthcare or wellness product poster.\nUse an educational and trustworthy visual language, while keeping the poster attractive and commercially usable.\n\n${commonData("en")}\n\n${posterTextBlock("en")}\n\nSpecial compliance note:\nUse careful and moderate wording. Avoid disease claims, cure claims, guaranteed outcomes, and miracle promises. Emphasize product education, ingredients, lifestyle support, and trustworthiness.`;
+  return `【健康 / 保健 / 醫療合規版提示句】\n請生成一張兼顧商業視覺與合規意識的健康或保健產品海報。\n\n${commonData("zh")}\n\n${posterTextBlock("zh")}\n\n特別要求：\n請使用理性、保守、可信的語氣，不要出現治療疾病、保證效果、立即改善或奇蹟轉變等宣稱。可強調成分、日常保養、生活支持與專業信任感。`;
+}
+
+function generatePrompts(){
+  let parts=[promptProductHero("zh"),promptEcom("zh"),promptSocial("zh")];
+  if(c("healthMode")) parts.push(promptHealth("zh"));
+  let finalText=parts.join("\n\n");
+  if(c("bilingual")){
+    let en=["==============================","ENGLISH VERSION","==============================",promptProductHero("en"),promptEcom("en"),promptSocial("en")];
+    if(c("healthMode")) en.push(promptHealth("en"));
+    finalText += "\n\n" + en.join("\n\n");
+  }
+  document.getElementById("output").textContent=finalText;
+}
+
+async function copyOutput(){
+  const text=document.getElementById("output").textContent;
+  await navigator.clipboard.writeText(text);
+  const s=document.getElementById("copyStatus");
+  s.style.display="inline";setTimeout(()=>s.style.display="none",1600);
+}
+
+function clearAll(){
+  ["productName","brandName","features","appearance","usageScene","targetAudience","painPoints","sellingPoints","headline","subheadline","bulletPoints","cta","footnote"].forEach(id=>document.getElementById(id).value="");
+  ["healthMode","includePeople","bilingual","autoPreview"].forEach(id=>document.getElementById(id).checked=false);
+  ["includeMockup","emphasizeCTA","exactText"].forEach(id=>document.getElementById(id).checked=true);
+  ["productType","posterGoal","brandTone","priceTone","style","ratio","textDensity","productScale","bgComplexity"].forEach(id=>document.getElementById(id).value="");
+  updateStylePreset();
+  document.getElementById("output").textContent="請先填入產品資訊；右側不會自動生成，需按「生成新版提示句」。";
+}
+
+document.querySelectorAll("input, textarea, select").forEach(el=>{
+  el.addEventListener("input",()=>{if(c("autoPreview")) generatePrompts();});
+  el.addEventListener("change",()=>{
+    if(el.id==="style") updateStylePreset();
+    if(c("autoPreview")) generatePrompts();
+  });
+});
+
+initStyles();
+</script>
 </body>
 </html>
