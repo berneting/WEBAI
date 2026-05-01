@@ -1,0 +1,867 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GPT 海報風格提示句生成器 Pro</title>
+  <style>
+    :root {
+      --bg1: #071326;
+      --bg2: #102b55;
+      --card: rgba(255, 255, 255, 0.10);
+      --card2: rgba(255, 255, 255, 0.15);
+      --line: rgba(255, 255, 255, 0.18);
+      --text: #eef6ff;
+      --muted: #b9c8da;
+      --accent: #7dd3fc;
+      --accent2: #a78bfa;
+      --danger: #fb7185;
+      --ok: #86efac;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 10%, rgba(125, 211, 252, .28), transparent 28%),
+        radial-gradient(circle at 88% 14%, rgba(167, 139, 250, .26), transparent 30%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: min(1440px, 94vw);
+      margin: 0 auto;
+      padding: 34px 0 42px;
+    }
+
+    .hero {
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, rgba(255,255,255,.14), rgba(255,255,255,.07));
+      box-shadow: var(--shadow);
+      border-radius: 30px;
+      padding: 30px;
+      backdrop-filter: blur(18px);
+      margin-bottom: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -80px -90px auto;
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(125,211,252,.34), transparent 68%);
+      pointer-events: none;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 48px);
+      letter-spacing: .02em;
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      max-width: 920px;
+      line-height: 1.75;
+      font-size: 16px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .tag {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.08);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: #dff7ff;
+      font-size: 13px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(360px, 520px) 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.09);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      background: rgba(255,255,255,.06);
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: .03em;
+    }
+
+    .panel-body { padding: 20px; }
+
+    label {
+      display: block;
+      margin: 16px 0 8px;
+      color: #e5f2ff;
+      font-weight: 650;
+      font-size: 14px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 14px;
+      background: rgba(2, 8, 23, .45);
+      color: var(--text);
+      padding: 12px 13px;
+      outline: none;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: rgba(238, 246, 255, .45);
+    }
+
+    select option {
+      color: #0f172a;
+      background: #fff;
+    }
+
+    .row2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 620px) {
+      .row2 { grid-template-columns: 1fr; }
+    }
+
+    .btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 15px;
+      color: #06111f;
+      font-weight: 800;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 10px 30px rgba(125,211,252,.22);
+    }
+
+    button.secondary {
+      background: rgba(255,255,255,.12);
+      color: var(--text);
+      border: 1px solid var(--line);
+      box-shadow: none;
+    }
+
+    button.warn {
+      background: rgba(251,113,133,.18);
+      color: #ffe4e6;
+      border: 1px solid rgba(251,113,133,.35);
+      box-shadow: none;
+    }
+
+    .output {
+      white-space: pre-wrap;
+      min-height: 520px;
+      border: 1px solid rgba(255,255,255,.19);
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(2, 8, 23, .55);
+      line-height: 1.75;
+      color: #f8fbff;
+      font-size: 15px;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+      margin-top: 8px;
+    }
+
+    .switches {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 9px;
+      margin-top: 14px;
+    }
+
+    .check {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      color: #d8e8f8;
+      font-size: 14px;
+      line-height: 1.5;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,.13);
+      background: rgba(255,255,255,.06);
+      border-radius: 14px;
+    }
+
+    .check input {
+      width: auto;
+      margin-top: 3px;
+      accent-color: #7dd3fc;
+    }
+
+    .mini {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .style-card {
+      margin-top: 14px;
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(255,255,255,.06);
+    }
+
+    .style-title {
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: #e0f2fe;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      font-size: 12px;
+      color: #dff7ff;
+      background: rgba(125,211,252,.12);
+      border: 1px solid rgba(125,211,252,.22);
+      border-radius: 999px;
+      padding: 5px 9px;
+    }
+
+    .copy-status {
+      color: var(--ok);
+      font-size: 13px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>GPT 海報風格提示句生成器 Pro</h1>
+      <div class="subtitle">
+        這個工具把「活動資訊、受眾、海報文字、視覺風格、比例、質感、排版」整合成可直接貼到 GPT 圖像生成的提示句。
+        適合活動海報、課程海報、講座海報、展覽海報、品牌宣傳與社群貼文。
+      </div>
+      <div class="tags">
+        <span class="tag">風格分類</span>
+        <span class="tag">中文提示</span>
+        <span class="tag">English Prompt</span>
+        <span class="tag">文字可讀性</span>
+        <span class="tag">海報構圖</span>
+        <span class="tag">負面限制</span>
+      </div>
+    </section>
+
+    <section class="grid">
+      <aside class="panel">
+        <div class="panel-head">
+          <h2>輸入與風格設定</h2>
+          <span class="mini">Poster Prompt Builder</span>
+        </div>
+        <div class="panel-body">
+          <label for="topic">海報主題 / 活動名稱</label>
+          <input id="topic" placeholder="例：音樂與大腦：日常健康講座" />
+
+          <label for="audience">受眾與使用情境</label>
+          <input id="audience" placeholder="例：大學生、醫療人員、社區高齡者、品牌客群" />
+
+          <label for="mainText">海報上需要出現的主要文字</label>
+          <textarea id="mainText" placeholder="例：Music and Brain&#10;2026 春季講座&#10;主講人：Berne Ting"></textarea>
+
+          <label for="description">主題補充 / 畫面元素</label>
+          <textarea id="description" placeholder="例：結合大腦神經網絡、音波、溫暖燈光、講座舞台與現代醫學氛圍"></textarea>
+
+          <div class="row2">
+            <div>
+              <label for="category">風格大類</label>
+              <select id="category"></select>
+            </div>
+            <div>
+              <label for="style">細分風格</label>
+              <select id="style"></select>
+            </div>
+          </div>
+
+          <div class="row2">
+            <div>
+              <label for="ratio">海報比例</label>
+              <select id="ratio">
+                <option value="vertical 2:3 poster">直式 2:3 海報</option>
+                <option value="vertical 4:5 social media poster">直式 4:5 社群海報</option>
+                <option value="vertical 9:16 story poster">直式 9:16 限動海報</option>
+                <option value="horizontal 16:9 presentation poster">橫式 16:9 簡報海報</option>
+                <option value="square 1:1 poster">方形 1:1 貼文海報</option>
+              </select>
+            </div>
+            <div>
+              <label for="language">輸出語言</label>
+              <select id="language">
+                <option value="zh">中文提示句</option>
+                <option value="en">English Prompt</option>
+                <option value="both">中英雙語</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row2">
+            <div>
+              <label for="mood">情緒調性</label>
+              <select id="mood">
+                <option value="professional, clean, and visually balanced">專業清楚</option>
+                <option value="warm, elegant, and human-centered">溫暖優雅</option>
+                <option value="bold, energetic, and visually striking">強烈醒目</option>
+                <option value="experimental, artistic, and unconventional">實驗藝術</option>
+                <option value="calm, poetic, and refined">安靜詩性</option>
+                <option value="futuristic, immersive, and cinematic">未來沉浸</option>
+              </select>
+            </div>
+            <div>
+              <label for="strength">風格強度</label>
+              <select id="strength">
+                <option value="subtle">低：保留商業可讀性</option>
+                <option value="balanced" selected>中：風格明確但不混亂</option>
+                <option value="strong">高：強烈藝術化</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row2">
+            <div>
+              <label for="layout">排版邏輯</label>
+              <select id="layout">
+                <option value="clear hierarchy, strong focal point, readable headline, organized information blocks">清楚階層</option>
+                <option value="asymmetrical grid, editorial spacing, refined typography">非對稱網格</option>
+                <option value="centered composition, iconic main object, minimal supporting text">中央主視覺</option>
+                <option value="dynamic diagonal composition, movement, tension, layered depth">動態斜線構圖</option>
+                <option value="collage-like composition with layered images and tactile materials">拼貼層次構圖</option>
+              </select>
+            </div>
+            <div>
+              <label for="quality">輸出品質</label>
+              <select id="quality">
+                <option value="high-resolution, sharp details, professional poster design">高解析專業</option>
+                <option value="print-ready poster look, refined texture, clean edges">印刷質感</option>
+                <option value="cinematic lighting, rich details, polished commercial design">電影級光影</option>
+                <option value="museum-quality graphic design, sophisticated composition">展覽級設計</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="switches">
+            <label class="check"><input type="checkbox" id="textSafe" checked /> 強化文字可讀性：要求海報文字準確、不要亂碼、不要多餘文字</label>
+            <label class="check"><input type="checkbox" id="negative" checked /> 加入負面限制：避免低解析、混亂排版、錯字、過度擁擠</label>
+            <label class="check"><input type="checkbox" id="noLogo" checked /> 避免未授權品牌 logo、浮水印、假 QR code</label>
+            <label class="check"><input type="checkbox" id="makeVariants" /> 同時產生 3 個不同版本方向</label>
+          </div>
+
+          <div class="btns">
+            <button onclick="generatePrompt()">生成提示句</button>
+            <button class="secondary" onclick="copyPrompt()">複製提示句</button>
+            <button class="warn" onclick="clearAll()">清空內容</button>
+            <span id="copyStatus" class="copy-status">已複製</span>
+          </div>
+
+          <div id="styleInfo" class="style-card"></div>
+        </div>
+      </aside>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>生成結果</h2>
+          <span class="mini">可直接貼到 ChatGPT Images</span>
+        </div>
+        <div class="panel-body">
+          <div id="output" class="output">請先輸入海報主題，選擇風格後按「生成提示句」。</div>
+          <div class="hint">
+            使用建議：若海報有很多文字，第一次先生成「無文字主視覺」，第二次再要求加入標題與資訊。若文字很重要，請把要出現的文字逐行列出，並要求「exact text only」。
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const styleData = {
+      "簡約與現代": {
+        "極簡主義 Minimalism": {
+          keywords: "large negative space, simple geometry, restrained color palette, clean typography, premium silence",
+          colors: "white, charcoal, soft gray, one accent color",
+          notes: "適合學術講座、精品品牌、科技產品、正式活動。"
+        },
+        "瑞士風格 Swiss Style": {
+          keywords: "strict grid system, sans-serif typography, asymmetrical layout, objective clarity, editorial discipline",
+          colors: "white, black, red accent, neutral gray",
+          notes: "適合資訊清楚、重視理性與排版精準的海報。"
+        },
+        "個性化極簡 Bold Minimalism": {
+          keywords: "bold minimalism, dramatic lighting, controlled texture, precise spacing, strong single focal point",
+          colors: "deep black, ivory, electric accent, muted gradients",
+          notes: "比傳統極簡更有視覺張力，適合 2025 之後的現代品牌感。"
+        },
+        "扁平化 Flat Design": {
+          keywords: "flat vector shapes, solid color blocks, clean icons, simple composition, friendly readability",
+          colors: "bright but controlled flat colors",
+          notes: "適合課程、教育、社群、活動公告。"
+        }
+      },
+      "懷舊與復古": {
+        "復古風 Retro Vintage": {
+          keywords: "aged paper texture, muted colors, halftone dots, vintage printing, nostalgic atmosphere",
+          colors: "cream, brown, faded red, olive, dusty blue",
+          notes: "適合文化活動、老物件、咖啡、手作、市集。"
+        },
+        "普普藝術 Pop Art": {
+          keywords: "bold comic-style contrast, repeated photo patterns, halftone texture, commercial pop energy",
+          colors: "red, yellow, cyan, black, saturated contrast",
+          notes: "適合潮流、社群話題、商品宣傳。"
+        },
+        "孔版印刷 Risograph": {
+          keywords: "risograph misregistration, fluorescent ink, grainy halftone, handmade imperfection, layered print",
+          colors: "fluorescent pink, orange, teal, purple, cream paper",
+          notes: "適合獨立出版、藝文市集、手作展覽。"
+        },
+        "低保真像素 Lo-fi Pixel": {
+          keywords: "8-bit pixel art, retro computer interface, low-resolution charm, nostalgic digital culture",
+          colors: "limited pixel palette, old monitor glow",
+          notes: "適合遊戲、科技懷舊、青少年活動。"
+        }
+      },
+      "前衛與數位藝術": {
+        "酸性設計 Acid Graphics": {
+          keywords: "acid graphics, distorted typography, fluorescent gradients, chrome 3D objects, chaotic energy",
+          colors: "neon green, hot pink, electric blue, black",
+          notes: "適合電音、街頭品牌、前衛活動。"
+        },
+        "故障藝術 Glitch Art": {
+          keywords: "digital glitch, RGB split, pixel noise, scanlines, corrupted screen effect, techno rebellion",
+          colors: "black, cyan, magenta, electric red",
+          notes: "適合科技、AI、電子音樂、數位議題。"
+        },
+        "賽博龐克 Cyberpunk": {
+          keywords: "cyberpunk neon city, holographic interface, rain reflections, electric signs, futuristic nightlife",
+          colors: "purple, blue, magenta, black, neon cyan",
+          notes: "適合未來、科技、夜生活、數位城市。"
+        },
+        "液態金屬 Liquid Chrome": {
+          keywords: "liquid chrome, reflective molten metal, distorted environment reflections, aggressive futuristic surface",
+          colors: "silver, black, electric blue, violet highlights",
+          notes: "適合科技品牌、潮流活動、強烈視覺焦點。"
+        },
+        "熱顯像 Heat Map": {
+          keywords: "thermal vision, infrared heat map colors, surveillance aesthetic, biological energy, glowing gradients",
+          colors: "deep blue, violet, yellow, orange, red",
+          notes: "適合科學、醫學、運動、身體感測主題。"
+        }
+      },
+      "工藝與材質": {
+        "拼貼 Collage": {
+          keywords: "mixed-media collage, torn paper edges, magazine fragments, hand-drawn marks, surreal layering",
+          colors: "paper white, ink black, muted mixed colors",
+          notes: "適合文學、展覽、社會議題、藝術活動。"
+        },
+        "紙雕 Papercraft": {
+          keywords: "layered paper cut, tactile shadows, handmade paper texture, dimensional craft, soft studio lighting",
+          colors: "warm paper tones, pastel accents",
+          notes: "適合親子、教育、繪本、溫暖主題。"
+        },
+        "黏土 Claymorphism": {
+          keywords: "soft rounded clay 3D objects, playful forms, matte texture, cute handcrafted imperfections",
+          colors: "pastel pink, mint, yellow, sky blue",
+          notes: "適合 App、新創、兒童活動、可愛品牌。"
+        },
+        "鉛筆蝕刻 Etching": {
+          keywords: "detailed pencil drawing, etching lines, monochrome craftsmanship, fine hatching, tactile paper grain",
+          colors: "black graphite, ivory paper, sepia",
+          notes: "適合文青品牌、咖啡、手工藝、高級酒類。"
+        }
+      },
+      "經典藝術流派": {
+        "包浩斯 Bauhaus": {
+          keywords: "Bauhaus geometry, primary colors, functional layout, circles triangles squares, balanced modernist composition",
+          colors: "red, blue, yellow, black, white",
+          notes: "適合設計課程、展覽、現代藝術活動。"
+        },
+        "新藝術 Art Nouveau": {
+          keywords: "Art Nouveau ornamental curves, botanical lines, elegant female silhouette, decorative frame, romantic poster",
+          colors: "sage green, gold, cream, muted rose",
+          notes: "適合音樂會、文藝活動、精品包裝。"
+        },
+        "構造主義 Constructivism": {
+          keywords: "constructivist diagonal composition, photomontage, bold geometry, revolutionary energy, strong propaganda layout",
+          colors: "red, black, white, industrial gray",
+          notes: "適合具有力量感、宣言感、社會議題的海報。"
+        },
+        "裝飾藝術 Art Deco": {
+          keywords: "Art Deco symmetry, golden geometric lines, luxury contrast, elegant vertical composition, 1920s glamour",
+          colors: "black, gold, emerald, cream",
+          notes: "適合高級派對、酒類、香水、復古精品。"
+        }
+      },
+      "文化與地域": {
+        "日式禪風 Japanese Zen": {
+          keywords: "Japanese zen minimalism, natural textures, quiet negative space, organic forms, refined simplicity",
+          colors: "earth tones, ink black, warm white, bamboo green",
+          notes: "適合茶、自然、身心靈、文化講座。"
+        },
+        "香港霓虹 Hong Kong Neon": {
+          keywords: "Hong Kong neon street, traditional Chinese signboards, cinematic rain, dense urban night, nostalgic film mood",
+          colors: "neon red, green, blue, dark street shadows",
+          notes: "適合電影感、城市、夜生活、懷舊文化。"
+        },
+        "國潮風 Modern Chinese": {
+          keywords: "modern Chinese visual design, calligraphy energy, auspicious clouds, ink texture, contemporary oriental layout",
+          colors: "vermillion, ink black, jade green, gold",
+          notes: "適合文化節、品牌活動、傳統與現代融合主題。"
+        },
+        "非裔未來 Afrofuturism": {
+          keywords: "Afrofuturism, African geometric patterns, advanced sci-fi elements, cosmic atmosphere, saturated ceremonial colors",
+          colors: "gold, black, royal purple, turquoise, orange",
+          notes: "適合跨文化、音樂、科幻、身份與未來主題。"
+        }
+      },
+      "實驗與反設計": {
+        "野獸派 Brutalism": {
+          keywords: "brutalist graphic design, raw layout, heavy typography, exposed structure, anti-polished visual tension",
+          colors: "black, white, concrete gray, warning red",
+          notes: "適合抗議、實驗展、地下刊物、硬派主題。"
+        },
+        "新醜風 New Ugly": {
+          keywords: "new ugly design, awkward layout, clashing colors, intentionally unbalanced typography, anti-design charm",
+          colors: "clashing neon, dull beige, acid green, purple",
+          notes: "適合想要破格、反精緻、社群記憶點強的海報。"
+        },
+        "解構排版 Deconstruction": {
+          keywords: "deconstructed typography, fragmented letters, masked text, layered misalignment, visual exploration",
+          colors: "black, white, one sharp accent",
+          notes: "適合前衛展覽、實驗劇場、設計活動。"
+        },
+        "迷因美學 Meme Aesthetic": {
+          keywords: "internet meme aesthetic, intentionally low-fi image treatment, ironic caption layout, viral social media humor",
+          colors: "plain white, black text, low-res colors",
+          notes: "適合社群活動與幽默傳播，但正式場合要小心使用。"
+        }
+      },
+      "自然與未來": {
+        "生態未來 Solarpunk": {
+          keywords: "solarpunk eco-futurism, green architecture, renewable energy, sunlight, plants integrated with technology",
+          colors: "leaf green, sky blue, white, warm sunlight",
+          notes: "適合永續、醫療未來、教育、公共議題。"
+        },
+        "生物形態 Biomorphism": {
+          keywords: "biomorphic organic curves, cellular forms, neural networks, deep-sea life inspiration, fluid living structures",
+          colors: "teal, coral, bioluminescent blue, soft violet",
+          notes: "適合生醫、神經科學、生命科學、藝術科技。"
+        },
+        "數據藝術 Data Art": {
+          keywords: "data visualization art, waveforms, network maps, generative patterns, scientific precision, abstract information design",
+          colors: "dark navy, cyan, white, subtle gradients",
+          notes: "適合科技論壇、AI、醫學研究、數據展示。"
+        },
+        "抗重力 Floating": {
+          keywords: "anti-gravity floating composition, suspended objects, surreal space, elegant motion, fashion editorial atmosphere",
+          colors: "soft gradients, silver, pale blue, ivory",
+          notes: "適合時尚、概念活動、夢幻或未來主題。"
+        }
+      }
+    };
+
+    const categoryEl = document.getElementById("category");
+    const styleEl = document.getElementById("style");
+    const styleInfoEl = document.getElementById("styleInfo");
+
+    function init() {
+      Object.keys(styleData).forEach(cat => {
+        const opt = document.createElement("option");
+        opt.value = cat;
+        opt.textContent = cat;
+        categoryEl.appendChild(opt);
+      });
+      updateStyles();
+      generatePrompt();
+    }
+
+    categoryEl.addEventListener("change", updateStyles);
+    styleEl.addEventListener("change", updateStyleInfo);
+
+    function updateStyles() {
+      const cat = categoryEl.value;
+      styleEl.innerHTML = "";
+      Object.keys(styleData[cat]).forEach(style => {
+        const opt = document.createElement("option");
+        opt.value = style;
+        opt.textContent = style;
+        styleEl.appendChild(opt);
+      });
+      updateStyleInfo();
+    }
+
+    function updateStyleInfo() {
+      const cat = categoryEl.value;
+      const style = styleEl.value;
+      const data = styleData[cat][style];
+      styleInfoEl.innerHTML = `
+        <div class="style-title">${style}</div>
+        <div class="mini">${data.notes}</div>
+        <div class="chips">
+          <span class="chip">${data.colors}</span>
+          <span class="chip">${data.keywords.split(",")[0]}</span>
+          <span class="chip">${data.keywords.split(",")[1] || "poster design"}</span>
+        </div>
+      `;
+    }
+
+    function val(id, fallback = "") {
+      const v = document.getElementById(id).value.trim();
+      return v || fallback;
+    }
+
+    function checked(id) {
+      return document.getElementById(id).checked;
+    }
+
+    function buildCorePrompt(lang = "zh") {
+      const topic = val("topic", "未命名海報主題");
+      const audience = val("audience", "general audience");
+      const mainText = val("mainText", "請保留主要標題，避免加入未指定文字");
+      const description = val("description", "create a visually compelling poster based on the topic");
+      const cat = categoryEl.value;
+      const style = styleEl.value;
+      const data = styleData[cat][style];
+      const ratio = val("ratio");
+      const mood = val("mood");
+      const strength = val("strength");
+      const layout = val("layout");
+      const quality = val("quality");
+
+      const styleStrengthMap = {
+        subtle: "use the style subtly, keeping the poster commercially readable and not overly stylized",
+        balanced: "use a balanced level of style, clearly recognizable but still clean and readable",
+        strong: "use a strong artistic interpretation with bold visual identity"
+      };
+
+      const textRule = checked("textSafe")
+        ? "All visible text must be accurate, readable, and limited to the exact provided poster text. Do not invent extra text, fake names, random letters, misspellings, or placeholder words."
+        : "Use poster text only when it improves the composition.";
+
+      const noLogoRule = checked("noLogo")
+        ? "Do not include unauthorized brand logos, watermarks, fake QR codes, UI screenshots, or meaningless stamps."
+        : "";
+
+      const negativeRule = checked("negative")
+        ? "Avoid low resolution, messy layout, crowded text, distorted letters, spelling errors, unreadable typography, random symbols, extra fingers, malformed objects, harsh artifacts, and poor cropping."
+        : "";
+
+      if (lang === "en") {
+        return `Create a professional poster design.
+
+Poster topic:
+${topic}
+
+Target audience and context:
+${audience}
+
+Exact poster text to include:
+${mainText}
+
+Visual concept and key elements:
+${description}
+
+Poster format:
+${ratio}
+
+Design style:
+${style} within the category of ${cat}.
+Style keywords: ${data.keywords}.
+Suggested color direction: ${data.colors}.
+Style intensity: ${styleStrengthMap[strength]}.
+
+Mood:
+${mood}.
+
+Composition and layout:
+${layout}.
+
+Quality:
+${quality}.
+
+Typography instruction:
+Use a clear visual hierarchy. Make the headline dominant, supporting information secondary, and keep enough negative space for readability.
+
+Text accuracy instruction:
+${textRule}
+
+Restrictions:
+${noLogoRule}
+${negativeRule}`;
+      }
+
+      return `請生成一張專業海報設計。
+
+海報主題：
+${topic}
+
+受眾與使用情境：
+${audience}
+
+海報上必須出現的文字：
+${mainText}
+
+畫面概念與主要元素：
+${description}
+
+海報比例：
+${ratio}
+
+設計風格：
+${style}，所屬風格大類為「${cat}」。
+風格關鍵字：${data.keywords}。
+建議色彩方向：${data.colors}。
+風格強度：${styleStrengthMap[strength]}。
+
+情緒調性：
+${mood}。
+
+構圖與排版：
+${layout}。
+
+輸出品質：
+${quality}。
+
+文字排版要求：
+建立清楚的視覺層級，主標題最醒目，次要資訊清楚排列，保留足夠留白，避免文字擁擠。
+
+文字準確性要求：
+${textRule}
+
+限制條件：
+${noLogoRule}
+${negativeRule}`;
+    }
+
+    function buildVariants(lang = "zh") {
+      const style = styleEl.value;
+      if (lang === "en") {
+        return `Version A: Clean commercial poster, high readability, style used subtly.
+${buildCorePrompt("en")}
+
+Version B: Artistic poster, stronger visual metaphor, more expressive composition.
+${buildCorePrompt("en")}
+
+Version C: Social-media-ready poster, bold focal point, high visual impact, simplified information hierarchy.
+${buildCorePrompt("en")}`;
+      }
+
+      return `版本 A：商業清楚版，重視可讀性，風格較收斂。
+${buildCorePrompt("zh")}
+
+版本 B：藝術表現版，加強視覺隱喻與風格辨識度。
+${buildCorePrompt("zh")}
+
+版本 C：社群吸睛版，主視覺更強，資訊層級更簡化。
+${buildCorePrompt("zh")}`;
+    }
+
+    function generatePrompt() {
+      const lang = document.getElementById("language").value;
+      const variants = checked("makeVariants");
+      let text = "";
+
+      if (variants) {
+        if (lang === "both") {
+          text = "【中文版本】\n" + buildVariants("zh") + "\n\n【English Version】\n" + buildVariants("en");
+        } else {
+          text = buildVariants(lang);
+        }
+      } else {
+        if (lang === "both") {
+          text = "【中文提示句】\n" + buildCorePrompt("zh") + "\n\n【English Prompt】\n" + buildCorePrompt("en");
+        } else {
+          text = buildCorePrompt(lang);
+        }
+      }
+
+      document.getElementById("output").textContent = text;
+    }
+
+    async function copyPrompt() {
+      const text = document.getElementById("output").textContent;
+      await navigator.clipboard.writeText(text);
+      const s = document.getElementById("copyStatus");
+      s.style.display = "inline";
+      setTimeout(() => s.style.display = "none", 1500);
+    }
+
+    function clearAll() {
+      ["topic", "audience", "mainText", "description"].forEach(id => document.getElementById(id).value = "");
+      document.getElementById("output").textContent = "請先輸入海報主題，選擇風格後按「生成提示句」。";
+    }
+
+    document.querySelectorAll("input, textarea, select").forEach(el => {
+      el.addEventListener("input", generatePrompt);
+      el.addEventListener("change", generatePrompt);
+    });
+
+    init();
+  </script>
+</body>
+</html>
