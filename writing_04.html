@@ -1,4 +1,6 @@
 
+
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -560,7 +562,7 @@
 
         <div class="btns">
           <button class="primary" onclick="generatePrompt()">生成提示句</button>
-          <button class="secondary" onclick="pasteExample()">放入示例摘要</button>
+          <button class="secondary" onclick="copyOutput()">複製提示句</button>
           <button class="ghost" onclick="clearAllFields()">清空內容</button>
         </div>
       </div>
@@ -831,10 +833,6 @@
       structureSelect.value = "magazine";
       updateStructurePreview();
       updateModePreview();
-    }
-
-    function pasteExample() {
-      document.getElementById("summary").value = "AI正在改變教育現場。當知識查找與標準答案越來越容易取得，學校的角色不再只是傳遞資訊，而是培養學生如何設定學習目標、使用工具、判斷資訊品質，並發展自主學習與自我調節的能力。部分國家已開始將AI素養納入課程與師資培訓，但若制度仍被升學主義主導，改革可能流於表面。";
     }
 
     initStructures();
