@@ -1,0 +1,427 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI生命書寫助理｜確認後提示詞版</title>
+  <style>
+    :root {
+      --bg:#f7f2e9; --card:#fffdf8; --ink:#2b2723; --muted:#746a60;
+      --accent:#8a5a44; --accent2:#5f7f6a; --soft:#efe1d0; --line:#dcc8b6;
+      --warning:#fff3d6; --disabled:#cfc5bb; --flow:#f8efe4;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin:0; font-family:"Noto Sans CJK TC","PingFang TC","Microsoft JhengHei",sans-serif;
+      background:linear-gradient(180deg,#f7f2e9,#efe7dc); color:var(--ink);
+    }
+    header {
+      padding:38px 22px 28px; text-align:center; background:#ead8c2;
+      border-bottom:1px solid var(--line);
+    }
+    header h1 { margin:0 0 10px; letter-spacing:.04em; font-size:2rem; }
+    header p { margin:0 auto; max-width:900px; color:#5d5047; line-height:1.8; }
+    main {
+      max-width:1180px; margin:28px auto; padding:0 18px 42px;
+      display:grid; grid-template-columns:1fr 1fr; gap:22px;
+    }
+    section {
+      background:var(--card); border:1px solid var(--line); border-radius:18px;
+      box-shadow:0 10px 28px rgba(70,45,28,.08); padding:22px;
+    }
+    h2 { margin:0 0 16px; font-size:1.25rem; color:var(--accent); }
+    h3 { margin:20px 0 8px; font-size:1.05rem; color:#5d4435; }
+    label { display:block; margin:14px 0 6px; font-weight:700; }
+    input, select, textarea {
+      width:100%; border:1px solid var(--line); border-radius:12px; padding:11px 12px;
+      font-size:1rem; background:#fff; color:var(--ink); font-family:inherit;
+    }
+    textarea { min-height:90px; resize:vertical; line-height:1.75; }
+    .tall { min-height:230px; }
+    .very-tall { min-height:330px; }
+    .hint { color:var(--muted); font-size:.92rem; line-height:1.65; margin-top:8px; }
+    .row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .notice {
+      padding:14px; border-radius:14px; background:var(--soft);
+      color:#5d4435; line-height:1.7; margin-bottom:14px;
+    }
+    .warning { background:var(--warning); }
+    button {
+      margin-top:14px; width:100%; border:none; border-radius:14px; background:var(--accent);
+      color:white; padding:13px; font-size:1.02rem; font-weight:800; cursor:pointer;
+    }
+    button.secondary { background:var(--accent2); }
+    button.clear { background:#9b6f5b; }
+    button:disabled {
+      background:var(--disabled); color:#7a716a; cursor:not-allowed; filter:none;
+    }
+    button:hover:not(:disabled) { filter:brightness(.96); }
+    .output {
+      white-space:pre-wrap; line-height:1.85; padding:16px; background:#fff9f1;
+      border:1px dashed #caa88d; border-radius:14px; min-height:160px;
+    }
+    .confirm-box {
+      margin-top:12px; padding:13px 14px; background:#f4eadf; border:1px solid var(--line);
+      border-radius:14px; line-height:1.65;
+    }
+    .confirm-box label {
+      display:flex; align-items:flex-start; gap:10px; margin:0; font-weight:700;
+    }
+    .confirm-box input[type="checkbox"] {
+      width:auto; margin-top:5px; transform:scale(1.15);
+    }
+    .flow-wrap {
+      margin-top:8px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .flow-step {
+      display:flex;
+      align-items:center;
+      gap:14px;
+      background:var(--flow);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px 16px;
+    }
+    .flow-icon {
+      flex:0 0 54px;
+      width:54px;
+      height:54px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1.5rem;
+      background:#fff;
+      border:1px solid var(--line);
+    }
+    .flow-text {
+      font-size:1rem;
+      line-height:1.6;
+    }
+    .flow-arrow {
+      text-align:center;
+      font-size:1.4rem;
+      color:#9b7a61;
+      line-height:1;
+    }
+    .flow-title {
+      font-weight:800;
+      color:#6b4d3b;
+      margin-bottom:4px;
+    }
+    footer {
+      max-width:1180px; margin:0 auto 36px; padding:0 18px;
+      color:var(--muted); line-height:1.7;
+    }
+    @media (max-width: 900px) {
+      main { grid-template-columns:1fr; }
+      .row { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI生命書寫助理</h1>
+    <p>確認後提示詞版：長者或照顧者先輸入主要事實片段，系統產生確認清單。使用者確認事實、語氣與隱私後，才可在右側產生複製給生成式 AI 的提示詞。</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>一、請輸入回憶素材</h2>
+      <div class="notice">
+        <strong>使用原則：</strong>故事主權屬於長者。AI 可以協助整理與潤飾，但不應替長者編造不存在的重要情節。
+      </div>
+
+      <label for="motive">書寫動機</label>
+      <select id="motive" onchange="resetConfirmation()">
+        <option>我想寫一段童年回憶</option>
+        <option>我想寫一段年輕時的故事</option>
+        <option>我想寫一個忘不了的人</option>
+        <option>我想寫一個地方</option>
+        <option>我想留一段話給家人</option>
+        <option selected>我想寫一件後來才懂的事</option>
+      </select>
+
+      <div class="row">
+        <div>
+          <label for="time">時間</label>
+          <input id="time" oninput="resetConfirmation()" placeholder="例如：民國四十八年、年輕時、出嫁後" />
+        </div>
+        <div>
+          <label for="place">地點</label>
+          <input id="place" oninput="resetConfirmation()" placeholder="例如：地名、夫家、老家、餐桌旁" />
+        </div>
+      </div>
+
+      <label for="people">故事中的人</label>
+      <input id="people" oninput="resetConfirmation()" placeholder="例如：家人名或稱謂、朋友等" />
+
+      <label for="facts">事實片段：當時實際發生了什麼？</label>
+      <textarea id="facts" class="tall" oninput="resetConfirmation()" placeholder="請用長者自己的話輸入。可包含人物、氣氛、對話、家庭差異、心情、後來的理解等。AI 會自行判斷故事中的場景、情緒與轉折。"></textarea>
+      <p class="hint">建議保留口語與不完整句子，這些片段往往最接近長者自己的生命經驗。</p>
+
+      <div class="row">
+        <div>
+          <label for="emotion">主要情緒</label>
+          <select id="emotion" onchange="resetConfirmation()">
+            <option>懷念</option><option>感謝</option><option>想家</option><option>遺憾</option>
+            <option>平靜</option><option>堅強</option><option>溫暖</option><option selected>委屈但清醒</option>
+          </select>
+        </div>
+        <div>
+          <label for="style">文體風格</label>
+          <select id="style" onchange="resetConfirmation()">
+            <option>溫柔散文風</option><option selected>鄉土生命書寫風</option><option>白話生命故事風</option>
+            <option>口述歷史風</option><option>家書風</option><option>詩意抒情風</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="length">文章長度</label>
+          <select id="length" onchange="resetConfirmation()">
+            <option>短版，約400字</option>
+            <option selected>標準版，約800字</option>
+            <option>完整版，約1200字</option>
+          </select>
+        </div>
+        <div>
+          <label for="voice">語氣保留程度</label>
+          <select id="voice" onchange="resetConfirmation()">
+            <option>保留較多口語</option>
+            <option selected>口語與文學感平衡</option>
+            <option>文學潤飾較多</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="privacy">不希望公開或不要寫得太明確的內容</label>
+      <textarea id="privacy" oninput="resetConfirmation()" placeholder="例如：家族姓名、具體衝突細節、疾病、財產、創傷事件等。沒有則留白。"></textarea>
+
+      <button onclick="makeChecklist()">產生確認清單</button>
+      <button class="clear" onclick="clearAll()">清空全部</button>
+
+      <p class="hint">左側先輸入素材，右側確認後，再產生給 AI 的提示詞。</p>
+    </section>
+
+    <section>
+      <h2>二、確認清單與 AI 提示詞</h2>
+
+      <h3>1. 長者確認清單</h3>
+      <div id="checklist" class="output">請先填寫左側素材，再按下「產生確認清單」。</div>
+
+      <div class="confirm-box">
+        <label for="confirmed">
+          <input type="checkbox" id="confirmed" onchange="togglePromptButton()" disabled />
+          <span>我已確認上方清單，素材可用於產生 AI 生命故事初稿。</span>
+        </label>
+        <div class="hint">勾選後，下方「產生給 AI 的提示詞」按鈕才會啟用。</div>
+      </div>
+
+      <button class="secondary" id="promptBtn" onclick="makePrompt()" disabled>產生給 AI 的提示詞</button>
+
+      <h3>2. 給 AI 的提示詞</h3>
+      <div class="notice warning">
+        請先完成確認清單。AI 產生文章後，仍需由長者或家屬再次確認，才能保存或分享。
+      </div>
+      <textarea id="promptBox" class="very-tall" placeholder="完成確認後，按下上方「產生給 AI 的提示詞」，這裡會出現完整提示詞。"></textarea>
+      <button onclick="copyPrompt()">複製提示詞</button>
+
+      <h3>3. 使用流程圖</h3>
+      <div class="flow-wrap">
+        <div class="flow-step">
+          <div class="flow-icon">📝</div>
+          <div class="flow-text">
+            <div class="flow-title">先輸入素材</div>
+            在左側填入時間、地點、人物與事實片段。
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-icon">✅</div>
+          <div class="flow-text">
+            <div class="flow-title">產生確認清單</div>
+            檢查事實、語氣與隱私內容是否可以使用。
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-icon">☑️</div>
+          <div class="flow-text">
+            <div class="flow-title">勾選已確認</div>
+            確認素材無誤後，再勾選確認欄位。
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-icon">🤖</div>
+          <div class="flow-text">
+            <div class="flow-title">產生提示詞並貼給 AI</div>
+            按下按鈕產生提示詞，複製後貼到 ChatGPT 或其他生成式 AI。
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <strong>倫理提醒：</strong>若故事涉及家庭衝突、疾病、創傷或個人隱私，應避免公開展示。正式使用於長照中心前，需取得長者或家屬同意，並保留修改、刪除與不公開的權利。
+  </footer>
+
+  <script>
+    function val(id, fallback='') {
+      const x = document.getElementById(id).value.trim();
+      return x || fallback;
+    }
+
+    function titleFromMotive(motive) {
+      if (motive.includes('童年')) return '小時候的那段日子';
+      if (motive.includes('年輕')) return '年輕時走過的路';
+      if (motive.includes('忘不了的人')) return '那個忘不了的人';
+      if (motive.includes('地方')) return '記憶裡的地方';
+      if (motive.includes('家人')) return '想留給家人的話';
+      if (motive.includes('後來才懂')) return '後來才明白的事';
+      return '留在心裡的一段日子';
+    }
+
+    function resetConfirmation() {
+      const confirmed = document.getElementById('confirmed');
+      confirmed.checked = false;
+      confirmed.disabled = true;
+      document.getElementById('promptBtn').disabled = true;
+      document.getElementById('promptBox').value = '';
+      document.getElementById('checklist').textContent = '素材已更新，請重新按下「產生確認清單」。';
+    }
+
+    function togglePromptButton() {
+      const confirmed = document.getElementById('confirmed').checked;
+      document.getElementById('promptBtn').disabled = !confirmed;
+    }
+
+    function makeChecklist() {
+      const checklist = `長者確認清單
+
+一、事實確認
+1. 時間、地點、人物是否正確？
+2. 事實片段中有沒有不想被寫進文章的內容？
+3. 有沒有需要避免公開的家庭姓名、疾病、財產、衝突或創傷細節？
+
+二、語氣確認
+1. 希望文章比較像口述、散文、家書，還是生命故事？
+2. 是否要保留長者原本的說話方式與不完整句子？
+3. 是否避免寫得太華麗、太像作文、太像勵志文章？
+
+三、AI 使用確認
+1. AI 只能整理與潤飾，不可以編造不存在的重要情節。
+2. AI 可以自行判斷故事中的場景、情緒與轉折，但不能改變故事核心。
+3. AI 生成後，仍需由長者或家屬再次確認，才能保存或分享。
+
+四、本次素材摘要
+書寫動機：${val('motive')}
+時間：${val('time', '未填寫')}
+地點：${val('place', '未填寫')}
+故事中的人：${val('people', '未填寫')}
+主要情緒：${val('emotion')}
+文體風格：${val('style')}
+不希望公開內容：${val('privacy', '未填寫')}
+`;
+      document.getElementById('checklist').textContent = checklist;
+      const confirmed = document.getElementById('confirmed');
+      confirmed.disabled = false;
+      confirmed.checked = false;
+      document.getElementById('promptBtn').disabled = true;
+      document.getElementById('promptBox').value = '';
+    }
+
+    function makePrompt() {
+      if (!document.getElementById('confirmed').checked) {
+        alert('請先勾選「我已確認上方清單」。');
+        return;
+      }
+
+      const motive = val('motive');
+      const title = titleFromMotive(motive);
+      const prompt = `你是一位協助高齡者生命書寫的中文寫作助理。請根據以下素材，寫成一篇生命故事散文。
+
+【重要原則】
+1. 請根據提供的事實片段書寫，不要編造未提供的重要事件、人物、疾病、創傷或家庭衝突。
+2. 你可以自行判斷素材中的場景、人物關係、情緒變化、前後對比與「後來才明白的事」，並將它們整理成有層次的敘事。
+3. 可以整理順序、補足轉場、潤飾文字，但不能改變故事核心。
+4. 請保留長者的生命經驗與口語感，不要寫成過度華麗、空泛或勵志標語式文章。
+5. 請避免使用「活在心裡的光」「歲月留下重量」「人生不是為了完美」「那些日子被好好記得」這類模板化句子。
+6. 如果資訊不足，請用含蓄方式處理，不要自行加戲。
+7. 若素材涉及家庭衝突，請用克制、客觀、帶有理解距離的方式書寫，不要把人物寫成單一壞人。
+8. 文章應具有具體畫面、人物對比、內心感受與回望後的理解。
+
+【建議標題】
+《${title}》
+
+【書寫動機】
+${motive}
+
+【時間】
+${val('time', '未明確提供')}
+
+【地點】
+${val('place', '未明確提供')}
+
+【故事中的人】
+${val('people', '未明確提供')}
+
+【事實片段：當時實際發生了什麼】
+${val('facts', '未明確提供')}
+
+【主要情緒】
+${val('emotion')}
+
+【文體風格】
+${val('style')}
+
+【文章長度】
+${val('length')}
+
+【語氣保留程度】
+${val('voice')}
+
+【不希望公開或不要寫得太明確的內容】
+${val('privacy', '無特別限制')}
+
+【請輸出】
+1. 一篇完整生命故事散文。
+2. 文末加上「長者確認提醒」，列出三點需要確認的內容：事實是否正確、是否有不願公開內容、語氣是否像本人。
+3. 不要解釋你的寫作過程，直接輸出文章。`;
+      document.getElementById('promptBox').value = prompt;
+    }
+
+    function copyPrompt() {
+      const text = document.getElementById('promptBox').value;
+      if (!text.trim()) {
+        alert('目前沒有可複製的提示詞。請先完成確認並產生提示詞。');
+        return;
+      }
+      navigator.clipboard.writeText(text).then(() => alert('提示詞已複製。請貼到生成式 AI 工具中。'));
+    }
+
+    function clearAll() {
+      if (!confirm('確定要清空全部欄位嗎？')) return;
+      const ids = ['time','place','people','facts','privacy','promptBox'];
+      ids.forEach(id => document.getElementById(id).value = '');
+      document.getElementById('motive').selectedIndex = 5;
+      document.getElementById('emotion').selectedIndex = 7;
+      document.getElementById('style').selectedIndex = 1;
+      document.getElementById('length').selectedIndex = 1;
+      document.getElementById('voice').selectedIndex = 1;
+      document.getElementById('checklist').textContent = '請先填寫左側素材，再按下「產生確認清單」。';
+      const confirmed = document.getElementById('confirmed');
+      confirmed.checked = false;
+      confirmed.disabled = true;
+      document.getElementById('promptBtn').disabled = true;
+    }
+  </script>
+</body>
+</html>
