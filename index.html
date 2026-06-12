@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -8,11 +7,8 @@
   <style>
     :root {
       --bg: #05070b;
-      --bg-deep: #0a1220;
       --panel: #0f1b31;
-      --panel-2: #101722;
       --line: rgba(255,255,255,0.12);
-      --line-strong: rgba(255,255,255,0.22);
       --text: #f5f7fb;
       --muted: #b9c3d6;
       --soft: #dfe8f7;
@@ -20,16 +16,12 @@
       --accent-2: #dce9ff;
       --shadow: 0 20px 60px rgba(0,0,0,0.35);
       --radius-xl: 28px;
-      --radius-lg: 20px;
-      --radius-md: 16px;
       --max: 1280px;
     }
 
     * { box-sizing: border-box; }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
@@ -43,10 +35,7 @@
       letter-spacing: 0.02em;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    a { color: inherit; text-decoration: none; }
 
     .wrap {
       width: min(calc(100% - 40px), var(--max));
@@ -111,7 +100,7 @@
       color: var(--soft);
       border: 1px solid rgba(255,255,255,0.08);
       background: rgba(255,255,255,0.03);
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       transition: 0.25s ease;
     }
 
@@ -121,17 +110,13 @@
       transform: translateY(-1px);
     }
 
-    .hero {
-      padding: 72px 0 44px;
-    }
+    .hero { padding: 72px 0 44px; }
 
     .hero-panel {
       position: relative;
       overflow: hidden;
       border-radius: 34px;
-      background:
-        linear-gradient(145deg, rgba(14, 28, 52, 0.95), rgba(8, 13, 22, 0.98)),
-        #0d1522;
+      background: linear-gradient(145deg, rgba(14, 28, 52, 0.95), rgba(8, 13, 22, 0.98)), #0d1522;
       border: 1px solid rgba(255,255,255,0.12);
       box-shadow: var(--shadow);
       padding: 56px;
@@ -153,6 +138,8 @@
       grid-template-columns: 1.25fr 0.75fr;
       gap: 36px;
       align-items: end;
+      position: relative;
+      z-index: 1;
     }
 
     .eyebrow {
@@ -214,18 +201,13 @@
       border: 1px solid rgba(255,255,255,0.12);
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-    }
+    .btn:hover { transform: translateY(-2px); }
 
-    .hero-side {
-      display: grid;
-      gap: 16px;
-    }
+    .hero-side { display: grid; gap: 16px; }
 
     .stat-card {
       border-radius: 20px;
-      padding: 22px 22px;
+      padding: 22px;
       background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
       border: 1px solid rgba(255,255,255,0.12);
     }
@@ -242,9 +224,7 @@
       font-size: 0.95rem;
     }
 
-    section {
-      padding: 26px 0 12px;
-    }
+    section { padding: 26px 0 12px; }
 
     .section-head {
       display: flex;
@@ -263,7 +243,7 @@
     .section-head p {
       margin: 8px 0 0;
       color: var(--muted);
-      max-width: 720px;
+      max-width: 760px;
     }
 
     .category-tag {
@@ -284,11 +264,10 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      min-height: 240px;
+      min-height: 238px;
       padding: 24px;
       border-radius: var(--radius-xl);
-      background:
-        linear-gradient(180deg, rgba(17, 24, 37, 0.92), rgba(8, 12, 19, 0.98));
+      background: linear-gradient(180deg, rgba(17, 24, 37, 0.92), rgba(8, 12, 19, 0.98));
       border: 1px solid var(--line);
       box-shadow: var(--shadow);
       transition: 0.28s ease;
@@ -334,6 +313,7 @@
       font-size: 0.88rem;
       color: rgba(255,255,255,0.56);
       letter-spacing: 0.08em;
+      white-space: nowrap;
     }
 
     .card h3 {
@@ -379,10 +359,7 @@
       box-shadow: var(--shadow);
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+    table { width: 100%; border-collapse: collapse; }
 
     th, td {
       padding: 18px 20px;
@@ -397,13 +374,9 @@
       background: rgba(255,255,255,0.03);
     }
 
-    td {
-      color: var(--soft);
-    }
+    td { color: var(--soft); }
 
-    .footer {
-      padding: 54px 0 70px;
-    }
+    .footer { padding: 54px 0 70px; }
 
     .footer-panel {
       border-radius: 30px;
@@ -418,63 +391,22 @@
       align-items: center;
     }
 
-    .footer h3 {
-      margin: 0 0 8px;
-      font-size: 1.2rem;
-    }
-
-    .footer p {
-      margin: 0;
-      color: var(--muted);
-    }
-
-    .footer .btn {
-      min-width: 170px;
-    }
+    .footer h3 { margin: 0 0 8px; font-size: 1.2rem; }
+    .footer p { margin: 0; color: var(--muted); }
 
     @media (max-width: 980px) {
-      .hero-grid,
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-panel {
-        padding: 34px 24px;
-      }
-
-      .section-head {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+      .hero-grid, .grid { grid-template-columns: 1fr; }
+      .hero-panel { padding: 34px 24px; }
+      .section-head { flex-direction: column; align-items: flex-start; }
     }
 
     @media (max-width: 640px) {
-      .wrap {
-        width: min(calc(100% - 24px), var(--max));
-      }
-
-      .topbar-inner {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .nav {
-        width: 100%;
-      }
-
-      .nav a {
-        font-size: 0.88rem;
-      }
-
-      .card,
-      .footer-panel {
-        border-radius: 22px;
-      }
-
-      th, td {
-        padding: 14px 14px;
-        font-size: 0.94rem;
-      }
+      .wrap { width: min(calc(100% - 24px), var(--max)); }
+      .topbar-inner { align-items: flex-start; flex-direction: column; }
+      .nav { width: 100%; }
+      .nav a { font-size: 0.86rem; }
+      .card, .footer-panel { border-radius: 22px; }
+      th, td { padding: 14px; font-size: 0.94rem; }
     }
   </style>
 </head>
@@ -491,8 +423,10 @@
 
       <nav class="nav">
         <a href="#literature">文學創作</a>
+        <a href="#aging">高齡生命書寫</a>
         <a href="#research">研究轉譯</a>
-        <a href="#marketing">行銷應用</a>
+        <a href="#business">行銷商業</a>
+        <a href="#visual">圖像海報</a>
         <a href="#classical">古文傳統</a>
         <a href="#overview">總覽</a>
       </nav>
@@ -508,22 +442,22 @@
               <div class="eyebrow">AI 寫作與研究提示詞工具集合</div>
               <h1>WEBAI 工具首頁</h1>
               <p>
-                收整文學創作、研究轉譯、行銷文案、古文書寫、繪本與現代新詩等多種 AI 提示詞工具。
-                以深藍、黑色、白色為主體分層，讓首頁視覺更穩、更大方，也方便直接進入各個工具頁面。
+                收整文學創作、研究轉譯、行銷文案、古文書寫、英文文學、台語文學、高齡生命書寫、圖像提示與海報設計等 AI 提示詞工具。
+                這裡是完整導覽入口，可直接進入各個 GitHub Pages 工具頁面。
               </p>
               <div class="hero-actions">
                 <a class="btn btn-primary" href="#overview">查看全部工具</a>
-                <a class="btn btn-secondary" href="https://berneting.github.io/WEBAI/" target="_blank" rel="noopener">開啟 GitHub Pages</a>
+                <a class="btn btn-secondary" href="https://github.com/berneting/WEBAI" target="_blank" rel="noopener">查看 GitHub Repo</a>
               </div>
             </div>
             <div class="hero-side">
               <div class="stat-card">
-                <strong>12</strong>
+                <strong>20</strong>
                 <span>已整理工具頁數量</span>
               </div>
               <div class="stat-card">
-                <strong>4</strong>
-                <span>主分類：文學、研究、行銷、古文</span>
+                <strong>6</strong>
+                <span>主分類：文學、高齡、研究、商業、圖像、古文</span>
               </div>
               <div class="stat-card">
                 <strong>Direct Link</strong>
@@ -541,87 +475,93 @@
           <div>
             <div class="category-tag">Literature & Creativity</div>
             <h2>文學與創作類</h2>
-            <p>從文學改寫、名家風格、作詩、童話，到繪本與現代新詩，集中成一組清楚可進入的創作入口。</p>
+            <p>從文學改寫、名家風格、作詩、童話，到繪本、現代新詩、英文文學與台語文學，集中成一組清楚可進入的創作入口。</p>
           </div>
         </div>
 
         <div class="grid">
           <a class="card" href="https://berneting.github.io/WEBAI/writing_01.html" target="_blank" rel="noopener">
-            <div class="card-top">
-              <span class="pill">文學風格</span>
-              <span class="file-id">writing_01</span>
-            </div>
+            <div class="card-top"><span class="pill">文學風格</span><span class="file-id">writing_01</span></div>
             <h3>文學寫作提示詞生成器</h3>
-            <p>可輸入原始文本、摘要或主題，搭配情緒、意象、視角與句子張力設定，生成更細膩的文學式提示詞。</p>
-            <div class="card-bottom">
-              <span class="meta">文學改寫・風格控制</span>
-              <span class="enter">進入工具 ↗</span>
-            </div>
+            <p>搭配情緒、意象、視角與句子張力設定，生成更細膩的文學式提示詞。</p>
+            <div class="card-bottom"><span class="meta">文學改寫・風格控制</span><span class="enter">進入工具 ↗</span></div>
           </a>
 
           <a class="card" href="https://berneting.github.io/WEBAI/writing_05.html" target="_blank" rel="noopener">
-            <div class="card-top">
-              <span class="pill">名家風格</span>
-              <span class="file-id">writing_05</span>
-            </div>
+            <div class="card-top"><span class="pill">名家風格</span><span class="file-id">writing_05</span></div>
             <h3>創作動機轉名家風格文章</h3>
-            <p>將創作動機或核心構想，轉為不同名家筆調的提示方向，協助快速建立語氣與敘事感。</p>
-            <div class="card-bottom">
-              <span class="meta">風格導向・語氣建立</span>
-              <span class="enter">進入工具 ↗</span>
-            </div>
+            <p>將創作動機或核心構想，轉為不同名家筆調的提示方向。</p>
+            <div class="card-bottom"><span class="meta">風格導向・語氣建立</span><span class="enter">進入工具 ↗</span></div>
           </a>
 
           <a class="card" href="https://berneting.github.io/WEBAI/writing_06.html" target="_blank" rel="noopener">
-            <div class="card-top">
-              <span class="pill">詩歌創作</span>
-              <span class="file-id">writing_06</span>
-            </div>
+            <div class="card-top"><span class="pill">詩歌創作</span><span class="file-id">writing_06</span></div>
             <h3>作詩提示詞工具</h3>
             <p>透過主題、節奏、意象與情緒設定，產生可直接餵給 AI 的詩歌創作提示句。</p>
-            <div class="card-bottom">
-              <span class="meta">詩意設定・節奏控制</span>
-              <span class="enter">進入工具 ↗</span>
-            </div>
+            <div class="card-bottom"><span class="meta">詩意設定・節奏控制</span><span class="enter">進入工具 ↗</span></div>
           </a>
 
           <a class="card" href="https://berneting.github.io/WEBAI/writing_09.html" target="_blank" rel="noopener">
-            <div class="card-top">
-              <span class="pill">童話敘事</span>
-              <span class="file-id">writing_09</span>
-            </div>
+            <div class="card-top"><span class="pill">童話敘事</span><span class="file-id">writing_09</span></div>
             <h3>童話故事提示工具</h3>
-            <p>支援角色、情節、寓意與敘事風格設定，適合童話、寓言與帶象徵性的故事發想。</p>
-            <div class="card-bottom">
-              <span class="meta">角色設計・寓意主題</span>
-              <span class="enter">進入工具 ↗</span>
-            </div>
+            <p>支援角色、情節、寓意與敘事風格設定，適合童話、寓言與象徵性故事發想。</p>
+            <div class="card-bottom"><span class="meta">角色設計・寓意主題</span><span class="enter">進入工具 ↗</span></div>
           </a>
 
           <a class="card" href="https://berneting.github.io/WEBAI/writing_10.html" target="_blank" rel="noopener">
-            <div class="card-top">
-              <span class="pill">繪本創作</span>
-              <span class="file-id">writing_10</span>
-            </div>
+            <div class="card-top"><span class="pill">繪本創作</span><span class="file-id">writing_10</span></div>
             <h3>繪本生成器</h3>
-            <p>可安排角色、場景、情節推進與寓意方向，協助形成繪本式敘事與圖文內容發想。</p>
-            <div class="card-bottom">
-              <span class="meta">兒童繪本・圖文敘事</span>
-              <span class="enter">進入工具 ↗</span>
-            </div>
+            <p>安排角色、場景、情節推進與寓意方向，協助形成繪本式敘事與圖文內容發想。</p>
+            <div class="card-bottom"><span class="meta">兒童繪本・圖文敘事</span><span class="enter">進入工具 ↗</span></div>
           </a>
 
           <a class="card" href="https://berneting.github.io/WEBAI/writing_12.html" target="_blank" rel="noopener">
-            <div class="card-top">
-              <span class="pill">現代新詩</span>
-              <span class="file-id">writing_12</span>
-            </div>
+            <div class="card-top"><span class="pill">現代新詩</span><span class="file-id">writing_12</span></div>
             <h3>現代新詩提示詞生成器</h3>
-            <p>支援主題傾向、視角、結構、節奏與收尾方式設定，用來生成更完整的新詩創作提示詞。</p>
-            <div class="card-bottom">
-              <span class="meta">自由詩・詩感控制</span>
-              <span class="enter">進入工具 ↗</span>
-            </div>
+            <p>支援主題傾向、視角、結構、節奏與收尾方式設定，用來生成完整的新詩提示詞。</p>
+            <div class="card-bottom"><span class="meta">自由詩・詩感控制</span><span class="enter">進入工具 ↗</span></div>
+          </a>
+
+          <a class="card" href="https://berneting.github.io/WEBAI/writing_13.html" target="_blank" rel="noopener">
+            <div class="card-top"><span class="pill">英文分析</span><span class="file-id">writing_13</span></div>
+            <h3>英文文學分析提示詞生成器</h3>
+            <p>協助英文文學文本分析、敘事結構、語氣判讀與評論方向設計。</p>
+            <div class="card-bottom"><span class="meta">英文文學・文本分析</span><span class="enter">進入工具 ↗</span></div>
+          </a>
+
+          <a class="card" href="https://berneting.github.io/WEBAI/writing_14.html" target="_blank" rel="noopener">
+            <div class="card-top"><span class="pill">英文創作</span><span class="file-id">writing_14</span></div>
+            <h3>英文文學提示詞生成器</h3>
+            <p>適合英文文學創作、兒童文學、敘事設計與英文文本生成前的提示詞規劃。</p>
+            <div class="card-bottom"><span class="meta">英文創作・敘事設計</span><span class="enter">進入工具 ↗</span></div>
+          </a>
+
+          <a class="card" href="https://berneting.github.io/WEBAI/writing_15.html" target="_blank" rel="noopener">
+            <div class="card-top"><span class="pill">台語文學</span><span class="file-id">writing_15</span></div>
+            <h3>台語文學生成器 Pro</h3>
+            <p>針對台語文學語感、在地敘事、語氣與文化情境設計的生成工具。</p>
+            <div class="card-bottom"><span class="meta">台語語感・在地敘事</span><span class="enter">進入工具 ↗</span></div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="aging">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="category-tag">Aging & Life Writing</div>
+            <h2>高齡照護與生命書寫類</h2>
+            <p>面向長者生命故事、回憶整理、照護現場與高齡友善書寫流程。</p>
+          </div>
+        </div>
+
+        <div class="grid">
+          <a class="card" href="https://berneting.github.io/WEBAI/writing_aging.html" target="_blank" rel="noopener">
+            <div class="card-top"><span class="pill">生命書寫</span><span class="file-id">writing_aging</span></div>
+            <h3>AI 生命書寫助理</h3>
+            <p>協助高齡者或照護者整理生命故事素材，經確認流程後生成可貼給 AI 的生命敘事提示詞。</p>
+            <div class="card-bottom"><span class="meta">長者敘事・確認流程</span><span class="enter">進入工具 ↗</span></div>
           </a>
         </div>
       </div>
@@ -633,75 +573,100 @@
           <div>
             <div class="category-tag">Research & Translation</div>
             <h2>研究與內容轉譯類</h2>
-            <p>聚焦研究摘要改寫、社群轉譯與學術寫作提示，適合研究推廣與期刊式輸出。</p>
+            <p>聚焦研究摘要改寫、社群轉譯、學術寫作提示與 PICO 研究問題設計。</p>
           </div>
         </div>
 
         <div class="grid">
           <a class="card" href="https://berneting.github.io/WEBAI/writing_03.html" target="_blank" rel="noopener">
-            <div class="card-top">
-              <span class="pill">社群轉譯</span>
-              <span class="file-id">writing_03</span>
-            </div>
+            <div class="card-top"><span class="pill">社群轉譯</span><span class="file-id">writing_03</span></div>
             <h3>研究摘要轉社媒推廣提示句</h3>
-            <p>將研究摘要與討論拆開輸入，協助 AI 抽出真正值得被看見的核心觀點，寫成更有主軸的短文。</p>
-            <div class="card-bottom">
-              <span class="meta">研究推廣・短文模式</span>
-              <span class="enter">進入工具 ↗</span>
-            </div>
+            <p>將研究摘要與討論拆開輸入，協助 AI 抽出值得被看見的核心觀點。</p>
+            <div class="card-bottom"><span class="meta">研究推廣・短文模式</span><span class="enter">進入工具 ↗</span></div>
           </a>
 
           <a class="card" href="https://berneting.github.io/WEBAI/writing_04.html" target="_blank" rel="noopener">
-            <div class="card-top">
-              <span class="pill">中長文轉譯</span>
-              <span class="file-id">writing_04</span>
-            </div>
+            <div class="card-top"><span class="pill">中長文轉譯</span><span class="file-id">writing_04</span></div>
             <h3>摘要轉 AI 提示句生成器</h3>
-            <p>把摘要、導言或課堂整理轉為中長文提示句，並加入避免只像在評論摘要的限制，使文章更像社論或評論。</p>
-            <div class="card-bottom">
-              <span class="meta">評論導向・結構生成</span>
-              <span class="enter">進入工具 ↗</span>
-            </div>
+            <p>把摘要、導言或課堂整理轉為中長文提示句，使文章更像社論或評論。</p>
+            <div class="card-bottom"><span class="meta">評論導向・結構生成</span><span class="enter">進入工具 ↗</span></div>
           </a>
 
           <a class="card" href="https://berneting.github.io/WEBAI/writing_11.html" target="_blank" rel="noopener">
-            <div class="card-top">
-              <span class="pill">學術寫作</span>
-              <span class="file-id">writing_11</span>
-            </div>
+            <div class="card-top"><span class="pill">學術寫作</span><span class="file-id">writing_11</span></div>
             <h3>研究寫作提示句工具</h3>
-            <p>針對前言、討論等研究章節設計，可依研究方法與結果生成醫學、生物醫學與期刊導向的寫作提示。</p>
-            <div class="card-bottom">
-              <span class="meta">論文章節・期刊風格</span>
-              <span class="enter">進入工具 ↗</span>
-            </div>
+            <p>針對前言、討論等研究章節設計，可依研究方法與結果生成期刊導向提示。</p>
+            <div class="card-bottom"><span class="meta">論文章節・期刊風格</span><span class="enter">進入工具 ↗</span></div>
+          </a>
+
+          <a class="card" href="https://berneting.github.io/WEBAI/pico.html" target="_blank" rel="noopener">
+            <div class="card-top"><span class="pill">PICO</span><span class="file-id">pico</span></div>
+            <h3>PICO 研究問題生成工具</h3>
+            <p>協助將臨床或研究主題轉換為 PICO 架構，適合研究問題設計與文獻搜尋。</p>
+            <div class="card-bottom"><span class="meta">研究設計・文獻檢索</span><span class="enter">進入工具 ↗</span></div>
           </a>
         </div>
       </div>
     </section>
 
-    <section id="marketing">
+    <section id="business">
       <div class="wrap">
         <div class="section-head">
           <div>
-            <div class="category-tag">Marketing & Applied Use</div>
-            <h2>行銷與應用類</h2>
-            <p>提供產品、服務、課程等推廣用途的文宣生成，適合商務與實際應用場景。</p>
+            <div class="category-tag">Marketing & Business</div>
+            <h2>行銷與商業應用類</h2>
+            <p>提供產品、服務、課程推廣用途的文宣生成，也包含商業分析與策略拆解工具。</p>
           </div>
         </div>
 
         <div class="grid">
           <a class="card" href="https://berneting.github.io/WEBAI/writing_02c.html" target="_blank" rel="noopener">
-            <div class="card-top">
-              <span class="pill">商用文案</span>
-              <span class="file-id">writing_02</span>
-            </div>
+            <div class="card-top"><span class="pill">商用文案</span><span class="file-id">writing_02c</span></div>
             <h3>行銷用文宣生成器</h3>
-            <p>輸入產品或服務，選擇文案風格後即可生成可直接使用的 AI 提示句，適合教學、店家與行銷推廣。</p>
-            <div class="card-bottom">
-              <span class="meta">商業應用・快速上手</span>
-              <span class="enter">進入工具 ↗</span>
-            </div>
+            <p>輸入產品或服務，選擇文案風格後即可生成可直接使用的 AI 提示句。</p>
+            <div class="card-bottom"><span class="meta">商業應用・快速上手</span><span class="enter">進入工具 ↗</span></div>
+          </a>
+
+          <a class="card" href="https://berneting.github.io/WEBAI/business_01.html" target="_blank" rel="noopener">
+            <div class="card-top"><span class="pill">商業分析</span><span class="file-id">business_01</span></div>
+            <h3>商業分析 AI 工具</h3>
+            <p>以商業分析、問題拆解與策略思考為核心，協助生成更具結構的商業分析提示詞。</p>
+            <div class="card-bottom"><span class="meta">策略思考・問題拆解</span><span class="enter">進入工具 ↗</span></div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="visual">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="category-tag">Visual Prompt & Posters</div>
+            <h2>圖像、海報與視覺提示類</h2>
+            <p>用於圖像生成、衛教海報、課程視覺與宣傳圖設計的提示詞工具。</p>
+          </div>
+        </div>
+
+        <div class="grid">
+          <a class="card" href="https://berneting.github.io/WEBAI/image_aging_01.html" target="_blank" rel="noopener">
+            <div class="card-top"><span class="pill">高齡圖像</span><span class="file-id">image_aging_01</span></div>
+            <h3>高齡運動圖像提示工具</h3>
+            <p>協助生成高齡運動、健康促進或照護情境的圖像提示詞。</p>
+            <div class="card-bottom"><span class="meta">高齡運動・圖像提示</span><span class="enter">進入工具 ↗</span></div>
+          </a>
+
+          <a class="card" href="https://berneting.github.io/WEBAI/poster_01.html" target="_blank" rel="noopener">
+            <div class="card-top"><span class="pill">海報工具</span><span class="file-id">poster_01</span></div>
+            <h3>海報提示工具 01</h3>
+            <p>用於建立視覺海報、宣傳圖與圖像生成提示詞。</p>
+            <div class="card-bottom"><span class="meta">視覺海報・提示生成</span><span class="enter">進入工具 ↗</span></div>
+          </a>
+
+          <a class="card" href="https://berneting.github.io/WEBAI/poster_02.html" target="_blank" rel="noopener">
+            <div class="card-top"><span class="pill">海報工具</span><span class="file-id">poster_02</span></div>
+            <h3>海報提示工具 02</h3>
+            <p>提供更完整的海報提示生成流程，適合課程、活動、衛教與視覺設計需求。</p>
+            <div class="card-bottom"><span class="meta">課程活動・衛教視覺</span><span class="enter">進入工具 ↗</span></div>
           </a>
         </div>
       </div>
@@ -719,29 +684,17 @@
 
         <div class="grid">
           <a class="card" href="https://berneting.github.io/WEBAI/writing_07.html" target="_blank" rel="noopener">
-            <div class="card-top">
-              <span class="pill">文言轉寫</span>
-              <span class="file-id">writing_07</span>
-            </div>
+            <div class="card-top"><span class="pill">文言轉寫</span><span class="file-id">writing_07</span></div>
             <h3>文言文古風寫作工具</h3>
             <p>可將白話文或混合文體轉成不同濃度與風格的文言文，並控制語氣、節奏與敘事方式。</p>
-            <div class="card-bottom">
-              <span class="meta">古風語感・語氣調整</span>
-              <span class="enter">進入工具 ↗</span>
-            </div>
+            <div class="card-bottom"><span class="meta">古風語感・語氣調整</span><span class="enter">進入工具 ↗</span></div>
           </a>
 
           <a class="card" href="https://berneting.github.io/WEBAI/writing_08.html" target="_blank" rel="noopener">
-            <div class="card-top">
-              <span class="pill">節奏文體</span>
-              <span class="file-id">writing_08</span>
-            </div>
+            <div class="card-top"><span class="pill">節奏文體</span><span class="file-id">writing_08</span></div>
             <h3>三字經／多字節奏文言文創作</h3>
             <p>支援三字至七字等節奏形式，可依理解層級調整，適合教育用途與古文創作實驗。</p>
-            <div class="card-bottom">
-              <span class="meta">教學應用・節奏書寫</span>
-              <span class="enter">進入工具 ↗</span>
-            </div>
+            <div class="card-bottom"><span class="meta">教學應用・節奏書寫</span><span class="enter">進入工具 ↗</span></div>
           </a>
         </div>
       </div>
@@ -760,28 +713,15 @@
         <div class="overview">
           <table>
             <thead>
-              <tr>
-                <th>類別</th>
-                <th>工具</th>
-              </tr>
+              <tr><th>類別</th><th>工具</th></tr>
             </thead>
             <tbody>
-              <tr>
-                <td>文學創作</td>
-                <td>writing_01、writing_05、writing_06、writing_09、writing_10、writing_12</td>
-              </tr>
-              <tr>
-                <td>研究轉譯</td>
-                <td>writing_03、writing_04、writing_11</td>
-              </tr>
-              <tr>
-                <td>行銷文案</td>
-                <td>writing_02</td>
-              </tr>
-              <tr>
-                <td>古文創作</td>
-                <td>writing_07、writing_08</td>
-              </tr>
+              <tr><td>文學創作</td><td>writing_01、writing_05、writing_06、writing_09、writing_10、writing_12、writing_13、writing_14、writing_15</td></tr>
+              <tr><td>高齡照護與生命書寫</td><td>writing_aging</td></tr>
+              <tr><td>研究轉譯</td><td>writing_03、writing_04、writing_11、pico</td></tr>
+              <tr><td>行銷與商業應用</td><td>writing_02c、business_01</td></tr>
+              <tr><td>圖像與海報</td><td>image_aging_01、poster_01、poster_02</td></tr>
+              <tr><td>古文創作</td><td>writing_07、writing_08</td></tr>
             </tbody>
           </table>
         </div>
@@ -792,7 +732,7 @@
       <div class="wrap">
         <div class="footer-panel">
           <div>
-            <h3>WEBAI 封面首頁</h3>
+            <h3>WEBAI 完整工具首頁</h3>
             <p>前往 GitHub Pages 首頁、導覽頁入口。</p>
           </div>
           <a class="btn btn-primary" href="https://berneting.github.io/WEBAI/" target="_blank" rel="noopener">前往 WEBAI ↗</a>
